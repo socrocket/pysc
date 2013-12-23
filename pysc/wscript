@@ -1,0 +1,37 @@
+#! /usr/bin/env python
+# encoding: utf-8
+top = '..'
+
+def build(self):
+  self.venv_site_link(
+    source          = [
+                        '__init__.py',
+                        'api/__init__.py',
+                        'api/systemc.py',
+                        'api/gc.py',
+                      ]
+  )
+  self(
+    target          = 'pysc',
+    features        = 'cxx cxxstlib pyembed',
+    source          = [
+                        'pysc.cpp',
+                        'module.cpp',
+                        'api/systemc.cpp',
+                        'api/systemc.i',
+                        'api/gc.cpp',
+                        'api/gc.i',
+                      ],
+    export_includes = '.',
+    includes        = '..',
+    swig_flags      = '-c++ -python -Wall',
+    use             = 'common GREENSOCS SYSTEMC TLM PYTHON',
+    install_path    = '${PREFIX}/lib',
+  )
+
+  self(
+      target        = 'pysc.1.test',
+      features      = 'cxx cxxprogram pyembed',
+      source        = 'tests/test1.cpp',
+      use           = 'pysc GREENSOCS SYSTEMC TLM PYTHON',
+  )
