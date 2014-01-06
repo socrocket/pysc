@@ -261,10 +261,29 @@ class SCCallback:
         else:
             all_runners = self.all_runnables.pop(interpreter_name(), [])
             for run, args, keyargs in all_runners:
-                run(*args, **keyargs)
+                kw = dict(keyargs)
+                kw.update(phase=self.name)
+                run(*args, **kw)
 
 
-end_of_elaboration = SCCallback("End-of-elaboration")
-start_of_simulation = SCCallback("Start-of-simulation")
-end_of_simulation = SCCallback("End-of-simulation")
+PHASE = {
+    "start_of_initialization": SCCallback("Start-of-initialization"),
+    "end_of_initialization": SCCallback("End-of-initialization"),
+    "start_of_elaboration": SCCallback("Start-of-elaboration"),
+    "end_of_elaboration": SCCallback("End-of-elaboration"),
+    "start_of_simulation": SCCallback("Start-of-simulation"),
+    "end_of_simulation": SCCallback("End-of-simulation"),
+    "start_of_evaluation": SCCallback("Start-of-evaluation"),
+    "end_of_evaluation": SCCallback("End-of-evaluation")
+}
+
+def on(phase):
+    """Register phase sccallback handler"""
+    def do(funct):
+        if PHASE.has_key(phase):
+            PHASE[phase](funct)
+        else:
+            print "No such phase as %s" % (phase)
+        return funct
+    return do
 

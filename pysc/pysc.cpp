@@ -38,13 +38,23 @@ bool PythonModule::is_simple_filename(const char *path) {
 
 // constructor
 PythonModule::PythonModule(
-  sc_core::sc_module_name name_p, const char* script_filename) :
+  sc_core::sc_module_name name_p, const char* script_filename,
+  int argc, char **argv) :
   sc_core::sc_module(name_p), initialised(false),
   my_namespace(NULL), pysc_module(NULL), sys_path(NULL), name_py(NULL) {
 
   // set up interpreter and gs module and context object
   subscribe();
   block_threads();
+
+  Py_SetProgramName(argv[0]); 
+  char **args;
+  args[0] = script_file;
+  for(int i = 1; i< argc; i++) {
+      args[i] = argv[i];
+  }
+  PySys_SetArgvEx(argc, args, 0);
+
   PyScIncludeModule(pysystemc);
   PyScIncludeModule(pygc);
   PyScRegisterEmbeddedModules();
@@ -216,22 +226,39 @@ void PythonModule::run_py_member(const char* name) {
   set_interpreter_name();
 
   // get the callable Python object
-  PyObject *member =
-    PyObject_GetAttrString(pysc_module, name);  // new ref
+  PyObject *dict = 
+    PyObject_GetAttrString(pysc_module, "PHASE");
+  if(dict) {
+    PyObject *member =
+      PyObject_GetAttrString(dict, name);
 
-  // run the command
-  if(member == NULL) {
-    PyErr_Print();
-
-  } else {
-    PyObject *ret = PyObject_CallObject(member, NULL);
-    if(ret == NULL) {
+    if(member) {
+      PyObject *ret = PyObject_CallObject(member, NULL);
+      if(ret == NULL) {
+        PyErr_Print();
+      }
+      Py_XDECREF(ret);
+      Py_XDECREF(member);
+    } else {
       PyErr_Print();
     }
-    Py_XDECREF(ret);
-    Py_XDECREF(member);
+    Py_XDECREF(dict);
+  } else {
+    PyErr_Print();
   }
   unblock_threads();
+}
+
+void PythonModule::start_of_initialization() {
+  run_py_member("start_of_initialization");
+}
+
+void PythonModule::end_of_initialization() {
+  run_py_member("end_of_simulation");
+}
+
+void PythonModule::start_of_elaboration() {
+  run_py_member("start_of_elaboration");
 }
 
 void PythonModule::end_of_elaboration() {
@@ -244,6 +271,14 @@ void PythonModule::start_of_simulation() {
 
 void PythonModule::end_of_simulation() {
   run_py_member("end_of_simulation");
+}
+
+void PythonModule::start_of_evaluation() {
+  run_py_member("start_of_evaluation");
+}
+
+void PythonModule::end_of_evaluation() {
+  run_py_member("end_of_evaluation");
 }
 
 // Code for creating a Python virtual machine.  

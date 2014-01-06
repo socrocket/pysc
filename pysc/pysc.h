@@ -14,7 +14,8 @@ class PythonModule: public sc_core::sc_module {
   public:
     PythonModule(
       sc_core::sc_module_name name,
-      const char* script_filename = 0);
+      const char* script_filename = 0,
+      int argc = 0, char **argv = NULL);
 
     virtual ~PythonModule();
 
@@ -26,9 +27,14 @@ class PythonModule: public sc_core::sc_module {
     /// Adds a path to the load/import search path
     void add_to_pythonpath(const char* path);
 
+    void start_of_initialization();
+    void end_of_initialization();
+    void start_of_elaboration();
     void end_of_elaboration();
     void start_of_simulation();
     void end_of_simulation();
+    void start_of_evaluation();
+    void end_of_evaluation();
 
   private:
     /// internal load functionality
