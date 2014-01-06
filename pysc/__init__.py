@@ -267,14 +267,14 @@ class SCCallback:
 
 
 PHASE = {
-    "start_of_initialization": SCCallback("Start-of-initialization"),
-    "end_of_initialization": SCCallback("End-of-initialization"),
-    "start_of_elaboration": SCCallback("Start-of-elaboration"),
-    "end_of_elaboration": SCCallback("End-of-elaboration"),
-    "start_of_simulation": SCCallback("Start-of-simulation"),
-    "end_of_simulation": SCCallback("End-of-simulation"),
-    "start_of_evaluation": SCCallback("Start-of-evaluation"),
-    "end_of_evaluation": SCCallback("End-of-evaluation")
+    "start_of_initialization": SCCallback("start_of_initialization"),
+    "end_of_initialization": SCCallback("end_of_initialization"),
+    "start_of_elaboration": SCCallback("start_of_elaboration"),
+    "end_of_elaboration": SCCallback("end_of_elaboration"),
+    "start_of_simulation": SCCallback("start_of_simulation"),
+    "end_of_simulation": SCCallback("end_of_simulation"),
+    "start_of_evaluation": SCCallback("start_of_evaluation"),
+    "end_of_evaluation": SCCallback("end_of_evaluation")
 }
 
 def on(phase):

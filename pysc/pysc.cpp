@@ -38,7 +38,7 @@ bool PythonModule::is_simple_filename(const char *path) {
 
 // constructor
 PythonModule::PythonModule(
-  sc_core::sc_module_name name_p, const char* script_filename,
+  sc_core::sc_module_name name_p, char* script_filename,
   int argc, char **argv) :
   sc_core::sc_module(name_p), initialised(false),
   my_namespace(NULL), pysc_module(NULL), sys_path(NULL), name_py(NULL) {
@@ -48,8 +48,8 @@ PythonModule::PythonModule(
   block_threads();
 
   Py_SetProgramName(argv[0]); 
-  char **args;
-  args[0] = script_file;
+  char *args[argc];
+  args[0] = (char *)script_filename;
   for(int i = 1; i< argc; i++) {
       args[i] = argv[i];
   }
@@ -230,7 +230,7 @@ void PythonModule::run_py_member(const char* name) {
     PyObject_GetAttrString(pysc_module, "PHASE");
   if(dict) {
     PyObject *member =
-      PyObject_GetAttrString(dict, name);
+      PyDict_GetItemString(dict, name);
 
     if(member) {
       PyObject *ret = PyObject_CallObject(member, NULL);
@@ -254,7 +254,7 @@ void PythonModule::start_of_initialization() {
 }
 
 void PythonModule::end_of_initialization() {
-  run_py_member("end_of_simulation");
+  run_py_member("end_of_initialization");
 }
 
 void PythonModule::start_of_elaboration() {

@@ -14,7 +14,7 @@ class PythonModule: public sc_core::sc_module {
   public:
     PythonModule(
       sc_core::sc_module_name name,
-      const char* script_filename = 0,
+      char* script_filename = 0,
       int argc = 0, char **argv = NULL);
 
     virtual ~PythonModule();
