@@ -1,5 +1,7 @@
 #include "pysc/api/gc.h"
+#include "pysc/api/systemc.h"
 #include "pysc/module.h"
+#include <map>
 
 PyScRegisterSWIGModule(pygc);
 
@@ -39,157 +41,119 @@ std::string ParamList::read(int i) {
     return all_params[i];
 }
 
-/*
-// functions for parameter object creation //
-// globals used to pass C++ pointers from Python to constructors
-static ParamArray *array_parent = 0;
-static ExtParamArray *ext_array_parent = 0;
-static Param *current_param = 0;
+bool is_int(std::string name) {
+    gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+    gs::gs_param_base *param = configAPI->getPar(name);
+    gs::cnf::Param_type t = param->getType();
+    return (
+      (t & gs::cnf::PARTYPE_INT) |
+      (t & gs::cnf::PARTYPE_UINT) |
+      (t & gs::cnf::PARTYPE_ULONGLONG) |
+      (t & gs::cnf::PARTYPE_LONGLONG) |
+      (t & gs::cnf::PARTYPE_UCHAR) |
+      (t & gs::cnf::PARTYPE_USHORT) |
+      (t & gs::cnf::PARTYPE_SHORT) |
+      (t & gs::cnf::PARTYPE_CHAR) |
+      (t & gs::cnf::PARTYPE_SIGNED_CHAR) |
+      (t & gs::cnf::PARTYPE_SC_INT_BASE) |
+      (t & gs::cnf::PARTYPE_SC_INT) |
+      (t & gs::cnf::PARTYPE_SC_UINT_BASE) |
+      (t & gs::cnf::PARTYPE_SC_UINT) |
+      (t & gs::cnf::PARTYPE_SC_SIGNED) |
+      (t & gs::cnf::PARTYPE_SC_UNSIGNED) |
+      (t & gs::cnf::PARTYPE_SC_BIGINT) |
+      (t & gs::cnf::PARTYPE_SC_BIGUINT)
+    );
+}
 
-Param::Param(std::string name, std::string default_val) {
-    // constructor for a standalone param or a param child of an extended array.
-    // if a child, the parent is found in a global variable
-    if(ext_array_parent != 0) {
-        gs::gs_param_array *parent = ext_array_parent->getParam();
-        m_param = new gs::gs_param<std::string>(name, default_val, parent);
-        m_has_parent = true;
-    } else {
-        m_param = new gs::gs_param<std::string>(name, default_val);
-        m_has_parent = false;
+bool is_float(std::string name) {
+    gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+    gs::gs_param_base *param = configAPI->getPar(name);
+    gs::cnf::Param_type t = param->getType();
+    return (
+      (t & gs::cnf::PARTYPE_FLOAT) |
+      (t & gs::cnf::PARTYPE_DOUBLE)
+    );
+}
+
+bool is_bool(std::string name) {
+    gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+    gs::gs_param_base *param = configAPI->getPar(name);
+    gs::cnf::Param_type t = param->getType();
+    return (
+      (t & gs::cnf::PARTYPE_BOOL) |
+      (t & gs::cnf::PARTYPE_SC_LOGIC)
+    );
+}
+
+bool is_array(std::string name) {
+    gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+    gs::gs_param_base *param = configAPI->getPar(name);
+    gs::cnf::Param_type t = param->getType();
+    return (
+      (t & gs::cnf::PARTYPE_SMPL_ARRAY) |
+      (t & gs::cnf::PARTYPE_EXT_ARRAY)
+    );
+}
+
+class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {
+    public:
+        CallbackAdapter(PyObject *call, void *_observer_ptr, gs::gs_param_base *_caller_param)
+        : gs::cnf::ParamCallbAdapt_b(_observer_ptr, _caller_param) {
+            if(!PyCallable_Check(call)) {
+                PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+            }
+            this->callback = call;
+            Py_XINCREF(callback);
+
+        }
+
+        ~CallbackAdapter() {
+            Py_XDECREF(callback);
+        }
+
+        gs::cnf::callback_return_type call(gs::gs_param_base& param, gs::cnf::callback_type& reason) {
+          PyObject *args = Py_BuildValue("(ssfi)", param.getName().c_str(), param.getString().c_str(), pysc::api::systemc::simulation_time(sc_core::SC_NS), reason);
+          PyObject *result = PyObject_CallObject(callback, args);
+          Py_DECREF(args);
+          Py_DECREF(result);
+          return gs::cnf::return_nothing;
+        }
+
+    private:
+        PyObject *callback;
+};
+
+std::map<PyObject *, boost::shared_ptr<gs::cnf::ParamCallbAdapt_b> > callback_map;
+
+void register_callback(std::string name, PyObject *callback, gs::cnf::callback_type type) {
+    gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+    gs::gs_param_base *param = configAPI->getPar(name);
+    callback_map.insert(
+        std::pair<PyObject *, boost::shared_ptr<gs::cnf::ParamCallbAdapt_b> >(
+            callback,
+            param->registerParamCallback(
+                boost::shared_ptr<gs::cnf::ParamCallbAdapt_b>(
+                    new CallbackAdapter(callback, NULL, param)
+                ), 
+                type
+            )
+        )
+    );
+}
+
+void unregister_callback(PyObject *callback) {
+    std::map<PyObject *, boost::shared_ptr<gs::cnf::ParamCallbAdapt_b> >::iterator iter =
+        callback_map.find(callback);
+    if(iter!=callback_map.end()) {
+        iter->second->unregister_at_parameter();
+        //gs::gs_param_base *param = iter->second->get_caller_param();
+        //gs::cnf::ParamCallbAdapt_b *adapt = &(*iter->second);
+        //param->unregisterParamCallback(adapt);
+        callback_map.erase(iter);
     }
-    m_is_array_element = false;
-    ext_array_parent = 0;
-    array_parent = 0;
 }
 
-Param::Param(unsigned index, std::string default_val) {
-    // constructor for a param child of a simple array.  parent is in a global.
-    // makes this into a std::string.  in this case all
-    // get/set go through the parent, default val is used only if the parent
-    // notes that the size from the dB is smaller than the index, and then
-    // the default val should also be applied to the dB.
-    assert(array_parent != 0);
-    gs::gs_param<std::string *> *parent = array_parent->getParam();
-    if(parent->size() <= index) {
-        parent->resize(index+1);
-    }
-    if(array_parent->db_size() <= index) {
-        (*parent)[index] = default_val;
-    }
-    m_is_array_element = true;
-    m_has_parent = false;
-    m_parent = parent;
-    m_index_in_array = index;
-    ext_array_parent = 0;
-    array_parent = 0;
-}
-
-Param::~Param() {
-    if((!m_is_array_element) && (!m_has_parent)) {
-        delete m_param;
-    }
-}
-
-std::string Param::get() {
-    if(m_is_array_element) {
-        return (*m_parent)[m_index_in_array];
-    }
-    return m_param->getValue();
-}
-
-void Param::set(std::string val) {
-    if(m_is_array_element) {
-        (*m_parent)[m_index_in_array] = val;
-    } else {
-        m_param->setValue(val);
-    }
-}
-
-void Param::set_param_as_current() {
-    current_param = this;
-}
-
-
-ParamArray::ParamArray(std::string name) {
-    // constructor for a standalone array param or an array param child
-    // of an extended array.  if a child, the parent is in a global variable
-    if(ext_array_parent != 0) {
-        gs::gs_param_array *parent = ext_array_param->getParam();
-        m_param = new gs::gs_param<std::string *>(name, parent);
-        m_has_parent = true;
-    } else {
-        m_param = new gs::gs_param<std::string *>(name);
-        m_has_parent = false;
-    }
-    m_length_from_db = m_param->size();
-    ext_array_parent = 0;
-    array_parent = 0;
-}
-
-ParamArray::ParamArray(unsigned index) {
-    // constructor for a child of a simple array and will fail
-    // with the current version of GreenConfig.  parent is found in a global
-    assert(false);
-    ext_array_parent = 0;
-    array_parent = 0;
-}
-
-ParamArray::~ParamArray() {
-    if(!m_has_parent) {
-        delete m_param;
-    }
-}
-
-unsigned ParamArray::length() {
-  return m_param->size();
-}
-
-unsigned ParamArray::db_length() {
-    return m_length_from_db;
-}
-
-void ParamArray::length(unsigned length) {
-    m_param->resize(length);
-}
-
-void ParamArray::make_parent() {
-    // function to call before the construction of a child param
-    array_parent = this;
-}
-
-
-ExtParamArray::ExtParamArray(std::string name) {
-    // constructor for a standalone param or a param child of an extended array.
-    // if a child, the parent is found in a global variable
-    if(ext_array_parent != 0) {
-        gs::gs_param_array *parent = ext_array_parent->getParam();
-        m_param = new gs::gs_param_array(name, parent);
-        m_has_parent = true;
-    } else {
-        m_param = new gs::gs_param_array(name);
-        m_has_parent = false;
-    }
-    ext_array_parent = 0;
-    array_parent = 0;
-}
-
-ExtParamArray::ExtParamArray(unsigned index) {
-    // constructorfor a child of a simple array and will fail
-    // with the current version of GreenConfig.  parent is found in a global
-    // function to call before the construction of a child param
-    assert(false);
-    ext_array_parent = 0;
-    array_parent = 0;
-}
-
-ExtParamArray::~ExtParamArray() {
-    if(!m_has_parent) delete m_param;
-}
-
-void ExtParamArray::make_parent() {
-    ext_array_parent = this;
-}
-*/  
 }; // gc
 }; // api
 }; // pysc

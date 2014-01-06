@@ -13,7 +13,12 @@ class GSParamNonExistent(Exception):
     pass
 
 def addIndex(name, index):
-    return "%s.%s" % (name, index)
+    if name != "" and index != "":
+        return "%s.%s" % (name, index)
+    elif name != "":
+        return name
+    else:
+        return index
 
 exists = pygc.exists
 
@@ -71,31 +76,46 @@ def makeDict(name, list_of_names):
     else:
         # mixed names so make a dictionary
         result = {}
-        for head,tails in breakdown.iteritems():
+        for head, tails in breakdown.iteritems():
             if tails[0]:
                 # some further hierarchy
                 result[head] = makeDict(addIndex(name, head),tails)
             else:
                 # leaf
-                result[head] = read(addIndex(name, head))
+                index = addIndex(name, head)
+                value = read(index)
+                if pygc.is_bool(index):
+                    value = bool(value)
+                elif pygc.is_float(index):
+                    value = float(value)
+                elif pygc.is_int(index):
+                    value = int(value)
+
+                if not pygc.is_array(index):
+                    result[head] = read(addIndex(name, head))
     return result
 
-def readDict(name):
-    all_params = pygc.list(addIndex(name,"*"))
-    ln = len(name) + 1
+def readDict(name = ""):
+    if name != "":
+      all_params = pygc.list(addIndex(name,"*"))
+      ln = len(name) + 1
+    else:
+      all_params = pygc.list("")
+      ln = 0
+
     all_params_list = [all_params.read(i)[ln:] for i in range(all_params.length())]
     return makeDict(name, all_params_list)
 
 def writeDict(name, values):
-    if isinstance(values,dict):
+    if isinstance(values, dict):
         # is it a dictionary?
-        for n,v in values.iteritems():
-            writeDict(addIndex(name, n),v)
+        for n, v in values.iteritems():
+            writeDict(addIndex(name, n), v)
         return
     if isinstance(values,list) or isinstance(values, tuple):
         # may be an embedded list?
-        for i,v in enumerate(values):
-            writeDict(addIndex(name, i),v)
+        for i, v in enumerate(values):
+            writeDict(addIndex(name, i), v)
         return
     # must be a leaf value
     write(name, values)
