@@ -55,7 +55,7 @@ def getTail(name):
 
 def makeDict(name, list_of_names):
     heads = set([getHead(x) for x in list_of_names])
-    breakdown = dict((x,[]) for x in heads)
+    breakdown = dict((x, []) for x in heads)
     for n in list_of_names:
         breakdown[getHead(n)].append(getTail(n))
     try:
@@ -67,9 +67,9 @@ def makeDict(name, list_of_names):
         result = []
         for head in range(len(heads)):
             tails = breakdown[str(head)]
-            if tails[0]:
+            if any(tails):
                 # some further hierarchy
-                result.append(makeDict(addIndex(name, head),tails))
+                result.append(makeDict(addIndex(name, head), tails))
             else:
                 # leaf
                 result.append(read(addIndex(name, head)))
@@ -77,9 +77,9 @@ def makeDict(name, list_of_names):
         # mixed names so make a dictionary
         result = {}
         for head, tails in breakdown.iteritems():
-            if tails[0]:
+            if any(tails):
                 # some further hierarchy
-                result[head] = makeDict(addIndex(name, head),tails)
+                result[head] = makeDict(addIndex(name, head), tails)
             else:
                 # leaf
                 index = addIndex(name, head)
@@ -92,7 +92,7 @@ def makeDict(name, list_of_names):
                     value = int(value)
 
                 if not pygc.is_array(index):
-                    result[head] = read(addIndex(name, head))
+                    result[head] = value
     return result
 
 def readDict(name = ""):

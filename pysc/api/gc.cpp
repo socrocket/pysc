@@ -43,57 +43,77 @@ std::string ParamList::read(int i) {
 
 bool is_int(std::string name) {
     gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
-    gs::gs_param_base *param = configAPI->getPar(name);
-    gs::cnf::Param_type t = param->getType();
-    return (
-      (t & gs::cnf::PARTYPE_INT) |
-      (t & gs::cnf::PARTYPE_UINT) |
-      (t & gs::cnf::PARTYPE_ULONGLONG) |
-      (t & gs::cnf::PARTYPE_LONGLONG) |
-      (t & gs::cnf::PARTYPE_UCHAR) |
-      (t & gs::cnf::PARTYPE_USHORT) |
-      (t & gs::cnf::PARTYPE_SHORT) |
-      (t & gs::cnf::PARTYPE_CHAR) |
-      (t & gs::cnf::PARTYPE_SIGNED_CHAR) |
-      (t & gs::cnf::PARTYPE_SC_INT_BASE) |
-      (t & gs::cnf::PARTYPE_SC_INT) |
-      (t & gs::cnf::PARTYPE_SC_UINT_BASE) |
-      (t & gs::cnf::PARTYPE_SC_UINT) |
-      (t & gs::cnf::PARTYPE_SC_SIGNED) |
-      (t & gs::cnf::PARTYPE_SC_UNSIGNED) |
-      (t & gs::cnf::PARTYPE_SC_BIGINT) |
-      (t & gs::cnf::PARTYPE_SC_BIGUINT)
-    );
+    if(configAPI) {
+        gs::gs_param_base *param = configAPI->getPar(name);
+        if(param) {
+            gs::cnf::Param_type t = param->getType();
+            return (
+                (t == gs::cnf::PARTYPE_INT) ||
+                (t == gs::cnf::PARTYPE_UINT) ||
+                (t == gs::cnf::PARTYPE_ULONGLONG) ||
+                (t == gs::cnf::PARTYPE_LONGLONG) ||
+                (t == gs::cnf::PARTYPE_UCHAR) ||
+                (t == gs::cnf::PARTYPE_USHORT) ||
+                (t == gs::cnf::PARTYPE_SHORT) ||
+                (t == gs::cnf::PARTYPE_CHAR) ||
+                (t == gs::cnf::PARTYPE_SIGNED_CHAR) ||
+                (t == gs::cnf::PARTYPE_SC_INT_BASE) ||
+                (t == gs::cnf::PARTYPE_SC_INT) ||
+                (t == gs::cnf::PARTYPE_SC_UINT_BASE) ||
+                (t == gs::cnf::PARTYPE_SC_UINT) ||
+                (t == gs::cnf::PARTYPE_SC_SIGNED) ||
+                (t == gs::cnf::PARTYPE_SC_UNSIGNED) ||
+                (t == gs::cnf::PARTYPE_SC_BIGINT) ||
+                (t == gs::cnf::PARTYPE_SC_BIGUINT)
+            );
+        }
+    }
+    return false;
 }
 
 bool is_float(std::string name) {
     gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
-    gs::gs_param_base *param = configAPI->getPar(name);
-    gs::cnf::Param_type t = param->getType();
-    return (
-      (t & gs::cnf::PARTYPE_FLOAT) |
-      (t & gs::cnf::PARTYPE_DOUBLE)
-    );
+    if(configAPI) {
+        gs::gs_param_base *param = configAPI->getPar(name);
+        if(param) {
+            gs::cnf::Param_type t = param->getType();
+            return (
+                (t == gs::cnf::PARTYPE_FLOAT) ||
+                (t == gs::cnf::PARTYPE_DOUBLE)
+            );
+        }
+    }
+    return false;
 }
 
 bool is_bool(std::string name) {
     gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
-    gs::gs_param_base *param = configAPI->getPar(name);
-    gs::cnf::Param_type t = param->getType();
-    return (
-      (t & gs::cnf::PARTYPE_BOOL) |
-      (t & gs::cnf::PARTYPE_SC_LOGIC)
-    );
+    if(configAPI) {
+        gs::gs_param_base *param = configAPI->getPar(name);
+        if(param) {
+            gs::cnf::Param_type t = param->getType();
+            return (
+                (t == gs::cnf::PARTYPE_BOOL) ||
+                (t == gs::cnf::PARTYPE_SC_LOGIC)
+            );
+        }
+    }
+    return false;
 }
 
 bool is_array(std::string name) {
     gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
-    gs::gs_param_base *param = configAPI->getPar(name);
-    gs::cnf::Param_type t = param->getType();
-    return (
-      (t & gs::cnf::PARTYPE_SMPL_ARRAY) |
-      (t & gs::cnf::PARTYPE_EXT_ARRAY)
-    );
+    if(configAPI) {
+        gs::gs_param_base *param = configAPI->getPar(name);
+        if(param) {
+            gs::cnf::Param_type t = param->getType();
+            return (
+                (t == gs::cnf::PARTYPE_SMPL_ARRAY) ||
+                (t == gs::cnf::PARTYPE_EXT_ARRAY)
+            );
+        }
+    }
+    return false;
 }
 
 class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {
