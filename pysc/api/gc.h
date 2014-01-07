@@ -47,7 +47,7 @@ bool is_float(std::string name);
 bool is_bool(std::string name);
 bool is_array(std::string name);
 
-void register_callback(std::string, PyObject *, gs::cnf::callback_type type);
+void register_callback(std::string, PyObject *callback, gs::cnf::callback_type type);
 void unregister_callback(PyObject *);
 
 }; // gc

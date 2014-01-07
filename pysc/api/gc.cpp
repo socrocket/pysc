@@ -134,7 +134,7 @@ class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {
 
         gs::cnf::callback_return_type call(gs::gs_param_base& param, gs::cnf::callback_type& reason) {
           PyObject *args = Py_BuildValue("(ssfi)", param.getName().c_str(), param.getString().c_str(), pysc::api::systemc::simulation_time(sc_core::SC_NS), reason);
-          PyObject *result = PyObject_CallObject(callback, args);
+          PyObject *result = PyObject_CallObject(callback, NULL);//args);
           Py_DECREF(args);
           Py_DECREF(result);
           return gs::cnf::return_nothing;

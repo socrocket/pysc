@@ -120,3 +120,20 @@ def writeDict(name, values):
     # must be a leaf value
     write(name, values)
 
+pre_read = pygc.pre_read
+post_read = pygc.post_read
+reject_write = pygc.reject_write
+pre_write = pygc.pre_write
+post_write = pygc.post_write
+create_param = pygc.create_param
+destroy_param = pygc.destroy_param
+post_write_and_destroy = pygc.post_write_and_destroy
+no_callback = pygc.no_callback
+
+register = pygc.register_callback
+unregister = pygc.unregister_callback
+
+def on(name, type):
+    def do(funct):
+        return register(name, funct, type)
+    return do
