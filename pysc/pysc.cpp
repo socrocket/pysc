@@ -218,7 +218,7 @@ void PythonModule::set_interpreter_name() {
   PyObject_SetAttrString(pysc_module, "__interpreter_name__", name_py);
 }
 
-void PythonModule::run_py_callback(const char* name) {
+void PythonModule::run_py_callback(const char* name, PyObject *args) {
   if(!initialised) {
     return;
   }
@@ -234,7 +234,7 @@ void PythonModule::run_py_callback(const char* name) {
       PyDict_GetItemString(dict, name);
 
     if(member) {
-      PyObject *ret = PyObject_CallObject(member, NULL);
+      PyObject *ret = PyObject_CallObject(member, args);
       if(ret == NULL) {
         PyErr_Print();
       }

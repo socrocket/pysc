@@ -36,6 +36,8 @@ class PythonModule: public sc_core::sc_module {
     void start_of_evaluation();
     void end_of_evaluation();
 
+    /// Global PythonModule Instance (The last created one)
+    static PythonModule *globalInstance;
   private:
     /// internal load functionality
     bool private_load(const char *fullname);
@@ -44,13 +46,10 @@ class PythonModule: public sc_core::sc_module {
     void set_interpreter_name();
 
     /// Runs a Python function from the script module
-    void run_py_callback(const char* name);
+    void run_py_callback(const char* name, PyObject *args = NULL);
 
     bool initialised;
     PyObject *my_namespace, *pysc_module, *sys_path, *name_py;
-
-    /// Global PythonModule Instance (The last created one)
-    static PythonModule *globalInstance;
 
     /// Number of subscriber to the singlton python instance
     static unsigned subscribers;
@@ -77,7 +76,7 @@ class PythonModule: public sc_core::sc_module {
     /// Unsubscribe from the thread
     static void unsubscribe();
 
-    static void report_handler(const sc_report& rep, const sc_actions& actions);
+    static void report_handler(const sc_core::sc_report& rep, const sc_core::sc_actions& actions);
 
 };
 
