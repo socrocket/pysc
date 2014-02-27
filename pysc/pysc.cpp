@@ -113,6 +113,8 @@ PythonModule::PythonModule(
 
   add_to_pythonpath(".");
 
+  PythonModule::globalInstance = this;
+
   // run a script if one has been requested
   if (script_filename && *script_filename) {
     execfile(script_filename);
@@ -216,8 +218,7 @@ void PythonModule::set_interpreter_name() {
   PyObject_SetAttrString(pysc_module, "__interpreter_name__", name_py);
 }
 
-
-void PythonModule::run_py_member(const char* name) {
+void PythonModule::run_py_callback(const char* name) {
   if(!initialised) {
     return;
   }
@@ -250,35 +251,35 @@ void PythonModule::run_py_member(const char* name) {
 }
 
 void PythonModule::start_of_initialization() {
-  run_py_member("start_of_initialization");
+  run_py_callback("start_of_initialization");
 }
 
 void PythonModule::end_of_initialization() {
-  run_py_member("end_of_initialization");
+  run_py_callback("end_of_initialization");
 }
 
 void PythonModule::start_of_elaboration() {
-  run_py_member("start_of_elaboration");
+  run_py_callback("start_of_elaboration");
 }
 
 void PythonModule::end_of_elaboration() {
-  run_py_member("end_of_elaboration");
+  run_py_callback("end_of_elaboration");
 }
 
 void PythonModule::start_of_simulation() {
-  run_py_member("start_of_simulation");
+  run_py_callback("start_of_simulation");
 }
 
 void PythonModule::end_of_simulation() {
-  run_py_member("end_of_simulation");
+  run_py_callback("end_of_simulation");
 }
 
 void PythonModule::start_of_evaluation() {
-  run_py_member("start_of_evaluation");
+  run_py_callback("start_of_evaluation");
 }
 
 void PythonModule::end_of_evaluation() {
-  run_py_member("end_of_evaluation");
+  run_py_callback("end_of_evaluation");
 }
 
 // Code for creating a Python virtual machine.  
@@ -312,3 +313,4 @@ void PythonModule::unsubscribe() {
     Py_Finalize();
   }
 }
+

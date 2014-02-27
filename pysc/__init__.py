@@ -274,7 +274,8 @@ PHASE = {
     "start_of_simulation": SCCallback("start_of_simulation"),
     "end_of_simulation": SCCallback("end_of_simulation"),
     "start_of_evaluation": SCCallback("start_of_evaluation"),
-    "end_of_evaluation": SCCallback("end_of_evaluation")
+    "end_of_evaluation": SCCallback("end_of_evaluation"),
+    "report": SCCallback("report")
 }
 
 def on(phase):
