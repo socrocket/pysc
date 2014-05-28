@@ -1,3 +1,16 @@
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file module.cpp
+/// 
+///
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author 
+///
 #include <pysc/module.h>
 
 PyScModule *PyScModule::reg = NULL;
@@ -23,3 +36,4 @@ void PyScModule::initModule() {
     }
 }
 
+/// @}

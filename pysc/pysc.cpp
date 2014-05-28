@@ -1,3 +1,16 @@
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file pysc.cpp
+/// 
+///
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author 
+///
 #include <Python.h>
 #include "pysc/pysc.h"
 #include "pysc/module.h"
@@ -49,7 +62,7 @@ PythonModule::PythonModule(
   subscribe();
   block_threads();
 
-  Py_SetProgramName(argv[0]); 
+  Py_SetProgramName(argv[0]);
   char *args[argc];
   args[0] = (char *)script_filename;
   for(int i = 1; i< argc; i++) {
@@ -229,7 +242,7 @@ void PythonModule::run_py_callback(const char* name, PyObject *args) {
   set_interpreter_name();
 
   // get the callable Python object
-  PyObject *dict = 
+  PyObject *dict =
     PyObject_GetAttrString(pysc_module, "PHASE");
   if(dict) {
     PyObject *member =
@@ -284,7 +297,7 @@ void PythonModule::end_of_evaluation() {
   run_py_callback("end_of_evaluation");
 }
 
-// Code for creating a Python virtual machine.  
+// Code for creating a Python virtual machine.
 PyThreadState *PythonModule::singleton;
 unsigned PythonModule::subscribers = 0;
 
@@ -316,3 +329,4 @@ void PythonModule::unsubscribe() {
   }
 }
 
+/// @}

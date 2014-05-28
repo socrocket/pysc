@@ -1,3 +1,16 @@
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file systemc.h
+/// 
+///
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author 
+///
 #ifndef PYSC_API_SYSTEMC_H
 #define PYSC_API_SYSTEMC_H
 
@@ -42,3 +55,4 @@ bool is_running();
 }; // pysc
 
 #endif // PYSC_API_SYSTEMC_H
+/// @}

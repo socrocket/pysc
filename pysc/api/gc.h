@@ -1,3 +1,16 @@
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file gc.h
+/// 
+///
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author 
+///
 #ifndef PYSC_API_GSPARAM_H
 #define PYSC_API_GSPARAM_H
 
@@ -55,3 +68,4 @@ void unregister_callback(PyObject *);
 }; // pysc
 
 #endif // PYSC_API_GSPARAM_H
+/// @}

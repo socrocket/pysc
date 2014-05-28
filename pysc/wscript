@@ -3,8 +3,9 @@
 top = '..'
 
 def build(self):
-  self.venv_site_link(
-    source          = [
+  self(
+    features          = 'venv_package',
+    pysource          = [
                         '__init__.py',
                         'api/__init__.py',
                         'api/systemc.py',

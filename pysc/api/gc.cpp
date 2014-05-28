@@ -1,3 +1,16 @@
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file gc.cpp
+/// 
+///
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author 
+///
 #include "pysc/api/gc.h"
 #include "pysc/api/systemc.h"
 #include "pysc/module.h"
@@ -155,7 +168,7 @@ void register_callback(std::string name, PyObject *callback, gs::cnf::callback_t
             param->registerParamCallback(
                 boost::shared_ptr<gs::cnf::ParamCallbAdapt_b>(
                     new CallbackAdapter(callback, NULL, param)
-                ), 
+                ),
                 type
             )
         )
@@ -177,3 +190,4 @@ void unregister_callback(PyObject *callback) {
 }; // gc
 }; // api
 }; // pysc
+/// @}
