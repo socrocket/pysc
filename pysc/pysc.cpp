@@ -9,6 +9,8 @@
 #include <cstring>
 #include <cstdio>
 
+PythonModule *PythonModule::globalInstance = NULL;
+
 // two functions to allow OS-independent operation of load()
 std::string PythonModule::path_separator() {
   #ifdef MS_WINDOWS
