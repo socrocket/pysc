@@ -11,10 +11,10 @@
 ///            authors is strictly prohibited.
 /// @author 
 ///
+#include <map>
 #include "pysc/api/gc.h"
 #include "pysc/api/systemc.h"
 #include "pysc/module.h"
-#include <map>
 
 PyScRegisterSWIGModule(pygc);
 

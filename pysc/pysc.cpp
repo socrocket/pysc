@@ -12,15 +12,15 @@
 /// @author 
 ///
 #include <Python.h>
-#include "pysc/pysc.h"
-#include "pysc/module.h"
-
 // SystemC library
 #include <systemc>
-
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
+
+#include "pysc/pysc.h"
+#include "pysc/module.h"
+
 
 PythonModule *PythonModule::globalInstance = NULL;
 

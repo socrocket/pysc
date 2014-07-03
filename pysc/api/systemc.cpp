@@ -11,10 +11,10 @@
 ///            authors is strictly prohibited.
 /// @author 
 ///
-#include "pysc/api/systemc.h"
-#include "pysc/module.h"
 
 #include <map>
+#include "pysc/api/systemc.h"
+#include "pysc/module.h"
 
 PyScRegisterSWIGModule(pysystemc);
 

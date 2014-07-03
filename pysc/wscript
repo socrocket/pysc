@@ -24,7 +24,7 @@ def build(self):
                         'api/gc.i',
                       ],
     export_includes = '.',
-    includes        = '..',
+    includes        = self.top_dir,
     swig_flags      = '-c++ -python -Wall',
     use             = 'common GREENSOCS SYSTEMC TLM PYTHON',
     install_path    = '${PREFIX}/lib',

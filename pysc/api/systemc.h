@@ -15,7 +15,7 @@
 #define PYSC_API_SYSTEMC_H
 
 #include <Python.h>
-#include "sc_api.h"
+#include "common/sc_api.h"
 
 #ifdef SWIG
 namespace sc_core {
