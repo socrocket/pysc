@@ -17,7 +17,7 @@
 #include <Python.h>
 
 // GreenConfig
-#include "greencontrol/config.h"
+#include <greencontrol/config.h>
 
 #if SWIG
 namespace gs {
