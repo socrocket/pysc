@@ -23,8 +23,10 @@ def do_init(phase):
 def do_phase(phase):
     print "Phase", phase
 
-#@pysc.on("start_of_simulation")
+@pysc.on("start_of_simulation")
 def do_start(phase):
+    import tools.python.shell as shell
+    shell.start()
     pysc.stop();
 
 print "Start"
