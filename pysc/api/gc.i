@@ -4,11 +4,12 @@
 //#pragma SWIG nowarn=401
 
 %include "std_string.i"
+%include "std_map.i"
 //%include "exception.i"
 
-//namespace std {
-//   %template(pairbi) pair<bool,int>;
-//};
+namespace std {
+   %template(mapss) map<string,string>;
+};
 
 //%typemap(throws) gs::msg::invalid_receiver {
 //   SWIG_exception(SWIG_RuntimeError, $1.what());
