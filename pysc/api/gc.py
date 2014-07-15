@@ -32,6 +32,10 @@ def write(name, val):
         val = int(val)
     pygc.write(name, str(val))
 
+getType = pygc.get_type_string
+getDocumentation = pygc.get_documentation
+getProperties = pygc.get_properties
+
 def readList(name):
     result = []
     index = 0
@@ -53,7 +57,7 @@ def getHead(name):
 def getTail(name):
     return name[len(getHead(name))+1:]
 
-def makeDict(name, list_of_names):
+def makeDict(name, list_of_names, readProperties = False):
     heads = set([getHead(x) for x in list_of_names])
     breakdown = dict((x, []) for x in heads)
     for n in list_of_names:
@@ -69,17 +73,24 @@ def makeDict(name, list_of_names):
             tails = breakdown[str(head)]
             if any(tails):
                 # some further hierarchy
-                result.append(makeDict(addIndex(name, head), tails))
+                result.append(makeDict(addIndex(name, head), tails), readProperties)
             else:
                 # leaf
-                result.append(read(addIndex(name, head)))
+                if not readProperties:
+                    result.append(read(addIndex(name, head)))
+                else:
+                    properties = dict(getProperties(index))
+                    properties["documentation"] = getDocumentation(index)
+                    properties["type"] = getType(index)
+                    properties["value"] = read(addIndex(name, head))
+                    result.append(preoperties)
     else:
         # mixed names so make a dictionary
         result = {}
         for head, tails in breakdown.iteritems():
             if any(tails):
                 # some further hierarchy
-                result[head] = makeDict(addIndex(name, head), tails)
+                result[head] = makeDict(addIndex(name, head), tails, readProperties)
             else:
                 # leaf
                 index = addIndex(name, head)
@@ -92,21 +103,37 @@ def makeDict(name, list_of_names):
                     value = int(value)
 
                 if not pygc.is_array(index):
-                    result[head] = value
+                    if not readProperties:
+                        result[head] = value
+                    else:
+                        properties = dict(getProperties(index))
+                        properties["documentation"] = getDocumentation(index)
+                        properties["type"] = getType(index)
+                        properties["value"] = value
+                        result[head] = properties
     return result
 
-def readDict(name = ""):
+def listParams(name = ""):
     if name != "":
-      all_params = pygc.list(addIndex(name,"*"))
-      ln = len(name) + 1
+        all_params = pygc.list(addIndex(name,"*"))
+        ln = len(name) + 1
     else:
-      all_params = pygc.list("")
-      ln = 0
+        all_params = pygc.list("")
+        ln = 0
 
-    all_params_list = [all_params.read(i)[ln:] for i in range(all_params.length())]
+    return [all_params.read(i)[ln:] for i in range(all_params.length())]
+
+def readPropertyDict(name = ""):
+    all_params_list = listParams(name)
+    #print all_params_list
+    return makeDict(name, all_params_list, True)
+
+def readValueDict(name = ""):
+    all_params_list = listParams(name)
+    #print all_params_list
     return makeDict(name, all_params_list)
 
-def writeDict(name, values):
+def writeValueDict(name, values):
     if isinstance(values, dict):
         # is it a dictionary?
         for n, v in values.iteritems():

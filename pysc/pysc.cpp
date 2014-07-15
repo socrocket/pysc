@@ -53,7 +53,7 @@ bool PythonModule::is_simple_filename(const char *path) {
 
 // constructor
 PythonModule::PythonModule(
-  sc_core::sc_module_name name_p, char* script_filename,
+  sc_core::sc_module_name name_p, const char* script_filename,
   int argc, char **argv) :
   sc_core::sc_module(name_p), initialised(false),
   my_namespace(NULL), pysc_module(NULL), sys_path(NULL), name_py(NULL) {
@@ -64,7 +64,7 @@ PythonModule::PythonModule(
 
   Py_SetProgramName(argv[0]);
   char *args[argc];
-  args[0] = (char *)script_filename;
+  args[0] = const_cast<char *>(script_filename);
   for(int i = 1; i< argc; i++) {
       args[i] = argv[i];
   }

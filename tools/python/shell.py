@@ -38,7 +38,4 @@ def start():
     code.interact(local=locals(), banner='')
 
 if __name__ == "__main__":
-    import pysc
-    @pysc.on('start_of_simulation')
-    def on_start(phase):
-        start()
+    start()
