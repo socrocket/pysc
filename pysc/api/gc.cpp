@@ -129,6 +129,42 @@ bool is_array(std::string name) {
     return false;
 }
 
+std::string get_documentation(std::string name) {
+    gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+    if(configAPI) {
+        gs::gs_param_base *param = configAPI->getPar(name);
+        if(param) {
+            return param->get_documentation();
+        }
+    }
+    return "";
+}
+
+std::string get_type_string(std::string name) {
+    gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+    if(configAPI) {
+        gs::cnf::gs_param_base *param = configAPI->getPar(name);
+        if(param) {
+            return param->getTypeString();
+        }
+    }
+    return "";
+}
+
+std::map<std::string, std::string> get_properties(std::string name) {
+  gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+  if(configAPI) {
+    gs::gs_param_base *base = configAPI->getPar(name);
+    if(base) {
+      gs::cnf::gs_config_base *param = dynamic_cast<gs::cnf::gs_config_base *>(base);
+      if(param) {
+        return param->getProperties();
+      }
+    }
+  }
+  return std::map<std::string, std::string>();
+}
+
 class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {
     public:
         CallbackAdapter(PyObject *call, void *_observer_ptr, gs::gs_param_base *_caller_param)
