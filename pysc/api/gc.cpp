@@ -137,7 +137,7 @@ std::string get_documentation(std::string name) {
             return param->get_documentation();
         }
     }
-    return "";
+    return std::string();
 }
 
 std::string get_type_string(std::string name) {
@@ -148,7 +148,7 @@ std::string get_type_string(std::string name) {
             return param->getTypeString();
         }
     }
-    return "";
+    return std::string();
 }
 
 std::map<std::string, std::string> get_properties(std::string name) {
