@@ -3,9 +3,8 @@
 // Avoid warning "Nothing known about base class"
 //#pragma SWIG nowarn=401
 
-%include "std_string.i"
 %include "std_map.i"
-//%include "exception.i"
+%include "std_string.i"
 
 namespace std {
    %template(mapss) map<string,string>;

@@ -4,7 +4,7 @@ import json
 @pysc.on("end_of_elaboration")
 def do_elab(phase):
     print "Elab"
-    print json.dumps(pysc.gc.readDict(), indent=2, sort_keys=True)
+    print json.dumps(pysc.gc.readValueDict(), indent=2, sort_keys=True)
     #print pysc.gc.readDict()
 
 def elf_file(name="", value="", time="", type=""):
