@@ -37,8 +37,6 @@ def read_log(filename):
                     data['time_unit'] = "ps"
                     data['index_p'] = index
                     data = dict(data.items() + parse_message(message).items())
-                    #print(data)
-                    #store.append('log', pd.DataFrame(data, index=[index]), min_itemsize = 30)
                     data_aggr.append(data)
                     index += 1
                     if index % 25000 == 0:
@@ -46,13 +44,7 @@ def read_log(filename):
                         data_aggr = []
     if len(data_aggr) > 0:
         store.append('log', pd.DataFrame(data_aggr), min_itemsize = 30)
-
     store.close()
-    #df = pd.DataFrame(data)
-    #df['time_unit_factor'] = df['time_unit'].map(time_unit_factor)
-    #df['time'] = df['time_unit_factor'] * df['time']
-    #df = df.drop(['time_unit', 'time_unit_factor'], axis=1)
-    #return df
 
 def parse_message(message):
     result = {}
@@ -70,7 +62,6 @@ def parse_message(message):
             if hex_re.match(value):
                 value = int(value, 16)
             result[key] = value
-
     return result
 
 # get normalised time
@@ -90,5 +81,9 @@ def time_unit_factor(unit):
     return 0
 
 if __name__ == '__main__':
-    filename = sys.argv[1]
-    read_log(filename)
+    if len(sys.argv) < 2:
+        print("Usage: log2db.py <log_file>")
+        print("Database will be stored as <log_file>.h5")
+    else:
+        filename = sys.argv[1]
+        read_log(filename)

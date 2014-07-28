@@ -4,7 +4,7 @@ import sys
 import os
 
 
-# read SoCRocket logfile
+# read Modelsim/Questa logfile
 def read_log(filename):
     log_re = re.compile("\A#")
     message_re = re.compile("\A#\s+(\d+)\s+([a-z]+)\s+:\s+(\S+):\s+(0x[0-9a-f]+)\s+(.*)")
@@ -35,8 +35,6 @@ def read_log(filename):
                 data['time'] = data['time'] * time_unit_factor(data['time_unit'])
                 data['time_unit'] = "ps"
                 data['index_p'] = index
-                #print(data)
-                #store.append('log', pd.DataFrame(data, index=[index]), min_itemsize = 30)
                 data_aggr.append(data)
                 index += 1
                 if index % 25000 == 0:
@@ -46,11 +44,6 @@ def read_log(filename):
         store.append('log', pd.DataFrame(data_aggr), min_itemsize = 50)
 
     store.close()
-    #df = pd.DataFrame(data)
-    #df['time_unit_factor'] = df['time_unit'].map(time_unit_factor)
-    #df['time'] = df['time_unit_factor'] * df['time']
-    #df = df.drop(['time_unit', 'time_unit_factor'], axis=1)
-    #return df
 
 # get normalised time
 def time_unit_factor(unit):
@@ -69,5 +62,9 @@ def time_unit_factor(unit):
     return 0
 
 if __name__ == '__main__':
-    filename = sys.argv[1]
-    read_log(filename)
+    if len(sys.argv) < 2:
+        print("Usage: python transcript2db <log_file>")
+        print("The database will be stored as <log_file>.h5")
+    else:
+        filename = sys.argv[1]
+        read_log(filename)
