@@ -59,7 +59,7 @@ def parse_message(message):
             value = separate.group(2)
             if dec_re.match(value):
                 value = int(value)
-            if hex_re.match(value):
+            elif hex_re.match(value):
                 value = int(value, 16)
             result[key] = value
     return result
