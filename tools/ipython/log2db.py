@@ -40,10 +40,11 @@ def read_log(filename):
                     data_aggr.append(data)
                     index += 1
                     if index % 25000 == 0:
-                        store.append('log', pd.DataFrame(data_aggr), min_itemsize = 30, data_columns= data.keys())
+                        store.append('log', pd.DataFrame(data_aggr), min_itemsize = 30, index=False, data_columns=True)
                         data_aggr = []
     if len(data_aggr) > 0:
-        store.append('log', pd.DataFrame(data_aggr), min_itemsize = 30)
+        store.append('log', pd.DataFrame(data_aggr), min_itemsize = 30, index=False, data_columns=True)
+    store.create_table_index('log', kind='full')
     store.close()
 
 def parse_message(message):
