@@ -59,11 +59,16 @@ def getTail(name):
 
 def makeDict(name, list_of_names, readProperties = False):
     heads = set([getHead(x) for x in list_of_names])
+    heads.discard('')
     breakdown = dict((x, []) for x in heads)
+    try:
+        list_of_names.remove('')
+    except ValueError:
+        pass
     for n in list_of_names:
         breakdown[getHead(n)].append(getTail(n))
     try:
-        is_array = (set(range(len(heads))) == set([float(x) for x in heads]))
+        is_array = (sorted(set(range(len(heads)))) == sorted(set([int(x) for x in heads])))
     except ValueError:
         is_array = False
     if is_array:
@@ -76,14 +81,15 @@ def makeDict(name, list_of_names, readProperties = False):
                 result.append(makeDict(addIndex(name, head), tails), readProperties)
             else:
                 # leaf
+                index = addIndex(name, head)
                 if not readProperties:
-                    result.append(read(addIndex(name, head)))
+                    result.append(read(index))
                 else:
                     properties = dict(getProperties(index))
                     properties["documentation"] = getDocumentation(index)
                     properties["type"] = getType(index)
                     properties["value"] = read(addIndex(name, head))
-                    result.append(preoperties)
+                    result.append(properties)
     else:
         # mixed names so make a dictionary
         result = {}
@@ -125,13 +131,11 @@ def listParams(name = ""):
 
 def readPropertyDict(name = ""):
     all_params_list = listParams(name)
-    #print all_params_list
     return makeDict(name, all_params_list, True)
 
 def readValueDict(name = ""):
     all_params_list = listParams(name)
-    #print all_params_list
-    return makeDict(name, all_params_list)
+    return makeDict(name, all_params_list, False)
 
 def writeValueDict(name, values):
     if isinstance(values, dict):
@@ -157,8 +161,8 @@ destroy_param = pygc.destroy_param
 post_write_and_destroy = pygc.post_write_and_destroy
 no_callback = pygc.no_callback
 
-register = pygc.register_callback
-unregister = pygc.unregister_callback
+#register = pygc.register_callback
+#unregister = pygc.unregister_callback
 
 def on(name, type):
     def do(funct):

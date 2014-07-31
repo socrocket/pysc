@@ -21,7 +21,7 @@ PyScRegisterSWIGModule(pysystemc);
 namespace pysc {
 namespace api {
 namespace systemc {
-
+/*
 static std::map<PyObject*, sc_core::sc_event*> event_map;
 static std::map<PyObject*, const sc_core::sc_event*> event_const_map;
 const sc_core::sc_event *current_event;
@@ -115,7 +115,7 @@ bool decref_callback(PyObject *cb, PyObject *r, bool *eh) {
   Py_DECREF(cb);
   return true;
 }
-
+*/
 void start() {
   // must be in the kernel thread on entry.  Exit it so we
   // know that no thread is active on entry to any other function

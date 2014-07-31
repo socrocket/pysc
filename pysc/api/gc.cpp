@@ -15,6 +15,7 @@
 #include "pysc/api/gc.h"
 #include "pysc/api/systemc.h"
 #include "pysc/module.h"
+#include <Python.h>
 
 PyScRegisterSWIGModule(pygc);
 
@@ -151,18 +152,25 @@ std::string get_type_string(std::string name) {
     return std::string();
 }
 
-std::map<std::string, std::string> get_properties(std::string name) {
+PyObject *get_properties(std::string name) {
   gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+  PyObject * dict = PyDict_New();
   if(configAPI) {
     gs::gs_param_base *base = configAPI->getPar(name);
     if(base) {
       gs::cnf::gs_config_base *param = dynamic_cast<gs::cnf::gs_config_base *>(base);
       if(param) {
-        return param->getProperties();
+        std::map<std::string, std::string> properties = param->getProperties();
+        for(std::map<std::string, std::string>::iterator iter = properties.begin(); iter!=properties.end(); ++iter) {
+          PyObject *key = PyString_FromStringAndSize(iter->first.c_str(), iter->first.length());
+          PyObject *val = PyString_FromStringAndSize(iter->second.c_str(), iter->second.length());
+          PyDict_SetItem(dict, key, val);
+        }
+        return dict;
       }
     }
   }
-  return std::map<std::string, std::string>();
+  return dict;
 }
 
 class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {

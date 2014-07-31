@@ -17,7 +17,7 @@ TIME_UNITS = {
     MS:"ms", 
     SEC:"s"
 }
-
+'''
 # Event
 class FailedEventNotify(Exception):
     """An exception raised whenever an event nortification fails"""
@@ -109,7 +109,7 @@ class EventTreeOr(EventTree):
         from pysc import thread_control, Fork
         Fork([self.left.wait, self.right.wait], wait_for=1)
         thread_control()
-
+'''
 start = pysystemc.start
 stop = pysystemc.stop
 pause = pysystemc.pause
@@ -123,7 +123,7 @@ def wait(obj, tu=None):
        if obj is event or event tree, 
        call obj.wait(); else it is a scalar
     """
-    from pysc import thread_control
+    #from pysc import thread_control
     if hasattr(obj, "wait"):
         obj.wait()
         return
@@ -132,7 +132,7 @@ def wait(obj, tu=None):
     else:
         pysystemc.wait(obj, tu)
     # support for thread manipulation: pause, reset, kill, etc
-    thread_control()
+    #thread_control()
 
 # Utilities
 def time(tu=None):

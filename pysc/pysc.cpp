@@ -15,12 +15,17 @@
 // SystemC library
 #include <systemc>
 #include <cstdlib>
-#include <cstring>
+#include <string>
 #include <cstdio>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <map>
+#include <set>
 
+#include "common/waf.h"
 #include "pysc/pysc.h"
 #include "pysc/module.h"
-
 
 PythonModule *PythonModule::globalInstance = NULL;
 
@@ -53,159 +58,165 @@ bool PythonModule::is_simple_filename(const char *path) {
 
 // constructor
 PythonModule::PythonModule(
-  sc_core::sc_module_name name_p, const char* script_filename,
-  int argc, char **argv) :
-  sc_core::sc_module(name_p), initialised(false),
-  my_namespace(NULL), pysc_module(NULL), sys_path(NULL), name_py(NULL) {
+    sc_core::sc_module_name name_p, 
+    const char* script_filename,
+    int argc, 
+    char **argv) :
+        sc_core::sc_module(name_p),
+        initialised(false),
+        my_namespace(NULL),
+        pysc_module(NULL),
+        sys_path(NULL),
+        name_py(NULL) {
 
-  // set up interpreter and gs module and context object
-  subscribe();
-  block_threads();
+    // set up interpreter and gs module and context object
+    subscribe();
+    block_threads();
 
-  Py_SetProgramName(argv[0]);
-  char *args[argc];
-  args[0] = const_cast<char *>(script_filename);
-  for(int i = 1; i< argc; i++) {
-      args[i] = argv[i];
-  }
-  PySys_SetArgvEx(argc, args, 0);
+    Py_SetProgramName(argv[0]);
+    char *args[argc];
+    args[0] = const_cast<char *>(script_filename);
+    for(int i = 1; i< argc; i++) {
+        args[i] = argv[i];
+    }
+    PySys_SetArgvEx(argc, args, 0);
 
-  PyScIncludeModule(pysystemc);
-  PyScIncludeModule(pygc);
-  PyScRegisterEmbeddedModules();
+    PyScIncludeModule(pysystemc);
+    PyScIncludeModule(pygc);
+    PyScRegisterEmbeddedModules();
 
-  // get a globals() dict for this PythonModule
-  PyObject* main_module = PyImport_AddModule("__main__");  // borrowed ref
-  if(!main_module) {
-      PyErr_Print();
-      unblock_threads();
-      return;
-  }
-  my_namespace = PyModule_GetDict(main_module);  // borrowed ref
-  my_namespace = PyDict_Copy(my_namespace);  // new ref
+    // get a globals() dict for this PythonModule
+    PyObject* main_module = PyImport_AddModule("__main__");  // borrowed ref
+    if(!main_module) {
+        PyErr_Print();
+        unblock_threads();
+        return;
+    }
+    my_namespace = PyModule_GetDict(main_module);  // borrowed ref
+    my_namespace = PyDict_Copy(my_namespace);  // new ref
 
-  // make sure there's a reference to the gs module available
-  pysc_module = PyImport_ImportModuleEx(const_cast<char *>("pysc"), my_namespace, my_namespace, NULL);
-  if(!pysc_module) {
-      PyErr_Print();
-      unblock_threads();
-      return;
-  }
+    // get a ref to sys.path
+    // note that we do this once only.  if sys.path is ever assigned to a
+    // new object, subsequent load()s/add-to-path()s will use the original
+    // but imports will use the new
+    PyObject *sys = PyImport_ImportModuleEx(const_cast<char *>("sys"), my_namespace, my_namespace, NULL);
+    if(!sys) {
+        PyErr_Print();
+        unblock_threads();
+        return;
+    }
+    Py_XDECREF(sys);
 
-  // get a ref to sys.path
-  // note that we do this once only.  if sys.path is ever assigned to a
-  // new object, subsequent load()s/add-to-path()s will use the original
-  // but imports will use the new
-  PyObject *sys = PyImport_ImportModuleEx(const_cast<char *>("sys"), my_namespace, my_namespace, NULL);
-  if(!sys) {
-      PyErr_Print();
-      unblock_threads();
-      return;
-  }
-  Py_XDECREF(sys);
+    sys_path = PyObject_GetAttrString(sys, "path");  // new ref
+    if(!sys_path) {
+        PyErr_Print();
+        unblock_threads();
+        return;
+    }
 
-  sys_path = PyObject_GetAttrString(sys, "path");  // new ref
-  if(!sys_path) {
-      PyErr_Print();
-      unblock_threads();
-      return;
-  }
+    initialised = true;
 
-  initialised = true;
-  // if we get to here, we consider ourselves initialised
-  // note that:
-  // - the namespace has no name, so is impossible to access from another PythonModule
-  // - pysc and sys have been imported, but are not added to the namespace
+    // Now add the virtual env to the sys.path to load pysc and other socrocket modules
+    unblock_threads();
+    std::map<std::string, std::string> *wafConfig = getWafConfig(argv[0]);
+    std::string outdir = (*wafConfig)["out_dir"];
+    outdir.erase(std::remove(outdir.begin(), outdir.end(), '\''), outdir.end());
+    boost::filesystem::path builddir(outdir);
+    boost::filesystem::path venvactivate(".conf_check_venv/bin/activate_this.py");
+    std::string activate = (builddir/venvactivate).string();
+    exec("execfile('"+activate+"', dict(__file__='"+activate+"'))");
+    block_threads();
 
-  // tell the Python code it is embedded
-  PyObject_SetAttrString(pysc_module, "__standalone__", Py_False);
+    // make sure there's a reference to the pysc module available
+    pysc_module = PyImport_ImportModuleEx(const_cast<char *>("pysc"), my_namespace, my_namespace, NULL);
+    if(!pysc_module) {
+        PyErr_Print();
+        unblock_threads();
+        return;
+    }
 
-  // tell the Python code its interpreter name
-  name_py = PyString_FromString(name());  // new ref
-  set_interpreter_name();
+    // if we get to here, we consider ourselves initialised
+    // note that:
+    // - the namespace has no name, so is impossible to access from another PythonModule
+    // - pysc and sys have been imported, but are not added to the namespace
 
-  unblock_threads();
+    // tell the Python code it is embedded
+    PyObject_SetAttrString(pysc_module, "__standalone__", Py_False);
 
-  add_to_pythonpath(".");
+    // tell the Python code its interpreter name
+    name_py = PyString_FromString(name());  // new ref
+    set_interpreter_name();
 
-  PythonModule::globalInstance = this;
+    unblock_threads();
 
-  // run a script if one has been requested
-  if (script_filename && *script_filename) {
-    execfile(script_filename);
-  }
+    add_to_pythonpath(".");
+
+    PythonModule::globalInstance = this;
+
+    // run a script if one has been requested
+    if (script_filename && *script_filename) {
+      load(script_filename);
+    }
 }
 
 // desctructor
 PythonModule::~PythonModule() {
-  Py_XDECREF(my_namespace);
-  my_namespace = NULL;
-  Py_XDECREF(pysc_module);
-  pysc_module = NULL;
-  Py_XDECREF(sys_path);
-  sys_path = NULL;
-  Py_XDECREF(name_py);
-  name_py = NULL;
-  unsubscribe();
+    Py_XDECREF(my_namespace);
+    my_namespace = NULL;
+    Py_XDECREF(pysc_module);
+    pysc_module = NULL;
+    Py_XDECREF(sys_path);
+    sys_path = NULL;
+    Py_XDECREF(name_py);
+    name_py = NULL;
+    unsubscribe();
 }
 
-// public load function - runs a Python file in a module-specific
-// namespace.  searches for the file in the PYTHONPATH unless it
-// is an absolute pathname or starts wth a '.'
-void PythonModule::execfile(const char* script_filename) {
-  if(!initialised) {
-    return;
-  }
-  block_threads();
-  // Load the script, trying the python path first, then the CWD
-  // Go direct to the CWD if an absolute or relative path is given
-  // rather than a simple filename
-  if(is_simple_filename(script_filename)) {
-    int path_size = PyList_Size(sys_path);
-    for(int i=0; i<path_size; i++) {
-      PyObject *path_py = PyList_GetItem(sys_path, i);  // borrowed ref
-      std::string s(PyString_AsString(path_py));
-      s += path_separator() + std::string(script_filename);
-      if(private_load(s.c_str())) {
-        unblock_threads();
+void PythonModule::load(std::string script) {
+    if(!initialised) {
         return;
-      }
     }
-  }
-  if(!private_load(script_filename)) {
-    std::string s(name());
-    s += std::string(" could not find ") + std::string(script_filename);
-    perror(s.c_str());
-  }
-  unblock_threads();
+    block_threads();
+    if(boost::algorithm::ends_with(script, ".py")) { 
+        if(!private_load(script.c_str())) {
+            std::string s(name());
+            s += std::string(" could not find ") + std::string(script);
+            perror(s.c_str());
+        }
+    } else {
+        if(PyImport_ImportModuleEx(const_cast<char *>(script.c_str()), my_namespace, my_namespace, NULL)) {
+            PyErr_Print();
+        }
+    }
+    unblock_threads();
 }
 
 
-void PythonModule::exec(const char* statement) {
-  if(!initialised) {
-    return;
-  }
-  block_threads();
+void PythonModule::exec(std::string statement) {
+    if(!initialised) {
+        return;
+    }
+    block_threads();
 
-  set_interpreter_name();
+    set_interpreter_name();
 
-  // run the command
-  PyObject *ret = PyRun_String(
-    statement, Py_single_input, my_namespace, my_namespace);
-  if(ret == NULL) PyErr_Print();
-  Py_XDECREF(ret);
+    // run the command
+    PyObject *ret = PyRun_String(
+        statement.c_str(), Py_single_input, my_namespace, my_namespace);
+    if(ret == NULL) PyErr_Print();
+    Py_XDECREF(ret);
 
-  unblock_threads();
+    unblock_threads();
 }
 
-void PythonModule::add_to_pythonpath(const char* path) {
+void PythonModule::add_to_pythonpath(std::string path) {
   if(!initialised) {
-    return;
+      return;
   }
   block_threads();
-  PyObject *path_py = PyString_FromString(path);
+  PyObject *path_py = PyString_FromString(path.c_str());
   if(PyList_Insert(sys_path, 0, path_py) < 0) {
-    PyErr_Print();
+      PyErr_Print();
   }
   Py_XDECREF(path_py);
   unblock_threads();
@@ -214,14 +225,14 @@ void PythonModule::add_to_pythonpath(const char* path) {
 bool PythonModule::private_load(const char *fullname) {
   FILE *script = fopen(fullname,"r");
   if(!script) {
-    return false;
+      return false;
   }
 
   set_interpreter_name();
 
   PyObject *ret = PyRun_File(script, fullname, Py_file_input, my_namespace, my_namespace);
   if(ret == NULL) {
-    PyErr_Print();
+      PyErr_Print();
   }
   Py_XDECREF(ret);
 
@@ -230,71 +241,73 @@ bool PythonModule::private_load(const char *fullname) {
 }
 
 void PythonModule::set_interpreter_name() {
-  PyObject_SetAttrString(pysc_module, "__interpreter_name__", name_py);
+    if(pysc_module) {
+        PyObject_SetAttrString(pysc_module, "__interpreter_name__", name_py);
+    }
 }
 
 void PythonModule::run_py_callback(const char* name, PyObject *args) {
-  if(!initialised) {
-    return;
-  }
-  block_threads();
-
-  set_interpreter_name();
-
-  // get the callable Python object
-  PyObject *dict =
-    PyObject_GetAttrString(pysc_module, "PHASE");
-  if(dict) {
-    PyObject *member =
-      PyDict_GetItemString(dict, name);
-
-    if(member) {
-      PyObject *ret = PyObject_CallObject(member, args);
-      if(ret == NULL) {
-        PyErr_Print();
-      }
-      Py_XDECREF(ret);
-      Py_XDECREF(member);
-    } else {
-      PyErr_Print();
+    if(!initialised) {
+        return;
     }
-    Py_XDECREF(dict);
-  } else {
-    PyErr_Print();
-  }
-  unblock_threads();
+    block_threads();
+
+    set_interpreter_name();
+
+    // get the callable Python object
+    PyObject *dict =
+        PyObject_GetAttrString(pysc_module, "PHASE");
+    if(dict) {
+        PyObject *member =
+            PyDict_GetItemString(dict, name);
+
+        if(member) {
+            PyObject *ret = PyObject_CallObject(member, args);
+            if(ret == NULL) {
+              PyErr_Print();
+            }
+            Py_XDECREF(ret);
+            Py_XDECREF(member);
+        } else {
+            PyErr_Print();
+        }
+        Py_XDECREF(dict);
+    } else {
+        PyErr_Print();
+    }
+    unblock_threads();
 }
 
 void PythonModule::start_of_initialization() {
-  run_py_callback("start_of_initialization");
+    run_py_callback("start_of_initialization");
 }
 
 void PythonModule::end_of_initialization() {
-  run_py_callback("end_of_initialization");
+    run_py_callback("end_of_initialization");
 }
 
 void PythonModule::start_of_elaboration() {
-  run_py_callback("start_of_elaboration");
+    run_py_callback("start_of_elaboration");
 }
 
 void PythonModule::end_of_elaboration() {
-  run_py_callback("end_of_elaboration");
+    run_py_callback("end_of_elaboration");
 }
 
 void PythonModule::start_of_simulation() {
-  run_py_callback("start_of_simulation");
+    run_py_callback("start_of_simulation");
 }
 
 void PythonModule::end_of_simulation() {
-  run_py_callback("end_of_simulation");
+    run_py_callback("end_of_simulation");
 }
 
 void PythonModule::start_of_evaluation() {
-  run_py_callback("start_of_evaluation");
+    run_py_callback("start_of_evaluation");
 }
 
 void PythonModule::end_of_evaluation() {
-  run_py_callback("end_of_evaluation");
+    run_py_callback("end_of_evaluation");
 }
 
 // Code for creating a Python virtual machine.
@@ -302,31 +315,31 @@ PyThreadState *PythonModule::singleton;
 unsigned PythonModule::subscribers = 0;
 
 void PythonModule::block_threads() {
-  PyEval_RestoreThread(singleton);
+    PyEval_RestoreThread(singleton);
 }
 
 void PythonModule::unblock_threads() {
-  singleton = PyEval_SaveThread();
+    singleton = PyEval_SaveThread();
 }
 
 extern "C" { void init_pysystemc(void); };
 
 void PythonModule::subscribe() {
-  if(subscribers==0) {
-    // Initialize Python without signal handlers
-    Py_InitializeEx(0);
-    PyEval_InitThreads();
-    unblock_threads();
-  }
-  subscribers++;
+    if(subscribers==0) {
+        // Initialize Python without signal handlers
+        Py_InitializeEx(0);
+        PyEval_InitThreads();
+        unblock_threads();
+    }
+    subscribers++;
 }
 
 void PythonModule::unsubscribe() {
-  subscribers--;
-  if(subscribers==0) {
-    block_threads();
-    Py_Finalize();
-  }
+    subscribers--;
+    if(subscribers==0) {
+        block_threads();
+        Py_Finalize();
+    }
 }
 
 /// @}

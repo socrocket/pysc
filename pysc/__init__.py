@@ -12,32 +12,37 @@ from pysc.api.systemc import *
 from pysc.api import gc
 
 def get_current_callback():
-  """May be a spawned thread or a call-in from C++, or in elaboration"""
-  ph = pysystemc.get_curr_process_handle()
-  if ph in PYCallback.active_callbacks.keys():
-    st = PYCallback.active_callbacks[ph]
-    if st:  return st[-1]
+    """May be a spawned thread or a call-in from C++, or in elaboration"""
+    #ph = pysystemc.get_curr_process_handle()
+    #if ph in PYCallback.active_callbacks.keys():
+    #    st = PYCallback.active_callbacks[ph]
+    #    if st:
+    #        return st[-1]
+    return None
 
 def interpreter_name():
-  """Return the interpreter name"""
-  if __standalone__:  return ""
-  ccb = get_current_callback()
-  if ccb:  return ccb.interpreter_name
-  else:  return __interpreter_name__
+    """Return the interpreter name"""
+    if __standalone__:
+        return ""
+    ccb = get_current_callback()
+    if ccb:
+        return ccb.interpreter_name
+
+    else:
+        return __interpreter_name__
 
 # Exceptions and magic constants
 class ThreadKill(Exception):
     pass
+
 class ThreadReset(Exception):
     pass
+
 class DuplicateThreadHandle(Exception):
     pass
+
 class REPEAT_SPAWN:
     pass
-
-import pdb
-def use_winpdb():
-    import winpdb_gs
 
 class PromptStr:
     def __init__(self, iname, tname, tunit = NS):
@@ -59,15 +64,16 @@ class DebugWrapper:
     "Wrapper to run a thread inside the debugger"
 
     def __init__(self, runnable, prompt):
+        import pdb
         self.debugger = pdb.Pdb()
         self.debugger.prompt = prompt
         self.runnable = runnable
         if hasattr(runnable, "func_name"):
           self.func_name = runnable.func_name
 
-    def __call__(self, oargs=(), nargs={}):
+    def __call__(self, oargs, **nargs):
         return self.debugger.runcall(self.runnable, *oargs, **nargs)
-
+'''
 class PYCallback:
     "Manage any call from SystemC into Python that may enter user Python code"
 
@@ -200,21 +206,20 @@ class Spawn(PYCallback):
 
 def thread_control():
     this = get_current_callback()
-    if this.kill_raised:   
-        # kill has higher priority over reset
-        raise ThreadKill
-    if this.reset_raised:  
-        # reset has higher priority over pause
-        raise ThreadReset
-    if this.pause_raised:
-        wait(this.resume_event)
+    if this:
+      if this.kill_raised:   
+          # kill has higher priority over reset
+          raise ThreadKill
+      if this.reset_raised:  
+          # reset has higher priority over pause
+          raise ThreadReset
+      if this.pause_raised:
+          wait(this.resume_event)
 
 class Fork:
-    def __init__(self, runnable_list, wait_for=-1, kill=False, \
-        name="fork", args=None, keyargs=None, **spawnargs):
+    def __init__(self, runnable_list, wait_for=-1, kill=False, name="fork", args=None, keyargs=None, **spawnargs):
 
-        assert pysystemc.get_curr_process_handle() != 0, \
-            "fatal error: pysc.fork should be used only inside processes"
+        assert pysystemc.get_curr_process_handle() != 0, "fatal error: pysc.fork should be used only inside processes"
 
         if not args:
             args = [() for x in runnable_list]
@@ -226,16 +231,18 @@ class Fork:
             wait_for = nr_runnables
 
         done_ev = Event()
-        self.spawns = [Spawn(runnable_list[i], "%s[%d]" % (name,i), \
-            args=args[i], keyargs=keyargs[i], completed_event=done_ev, \
-            **spawnargs) for i in range(nr_runnables)]
+        self.spawns = [
+            Spawn(runnable_list[i], "%s[%d]" % (name,i),
+              args=args[i], keyargs=keyargs[i], completed_event=done_ev,
+              **spawnargs)
+            for i in range(nr_runnables)]
 
         while len([True for s in self.spawns if s.complete]) < wait_for:
             wait(done_ev)
 
         if kill:
             for p in self.spawns:  p.kill()
-
+'''
 # Callbacks and callback registration
 
 # do not use the callback class because these are called from the SC
@@ -248,22 +255,29 @@ class SCCallback:
     def __init__(self, name):
         self.name = name
         self.all_runnables = dict()
-    def __call__(self, runnable = False, \
-        debug = False, time_unit = NS, args = (), keyargs = {}):
+    def __call__(self, runnable = False, debug = False, time_unit = NS, args = (), keyargs = {}):
         if runnable:
-            if debug:
-                runnable = sc_callback_debug_wrapper(runnable, \
-                    PromptStr(interpreter_name(), self.name, time_unit))
-            innm = interpreter_name()
-            if innm not in self.all_runnables:
-                self.all_runnables[innm] = []
-            self.all_runnables[innm].append((runnable, args, keyargs))
+            self.register(runnable, debug, time_unit, args, keyargs)
         else:
-            all_runners = self.all_runnables.pop(interpreter_name(), [])
-            for run, args, keyargs in all_runners:
-                kw = dict(keyargs)
-                kw.update(phase=self.name)
-                run(*args, **kw)
+            self.call(*args, **keyargs)
+
+    def register(self, runnable, debug = False, time_unit = NS, args = (), keyargs = {}):
+        if debug:
+            runnable = sc_callback_debug_wrapper(runnable, PromptStr(interpreter_name(), self.name, time_unit))
+        innm = interpreter_name()
+        if innm not in self.all_runnables:
+            self.all_runnables[innm] = []
+        self.all_runnables[innm].append((runnable, args, keyargs))
+    
+
+    def call(self, *k, **kw):
+        all_runners = self.all_runnables.pop(interpreter_name(), [])
+        for run, args, keyargs in all_runners:
+            key = dict(keyargs)
+            key.update(kw)
+            key.update(phase=self.name)
+            print run
+            run(*args, **key)
 
 
 PHASE = {
@@ -278,11 +292,11 @@ PHASE = {
     "report": SCCallback("report")
 }
 
-def on(phase):
+def on(phase, debug=False, time_unit = NS, args = (), keyargs = {}):
     """Register phase sccallback handler"""
     def do(funct):
         if PHASE.has_key(phase):
-            PHASE[phase](funct)
+            PHASE[phase](funct, debug, time_unit, args, keyargs)
         else:
             print "No such phase as %s" % (phase)
         return funct

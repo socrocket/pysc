@@ -33,13 +33,13 @@ class PythonModule: public sc_core::sc_module {
 
     virtual ~PythonModule();
 
-    void execfile(const char* script_filename);
+    void load(std::string script);
 
     /// runs a Python command in a module-specific  namespace
-    void exec(const char* statement);
+    void exec(std::string statement);
 
     /// Adds a path to the load/import search path
-    void add_to_pythonpath(const char* path);
+    void add_to_pythonpath(std::string path);
 
     void start_of_initialization();
     void end_of_initialization();
