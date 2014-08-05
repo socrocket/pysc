@@ -159,7 +159,7 @@ PythonModule::PythonModule(
       load(script_filename);
     }
 
-    sr_report_handler::handler = report_handler;
+    //sr_report_handler::handler = report_handler;
 }
 
 // desctructor
