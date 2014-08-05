@@ -13,7 +13,7 @@
 %{
 #include "pysc/pysc.h"
 void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::sc_actions &actions) {
-  if( actions & (sc_core::SC_DISPLAY | sc_core::SC_LOG)) {
+  if(actions & (sc_core::SC_DISPLAY | sc_core::SC_LOG)) {
     PyObject *obj = SWIG_NewPointerObj((void *)&rep, SWIGTYPE_p_sc_core__sc_report, 0);
     PyObject *args = Py_BuildValue("[O]", obj);
     PythonModule::globalInstance->run_py_callback("report", args);

@@ -23,6 +23,11 @@ def do_init(phase):
 def do_phase(phase):
     print "Phase", phase
 
+@pysc.on("report")
+def report(phase, report):
+    print "XXXX report"
+    pass
+
 @pysc.on("start_of_simulation")
 def do_start(phase):
     #import tools.python.shell as shell

@@ -24,6 +24,7 @@
 #include <set>
 
 #include "common/waf.h"
+#include "common/report.h"
 #include "pysc/pysc.h"
 #include "pysc/module.h"
 
@@ -157,6 +158,8 @@ PythonModule::PythonModule(
     if (script_filename && *script_filename) {
       load(script_filename);
     }
+
+    sr_report_handler::handler = report_handler;
 }
 
 // desctructor
