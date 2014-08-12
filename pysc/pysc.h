@@ -60,7 +60,7 @@ class PythonModule: public sc_core::sc_module {
     void set_interpreter_name();
 
     /// Runs a Python function from the script module
-    void run_py_callback(const char* name, PyObject *args = NULL);
+    void run_py_callback(const char* name, PyObject *args = NULL, PyObject *kwargs = NULL);
 
     bool initialised;
     PyObject *my_namespace, *pysc_module, *sys_path, *name_py;
