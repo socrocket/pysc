@@ -10,13 +10,12 @@
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
 /// @author 
-///
+#include <Python.h>
 #include <map>
 #include "pysc/pysc.h"
 #include "pysc/api/gc.h"
 #include "pysc/api/systemc.h"
 #include "pysc/module.h"
-#include <Python.h>
 
 PyScRegisterSWIGModule(pygc);
 
