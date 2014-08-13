@@ -161,8 +161,8 @@ destroy_param = pygc.destroy_param
 post_write_and_destroy = pygc.post_write_and_destroy
 no_callback = pygc.no_callback
 
-#register = pygc.register_callback
-#unregister = pygc.unregister_callback
+register = pygc.register_callback
+unregister = pygc.unregister_callback
 
 def on(name, type):
     def do(funct):

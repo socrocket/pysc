@@ -12,6 +12,7 @@
 /// @author 
 ///
 #include <map>
+#include "pysc/pysc.h"
 #include "pysc/api/gc.h"
 #include "pysc/api/systemc.h"
 #include "pysc/module.h"
@@ -190,8 +191,15 @@ class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {
         }
 
         gs::cnf::callback_return_type call(gs::gs_param_base& param, gs::cnf::callback_type& reason) {
-          PyObject *args = Py_BuildValue("(ssfi)", param.getName().c_str(), param.getString().c_str(), pysc::api::systemc::simulation_time(sc_core::SC_NS), reason);
-          PyObject *result = PyObject_CallObject(callback, NULL);//args);
+          PyObject *args = PyTuple_New(4);
+          PyTuple_SetItem(args, 0, PyString_FromString(param.getName().c_str()));
+          PyTuple_SetItem(args, 1, PyString_FromString(param.getString().c_str()));
+          PyTuple_SetItem(args, 2, PyFloat_FromDouble(pysc::api::systemc::simulation_time(sc_core::SC_NS)));
+          PyTuple_SetItem(args, 3, PyInt_FromLong(reason));
+          PythonModule::block_threads();
+          PyObject *result = PyObject_Call(callback, args, NULL);
+          PythonModule::unblock_threads();
+
           Py_DECREF(args);
           Py_DECREF(result);
           return gs::cnf::return_nothing;

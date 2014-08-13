@@ -52,6 +52,14 @@ class PythonModule: public sc_core::sc_module {
 
     /// Global PythonModule Instance (The last created one)
     static PythonModule *globalInstance;
+
+    /// Block out singleton thread
+    /// This should not be neccesarry but who knows
+    static void block_threads();
+
+    /// Unblock our singleton thread
+    static void unblock_threads();
+
   private:
     /// internal load functionality
     bool private_load(const char *fullname);
@@ -76,13 +84,6 @@ class PythonModule: public sc_core::sc_module {
 
     /// Check if path is just a file name
     static bool is_simple_filename(const char *path);
-
-    /// Block out singleton thread
-    /// This should not be neccesarry but who knows
-    static void block_threads();
-
-    /// Unblock our singleton thread
-    static void unblock_threads();
 
     /// Subscribe new PythonModule to thread
     static void subscribe();

@@ -63,10 +63,8 @@ bool is_array(std::string name);
 std::string get_documentation(std::string name);
 std::string get_type_string(std::string name);
 PyObject *get_properties(std::string name);
-/*
 void register_callback(std::string, PyObject *callback, gs::cnf::callback_type type);
 void unregister_callback(PyObject *);
-*/
 }  // namespace gc
 }  // namespace api
 }  // namesapce pysc
