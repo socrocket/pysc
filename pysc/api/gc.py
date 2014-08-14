@@ -151,6 +151,50 @@ def writeValueDict(name, values):
     # must be a leaf value
     write(name, values)
 
+def printDict(params, indent=0):
+    for name, value in params.iteritems():
+        if isinstance(value, dict):
+            print (" " * indent) + name + ":"
+            printDict(value, indent + 4)
+            print
+        elif isinstance(value, list):
+            if any(value) and (isinstance(value[0], dict) or isinstance(value[0], list)):
+                print (" " * indent) + name + ":"
+                for index, val in enumerate(value):
+                    print " " * (indent + 4) + str(index) + ":"
+                    printDict(val, indent + 8)
+                    print
+            else:
+                print (" " * indent) + name + ": " + ', '.join(value)
+        else:
+            print (" " * indent) + name + ": " + str(value)
+            
+def filterDict(params, match, parents = []):
+    result = {}
+    for name, value in params.iteritems():
+        if name == match:
+            obj = result
+            for parent in parents:
+              obj[parent] = {}
+              obj = obj[parent]
+            obj[name] = value
+        if isinstance(value, dict):
+            result.update(filterDict(value, match, parents + [name]))
+    return result
+
+def paramsToDict(params, base = ""):
+    result = {}
+    for name, value in params.iteritems():
+        if isinstance(value, dict):
+            result.update(paramsToDict(value, addIndex(base, name)))
+        elif isinstance(value, list):
+            for index, val in enumerate(value):
+              result.update(paramsToDict(val, addIndex(addIndex(base, name), index)))
+        else:
+            result[base] = value
+    return result
+            
+
 pre_read = pygc.pre_read
 post_read = pygc.post_read
 reject_write = pygc.reject_write
