@@ -173,6 +173,7 @@ PythonModule::~PythonModule() {
     sys_path = NULL;
     Py_XDECREF(name_py);
     name_py = NULL;
+    std::cout << "Destructor" << std::endl;
     unsubscribe();
 }
 
@@ -342,9 +343,11 @@ void PythonModule::subscribe() {
 
 void PythonModule::unsubscribe() {
     subscribers--;
+    std::cout << "Shutting down Python? " << subscribers << std::endl;
     if(subscribers==0) {
         block_threads();
         Py_Finalize();
+        std::cout << "Shutting down Python" << std::endl;
     }
 }
 const char *str_value(const char *str) {

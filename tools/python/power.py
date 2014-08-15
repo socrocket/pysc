@@ -55,7 +55,6 @@ def view(*k, **kw):
     print "* Total Power: %0.4f" % total_sum, "uW"
     print "*****************************************************"
     #pysc.api.gc.printDict(params)
-    sys.exit()
 
 def install():
     load()
