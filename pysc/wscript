@@ -18,7 +18,7 @@ def build(self):
     export_includes   = '.',
     includes          = self.top_dir,
     swig_flags        = '-c++ -python -Wall',
-    use               = 'common GREENSOCS SYSTEMC TLM PYTHON',
+    use               = 'common GREENSOCS SYSTEMC TLM PYTHON BOOST',
     install_path      = '${PREFIX}/lib',
   )
 
@@ -26,5 +26,5 @@ def build(self):
       target          = 'pysc.1.test',
       features        = 'cxx cxxprogram pyembed',
       source          = 'tests/test1.cpp',
-      use             = 'pysc GREENSOCS SYSTEMC TLM PYTHON',
+      use             = 'pysc GREENSOCS SYSTEMC TLM PYTHON BOOST',
   )
