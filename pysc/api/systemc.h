@@ -38,6 +38,8 @@ void wait(double time, sc_core::sc_time_unit tu);
 double simulation_time(sc_core::sc_time_unit tu);
 double delta_count();
 
+int set_verbosity(int verbosity);
+
 long get_curr_process_handle();
 bool is_running();
 

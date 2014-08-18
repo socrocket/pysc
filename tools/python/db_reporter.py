@@ -46,6 +46,12 @@ class Logger():
       self.store_buffer()
       self.store.close()
 
+@pysc.on("start_of_initialization")
+def start_of_initialization(phase):
+  verbosity = 500
+  print "Set verbosity to level %d" % verbosity
+  print "Old verbosity level was %d" % pysc.set_verbosity(verbosity)
+
 @pysc.on("end_of_evaluation")
 def save_db(phase):
   global logger

@@ -64,6 +64,10 @@ double delta_count() {
   return sc_core::sc_delta_count();
 }
 
+int set_verbosity(int verbosity) {
+  return sc_core::sc_report_handler::set_verbosity_level(verbosity);
+}
+
 long get_curr_process_handle() {
 #if SYSTEMC_API == 210
   return (long) sc_core::sc_get_curr_process_handle();

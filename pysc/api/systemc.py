@@ -115,6 +115,7 @@ stop = pysystemc.stop
 pause = pysystemc.pause
 simulation_time = pysystemc.simulation_time
 delta_count = pysystemc.delta_count
+set_verbosity = pysystemc.set_verbosity
 #spawn = pysystemc.spawn
 is_running = pysystemc.is_running
 
