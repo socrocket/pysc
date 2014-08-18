@@ -31,33 +31,6 @@
 
 PythonModule *PythonModule::globalInstance = NULL;
 
-// two functions to allow OS-independent operation of load()
-std::string PythonModule::path_separator() {
-  #ifdef MS_WINDOWS
-    return std::string("\\"};
-  #else
-    return std::string("/");
-  #endif
-}
-
-bool PythonModule::is_simple_filename(const char *path) {
-  #ifdef MS_WINDOWS
-    // relative to current directory
-    if(*path == '.') return false;
-    // absolute
-    if((*path >= 'a') && (*path <= 'z') && (path[1] == ':')) return false;
-    if((*path >= 'A') && (*path <= 'Z') && (path[1] == ':')) return false;
-    if(*path == '\\') return false;
-    return true;
-  #else  // UNIX-style filesystem paths
-    // relative to current directory
-    if(*path == '.') return false;
-    // absolute
-    if(*path == '/') return false;
-    return true;
-  #endif
-}
-
 // constructor
 PythonModule::PythonModule(
     sc_core::sc_module_name name_p, 
@@ -77,7 +50,11 @@ PythonModule::PythonModule(
 
     Py_SetProgramName(argv[0]);
     char *args[argc];
-    args[0] = const_cast<char *>(script_filename);
+    if(script_filename && *script_filename) {
+      args[0] = const_cast<char *>(script_filename);
+    } else {
+      args[0] = argv[0];
+    }
     for(int i = 1; i< argc; i++) {
         args[i] = argv[i];
     }
@@ -97,19 +74,7 @@ PythonModule::PythonModule(
     my_namespace = PyModule_GetDict(main_module);  // borrowed ref
     my_namespace = PyDict_Copy(my_namespace);  // new ref
 
-    // get a ref to sys.path
-    // note that we do this once only.  if sys.path is ever assigned to a
-    // new object, subsequent load()s/add-to-path()s will use the original
-    // but imports will use the new
-    PyObject *sys = PyImport_ImportModuleEx(const_cast<char *>("sys"), my_namespace, my_namespace, NULL);
-    if(!sys) {
-        PyErr_Print();
-        unblock_threads();
-        return;
-    }
-    Py_XDECREF(sys);
-
-    sys_path = PyObject_GetAttrString(sys, "path");  // new ref
+    sys_path = PySys_GetObject("path");  // new ref
     if(!sys_path) {
         PyErr_Print();
         unblock_threads();
@@ -148,9 +113,7 @@ PythonModule::PythonModule(
     // tell the Python code its interpreter name
     name_py = PyString_FromString(name());  // new ref
     set_interpreter_name();
-
     unblock_threads();
-
     add_to_pythonpath(".");
 
     PythonModule::globalInstance = this;
@@ -173,7 +136,6 @@ PythonModule::~PythonModule() {
     sys_path = NULL;
     Py_XDECREF(name_py);
     name_py = NULL;
-    std::cout << "Destructor" << std::endl;
     unsubscribe();
 }
 
@@ -317,6 +279,13 @@ void PythonModule::end_of_evaluation() {
     run_py_callback("end_of_evaluation");
 }
 
+void PythonModule::signal(int sig) {
+    PyObject *obj = PyTuple_New(1);
+    PyTuple_SetItem(obj, 1, PyInt_FromLong(sig));
+    PythonModule::globalInstance->run_py_callback("signal", obj);
+    Py_XDECREF(obj);
+}
+
 // Code for creating a Python virtual machine.
 PyThreadState *PythonModule::singleton;
 unsigned PythonModule::subscribers = 0;
@@ -343,13 +312,12 @@ void PythonModule::subscribe() {
 
 void PythonModule::unsubscribe() {
     subscribers--;
-    std::cout << "Shutting down Python? " << subscribers << std::endl;
     if(subscribers==0) {
         block_threads();
         Py_Finalize();
-        std::cout << "Shutting down Python" << std::endl;
     }
 }
+
 const char *str_value(const char *str) {
   return (str&&*str) ? str : "";
 }
