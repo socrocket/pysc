@@ -8,7 +8,7 @@ class Logger():
   def __init__(self, log_file):
     if os.path.exists(log_file):
       os.remove(log_file)
-    self.store = pd.HDFStore(log_file)
+    self.store = pd.HDFStore(log_file, complevel=9, complib='blosc')
     self.msg_buffer = []
     self.columns = []
     self.index = 0
@@ -32,12 +32,6 @@ class Logger():
       for column in df.columns:
         if df[column].dtype == 'object':
           df[column] = df[column].astype(str)
-      
-      # check for missing columns in db to handle them
-      #for column in df.columns.values.tolist():
-      #  if column not in self.columns:
-      #    print "missing column", column
-      #    self.columns.append(column)
       
       # store buffer and free
       self.store.append("log%d" % self.chunk, df, min_itemsize=250, index=False, data_columns=True)
@@ -97,6 +91,3 @@ def report(
     logger = Logger("log.h5")
 
   logger.log(message_dict)
-
-  print message_dict
-
