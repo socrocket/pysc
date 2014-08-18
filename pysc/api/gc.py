@@ -67,10 +67,11 @@ def makeDict(name, list_of_names, readProperties = False):
         pass
     for n in list_of_names:
         breakdown[getHead(n)].append(getTail(n))
+    is_array = False
     try:
-        is_array = (sorted(set(range(len(heads)))) == sorted(set([int(x) for x in heads])))
+        is_array = any(heads) and (sorted(set(range(len(heads)))) == sorted(set([int(x) for x in heads])))
     except ValueError:
-        is_array = False
+        pass
     if is_array:
         # make a Python list if only sequential integer names at this level
         result = []
