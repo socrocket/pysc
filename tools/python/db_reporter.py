@@ -1,18 +1,21 @@
 import pysc
 import os
 import pandas as pd
+import warnings
 
 logger = None
 
 class Logger():
   def __init__(self, log_file):
-    if os.path.exists(log_file):
-      os.remove(log_file)
-    self.store = pd.HDFStore(log_file, complevel=9, complib='blosc')
-    self.msg_buffer = []
-    self.columns = []
-    self.index = 0
-    self.chunk = 0
+    with warnings.catch_warnings():
+      warnings.simplefilter("ignore")
+      if os.path.exists(log_file):
+        os.remove(log_file)
+      self.store = pd.HDFStore(log_file, complevel=9, complib='blosc')
+      self.msg_buffer = []
+      self.columns = []
+      self.index = 0
+      self.chunk = 0
 
   def log(self, message):
     self.msg_buffer.append(message)
@@ -20,25 +23,27 @@ class Logger():
       self.store_buffer()
 
   def store_buffer(self):
-    if len(self.msg_buffer) > 0:
-      # create continous index
-      index_col = range(self.index, self.index + len(self.msg_buffer))
-      self.index += len(self.msg_buffer)
-      #print range(self.index, len(df["index"]))
-
-      df = pd.DataFrame(self.msg_buffer, index=index_col)
-
-      # convert bool columns into str to avoid mixed column exception
-      for column in df.columns:
-        if df[column].dtype == 'object':
-          df[column] = df[column].astype(str)
-      
-      # store buffer and free
-      self.store.append("log%d" % self.chunk, df, min_itemsize=250, index=False, data_columns=True)
-      self.store.create_table_index("log%d" % self.chunk, kind="full")
-      
-      self.msg_buffer = []
-      self.chunk += 1
+    with warnings.catch_warnings():
+      warnings.simplefilter("ignore")
+      if len(self.msg_buffer) > 0:
+        # create continous index
+        index_col = range(self.index, self.index + len(self.msg_buffer))
+        self.index += len(self.msg_buffer)
+        #print range(self.index, len(df["index"]))
+  
+        df = pd.DataFrame(self.msg_buffer, index=index_col)
+  
+        # convert bool columns into str to avoid mixed column exception
+        for column in df.columns:
+          if df[column].dtype == 'object':
+            df[column] = df[column].astype(str)
+        
+        # store buffer and free
+        self.store.append("log%d" % self.chunk, df, min_itemsize=250, index=False, data_columns=True)
+        self.store.create_table_index("log%d" % self.chunk, kind="full")
+        
+        self.msg_buffer = []
+        self.chunk += 1
 
   def __del__(self):
     print "destructor logger"
@@ -95,5 +100,4 @@ def report(
 
   if logger is None:
     logger = Logger("log.h5")
-
   logger.log(message_dict)
