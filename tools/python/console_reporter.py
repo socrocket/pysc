@@ -2,6 +2,11 @@ import pysc
 import json
 from termcolor import colored
 
+@pysc.on("start_of_initialization")
+def start_of_initialization(phase):
+  verbosity = 500
+  pysc.set_verbosity(verbosity)
+
 @pysc.on("report")
 def report(
     message_type=None, 
