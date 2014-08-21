@@ -79,7 +79,7 @@ def makeDict(name, list_of_names, readProperties = False):
             tails = breakdown[str(head)]
             if any(tails):
                 # some further hierarchy
-                result.append(makeDict(addIndex(name, head), tails), readProperties)
+                result.append(makeDict(addIndex(name, head), tails, readProperties))
             else:
                 # leaf
                 index = addIndex(name, head)

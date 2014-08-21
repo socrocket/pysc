@@ -74,7 +74,7 @@ PythonModule::PythonModule(
     my_namespace = PyModule_GetDict(main_module);  // borrowed ref
     my_namespace = PyDict_Copy(my_namespace);  // new ref
 
-    sys_path = PySys_GetObject("path");  // new ref
+    sys_path = PySys_GetObject(const_cast<char *>("path"));  // new ref
     if(!sys_path) {
         PyErr_Print();
         unblock_threads();
