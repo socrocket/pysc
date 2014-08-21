@@ -1,5 +1,11 @@
 import pysc
 import json
+from termcolor import colored
+
+@pysc.on("start_of_initialization")
+def start_of_initialization(phase):
+  verbosity = 500
+  pysc.set_verbosity(verbosity)
 
 @pysc.on("report")
 def report(
@@ -26,6 +32,17 @@ def report(
     else:
       parameters += "{0}={1} ".format(value, kwargs[value])
 
-  print "@{0} ps /{1} ({2}): {3}: {4} {5}".format(time, delta_count, message_type,
-      severity_text[severity], message_text, parameters)
+  if severity == 0:
+    severity_color = 'green'
+  elif severity == 1:
+    severity_color = 'yellow'
+  else:
+    severity_color = 'red'
+
+  print "@{0} ps /{1} ({2}): {3}: {4} {5}".format(time, 
+      delta_count,
+      colored(message_type, 'blue'),
+      colored(severity_text[severity], severity_color), 
+      message_text, 
+      parameters)
 

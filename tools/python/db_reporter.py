@@ -11,11 +11,12 @@ class Logger():
       warnings.simplefilter("ignore")
       if os.path.exists(log_file):
         os.remove(log_file)
-      self.store = pd.HDFStore(log_file, complevel=9, complib='blosc')
+      self.store = pd.HDFStore(log_file, complevel=9, complib='blosc',
+          format='table')
       self.msg_buffer = []
       self.columns = []
       self.index = 0
-      self.chunk = 0
+      self.chunk_a = 0
 
   def log(self, message):
     self.msg_buffer.append(message)
@@ -29,7 +30,6 @@ class Logger():
         # create continous index
         index_col = range(self.index, self.index + len(self.msg_buffer))
         self.index += len(self.msg_buffer)
-        #print range(self.index, len(df["index"]))
   
         df = pd.DataFrame(self.msg_buffer, index=index_col)
   
@@ -39,11 +39,13 @@ class Logger():
             df[column] = df[column].astype(str)
         
         # store buffer and free
-        self.store.append("log%d" % self.chunk, df, min_itemsize=250, index=False, data_columns=True)
-        self.store.create_table_index("log%d" % self.chunk, kind="full")
+        self.store.append("log{0}".format(self.chunk_a), df, min_itemsize=250, index=False, data_columns=True)
+        self.store.close()
+        self.store.open()
+        #self.store.create_table_index("log%d" % self.chunk_a, kind="full")
         
         self.msg_buffer = []
-        self.chunk += 1
+        self.chunk_a += 1
 
   def __del__(self):
     print "destructor logger"
