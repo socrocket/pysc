@@ -32,6 +32,6 @@ def show_configuration(*k, **kw):
     """View detailed model configuration"""
     if args().list:
         params = pysc.api.gc.readPropertyDict()
-        params = pysc.api.gc.filterDict(params, "conf")
+        params = pysc.api.gc.filterDict(params, "generics")
         pysc.api.gc.printDict(params)
         sys.exit()
