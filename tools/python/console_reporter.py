@@ -39,7 +39,7 @@ def report(
   else:
     severity_color = 'red'
 
-  print "@{0} ps /{1} ({2}): {3}: {4} {5}".format(time, 
+  print "@{0} ns /{1} ({2}): {3}: {4} {5}".format(time, 
       delta_count,
       colored(message_type, 'blue'),
       colored(severity_text[severity], severity_color), 
