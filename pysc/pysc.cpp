@@ -24,8 +24,8 @@
 #include <set>
 
 
-#include "common/waf.h"
-#include "common/report.h"
+#include "core/common/waf.h"
+#include "core/common/report.h"
 #include "pysc/pysc.h"
 #include "pysc/module.h"
 

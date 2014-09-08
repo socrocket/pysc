@@ -17,7 +17,7 @@
 #include <Python.h>
 
 // GreenConfig
-#include "common/gs_config.h"
+#include "core/common/gs_config.h"
 
 #if SWIG
 namespace gs {

@@ -5,8 +5,10 @@ REPOSITORY_PATH = "pysc"
 REPOSITORY_NAME = "Python SystemC Integration"
 REPOSITORY_DESC = """This repository exports a Python SystemC integration for Analysis and Configuration purposes."""
 REPOSITORY_TOOLS = [
-  "shell",
-  "virtualenv"
+#  "blas",
+#  "lapack",
+  "virtualenv",
+#  "shell",
 ]
 
 def build(self):

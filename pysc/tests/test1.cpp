@@ -11,7 +11,7 @@
 ///            authors is strictly prohibited.
 /// @author
 ///
-#include "pysc.h"
+#include "pysc/pysc.h"
 #include <systemc.h>
 
 int sc_main(int argc, char *argv[]) {
