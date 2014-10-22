@@ -44,17 +44,17 @@ packages = [
     "webcolors==1.4",
     "xlrd==0.9.2",
     #"python-qt==0.50",
-    "pyside",
+    "pyside==1.2.2",
     #"sip",
-    "matplotlib",
+    "matplotlib==1.3.1",
     "ipython==1.1.0",
-    "pyuv",
+    "pyuv==0.10.11",
     "numexpr==2.4",
     "cython==0.20.2",
     "tables==3.1.1",
-    "termcolor",
-    "patsy",
-    "statmodels",
+    "termcolor==1.1.0",
+    "patsy==0.3.0",
+    "statsmodels==0.5.0",
 ]
 
 ACTIVATE = """
