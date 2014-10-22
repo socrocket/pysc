@@ -57,7 +57,7 @@ def view(*k, **kw):
     #pysc.api.gc.printDict(params)
 
 def install():
-    load()
+    #load()
     pysc.on("end_of_evaluation")(view)
 
 if __name__ == "__main__":

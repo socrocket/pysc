@@ -62,6 +62,7 @@ PythonModule::PythonModule(
 
     PyScIncludeModule(pysystemc);
     PyScIncludeModule(pygc);
+    //PyScIncludeModule(pymtrace);
     PyScRegisterEmbeddedModules();
 
     // get a globals() dict for this PythonModule

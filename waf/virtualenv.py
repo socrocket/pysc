@@ -68,6 +68,7 @@ def venv_package(self):
         else:
           snode = src
         srclist.append(snode)
+      self.env["VENV_PATH"] = os.path.join(self.bld.bldnode.abspath(), ".conf_check_venv")
       dst = self.bld.bldnode.find_node(".conf_check_venv")
       links = self.create_task('venv_link', src=srclist, tgt=dst)
 
