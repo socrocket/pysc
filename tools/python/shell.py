@@ -73,6 +73,7 @@ class Console(code.InteractiveConsole):
         else:
             self.write("%s\n" % str(banner))
         more = 0
+        self.run = True
         while self.run:
             try:
                 if more:
@@ -96,13 +97,12 @@ class Console(code.InteractiveConsole):
                 self.write("\nKeyboardInterrupt\n")
                 self.resetbuffer()
                 more = 0
+
     def stop(self):
           self.run = False
 
 def start(*k, **kw):
-    histfile = os.path.join(os.environ["HOME"], ".socrocket_history")
-    rcfile = os.path.join(os.environ["HOME"], ".socrocketrc")
-
+    global CONSOLE
     try:
         import rlcompleter
         import readline
@@ -110,48 +110,54 @@ def start(*k, **kw):
     except ImportError:
         rlcompleter = None
         readline = None
-        print "Python shell enhancement modules not available."
 
-    else:
-        if 'libedit' in readline.__doc__:
-            readline.parse_and_bind("bind ^I rl_complete")
+    histfile = os.path.join(os.environ["HOME"], ".socrocket_history")
+    rcfile = os.path.join(os.environ["HOME"], ".socrocketrc")
+
+    if not CONSOLE:
+
+        if not readline:
+            print "Python shell enhancement modules not available."
         else:
-            readline.parse_and_bind("tab: complete")
+            if 'libedit' in readline.__doc__:
+                readline.parse_and_bind("bind ^I rl_complete")
+            else:
+                readline.parse_and_bind("tab: complete")
 
-        if os.path.isfile(histfile):
-            readline.read_history_file(histfile)
+            if os.path.isfile(histfile):
+                readline.read_history_file(histfile)
 
-        if os.path.isfile(rcfile):
-            readline.read_init_file(rcfile)
+            if os.path.isfile(rcfile):
+                readline.read_init_file(rcfile)
 
-        print "Python shell history and tab completion are enabled."
+            print "Python shell history and tab completion are enabled."
 
-    sys.modules['__main__'].__dict__.update({
-      "help": help_text,
-      "credits": credits_text,
-      "copyright": copyright_text,
-      "license": license_text
-    })
-    global CONSOLE
-    CONSOLE = Console(sys.modules['__main__'].__dict__)
-    sys.modules['__main__'].__dict__['CONSOLE'] = CONSOLE
-    #code.interact(local=sys.modules['__main__'].__dict__, banner='')
-    #print CONSOLE
+        sys.modules['__main__'].__dict__.update({
+          "help": help_text,
+          "credits": credits_text,
+          "copyright": copyright_text,
+          "license": license_text
+        })
+        CONSOLE = Console(sys.modules['__main__'].__dict__)
+        sys.modules['__main__'].__dict__['CONSOLE'] = CONSOLE
+
     CONSOLE.interact('')
 
     if readline:
         readline.write_history_file(histfile)
 
 def stop(*k, **kw):
-    import sys
     global CONSOLE
     sys.modules['__main__'].CONSOLE.stop()
 
+def is_running(*k, **kw):
+    return sys.modules['__main__'].CONSOLE.run
 
 def install():
     #load()
+    pysc.on("start_of_simulation")(start)
     pysc.on("pause_of_simulation")(start)
-    start()
+    #start()
 
 install()
 

@@ -111,16 +111,25 @@ class EventTreeOr(EventTree):
         thread_control()
 '''
 
-def start():
+def start(*k, **kw):
   if pysystemc.is_running():
       pysystemc.start()
-  else:
-      from tools.python import shell
+  from tools.python import shell
+  if shell.is_running():
       shell.stop()
 
-start = pysystemc.start
-stop = pysystemc.stop
-pause = pysystemc.pause
+def stop(*k, **kw):
+  if pysystemc.is_running():
+      pysystemc.stop()
+  from tools.python import shell
+  if shell.is_running():
+      shell.stop()
+
+def pause(*k, **kw):
+  from tools.python import shell
+  if not shell.is_running():
+      pysystemc.pause()
+
 simulation_time = pysystemc.simulation_time
 delta_count = pysystemc.delta_count
 set_verbosity = pysystemc.set_verbosity

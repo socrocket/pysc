@@ -61,6 +61,7 @@ PythonModule::PythonModule(
     PySys_SetArgvEx(argc, args, 0);
 
     PyScIncludeModule(pysystemc);
+    PyScIncludeModule(pyreport);
     PyScIncludeModule(pygc);
     PyScIncludeModule(pymtrace);
     PyScRegisterEmbeddedModules();
