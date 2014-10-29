@@ -13,8 +13,8 @@ def build(self):
                           'api/systemc.i',
                           'api/gc.cpp',
                           'api/gc.i',
-                          #'api/mtrace.cpp',
-                          #'api/mtrace.i'
+                          'api/mtrace.cpp',
+                          'api/mtrace.i'
                         ],
     pysource          = self.path.ant_glob(['**/*.py']),
     export_includes   = self.repository_root.abspath(),

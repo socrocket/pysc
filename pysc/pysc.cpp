@@ -62,7 +62,7 @@ PythonModule::PythonModule(
 
     PyScIncludeModule(pysystemc);
     PyScIncludeModule(pygc);
-    //PyScIncludeModule(pymtrace);
+    PyScIncludeModule(pymtrace);
     PyScRegisterEmbeddedModules();
 
     // get a globals() dict for this PythonModule
@@ -241,6 +241,7 @@ void PythonModule::run_py_callback(const char *name, PyObject *args, PyObject *k
       } else {
         PyErr_Print();
       }
+
       Py_XDECREF(dict);
     } else {
       PyErr_Print();
@@ -342,7 +343,9 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
           default:              i = PyInt_FromLong(boost::any_cast<int32_t>(iter->data));
         }
         PyDict_SetItemString(pairs, iter->name.c_str(), i);
-        Py_XDECREF(i);
+        if(iter->type != v::pair::BOOL) {
+          Py_XDECREF(i);
+        }
       }
     }
     PyObject *obj = PyTuple_New(11);
@@ -357,7 +360,8 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
     PyTuple_SetItem(obj, 8, PyInt_FromLong(rep.get_verbosity()));
     PyTuple_SetItem(obj, 9, PyString_FromString(str_value(rep.what())));
     PyTuple_SetItem(obj, 10, PyInt_FromLong(actions));
-    PythonModule::globalInstance->run_py_callback("report", obj, pairs);
+    //PyTuple_SetItem(obj, 11, pairs);
+    PythonModule::globalInstance->run_py_callback("report", obj, pairs );
     Py_XDECREF(pairs);
     Py_XDECREF(obj);
   }

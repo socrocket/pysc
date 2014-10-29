@@ -10,9 +10,9 @@
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
-#include <mcheck.h>
-#include "pysc/api/mtrace.h"
 #include "pysc/module.h"
+#include "pysc/api/mtrace.h"
+#include <mcheck.h>
 
 PyScRegisterSWIGModule(pymtrace);
 
@@ -24,7 +24,7 @@ void mtrace_start() {
   // know that no thread is active on entry to any other function
   // called by the kernel
   PyEval_ReleaseThread(PyScThisModule());
-  mtrace();
+  ::mtrace();
   // re-acquire thread before returning control to Python
   PyEval_AcquireThread(PyScThisModule());
 }
@@ -34,7 +34,7 @@ void mtrace_end() {
   // know that no thread is active on entry to any other function
   // called by the kernel
   PyEval_ReleaseThread(PyScThisModule());
-  muntrace();
+  ::muntrace();
   // re-acquire thread before returning control to Python
   PyEval_AcquireThread(PyScThisModule());
 }
