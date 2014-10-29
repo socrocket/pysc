@@ -9,7 +9,6 @@ __standalone__ = True
 __interpreter_name__ = ""
 
 from pysc.api.systemc import *
-from pysc.api import gc
 
 def get_current_callback():
     """May be a spawned thread or a call-in from C++, or in elaboration"""
@@ -112,6 +111,7 @@ PHASE = {
     "end_of_simulation": SCCallback("end_of_simulation"),
     "start_of_evaluation": SCCallback("start_of_evaluation"),
     "end_of_evaluation": SCCallback("end_of_evaluation"),
+    "pause_of_simulation": SCCallback("pause_of_simulation"),
     "report": SCCallback("report")
 }
 

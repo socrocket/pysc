@@ -46,6 +46,7 @@ class PythonModule: public sc_core::sc_module {
     void start_of_elaboration();
     void end_of_elaboration();
     void start_of_simulation();
+    void pause_of_simulation();
     void end_of_simulation();
     void start_of_evaluation();
     void end_of_evaluation();

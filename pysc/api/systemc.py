@@ -110,6 +110,14 @@ class EventTreeOr(EventTree):
         Fork([self.left.wait, self.right.wait], wait_for=1)
         thread_control()
 '''
+
+def start():
+  if pysystemc.is_running():
+      pysystemc.start()
+  else:
+      from tools.python import shell
+      shell.stop()
+
 start = pysystemc.start
 stop = pysystemc.stop
 pause = pysystemc.pause

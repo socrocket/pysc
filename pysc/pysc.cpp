@@ -274,6 +274,10 @@ void PythonModule::start_of_simulation() {
     run_py_callback("start_of_simulation");
 }
 
+void PythonModule::pause_of_simulation() {
+    run_py_callback("pause_of_simulation");
+}
+
 void PythonModule::end_of_simulation() {
     run_py_callback("end_of_simulation");
 }
