@@ -220,28 +220,33 @@ void PythonModule::run_py_callback(const char *name, PyObject *args, PyObject *k
         return;
     }
     block_threads();
-
     set_interpreter_name();
+
+    if(!args) {
+      args = static_args;
+    }
 
     // get the callable Python object
     PyObject *dict = PyObject_GetAttrString(pysc_module, "PHASE");
     if(dict) {
       PyObject *member = PyDict_GetItemString(dict, name);
-      PyObject *function = PyObject_GetAttrString(member, "call");
-      if(function) {
-        if(!args) {
-          args = static_args;
-        }
-        PyObject *ret = PyObject_Call(function, args, kwargs);
-        if(ret == NULL) {
+      if(member) {
+        PyObject *function = PyObject_GetAttrString(member, "call");
+        if(function) {
+          PyObject *ret = PyObject_Call(function, args, kwargs);
+          if(ret) {
+            Py_XDECREF(ret);
+          } else {
+            PyErr_Print();
+          }
+          Py_XDECREF(function);
+        } else {
           PyErr_Print();
         }
-        Py_XDECREF(ret);
-        Py_XDECREF(member);
+        // Py_XDECREF(member); Borrowed
       } else {
         PyErr_Print();
       }
-
       Py_XDECREF(dict);
     } else {
       PyErr_Print();
