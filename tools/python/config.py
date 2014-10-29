@@ -18,7 +18,7 @@ def parse_args(*k, **kw):
         if len(l) == 2:
             name = l[0]
             value = l[1]
-            if pysc.api.gc.exits(name):
+            if pysc.api.gc.exists(name):
                 pysc.api.gc.write(name, value)
             else:
                 print "Option does not exist"
