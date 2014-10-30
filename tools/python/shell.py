@@ -1,17 +1,22 @@
-import pysc
 import code
 import os
 import sys
 
 def help_text(*k, **kw):
-    import webbrowser
+    import os
     print "SoCRocket - The Space TLM Framework"
-    webbrowser.open('http://socrocket.github.io/')
+    if not os.environ.has_key('SSH_CONNECTION'):
+      import webbrowser
+      webbrowser.open('http://socrocket.github.io/')
+    elif os.environ.has_key('TMUX'):
+      pass
     help(*k, **kw)
 def credits_text():
     print "Thomas Schuster, Rolf Meyer, Jan Wagner"
+
 def copyright_text():
     print "(c) Copyright 2010-2014 TU-Braunschweig c3e"
+
 def license_text():
     print "All rights reserved"
 
@@ -90,13 +95,24 @@ class Console(code.InteractiveConsole):
                         break
                 except EOFError:
                     self.write("\n")
-                    break
+                    try:
+                        from pysc.api import systemc
+                        systemc.stop()
+
+                    except ImportError:
+                        break
                 else:
                     more = self.push(line)
             except KeyboardInterrupt:
                 self.write("\nKeyboardInterrupt\n")
                 self.resetbuffer()
                 more = 0
+                #try:
+                #    from pysc.api import systemc
+                #    systemc.start()
+
+                #except ImportError:
+                #    break
 
     def stop(self):
           self.run = False
@@ -154,13 +170,17 @@ def is_running(*k, **kw):
     return sys.modules['__main__'].CONSOLE.run
 
 def install():
+    import pysc
     #load()
-    pysc.on("start_of_simulation")(start)
+    #pysc.on("start_of_simulation")(start)
     pysc.on("pause_of_simulation")(start)
     #start()
 
-install()
-
-if __name__ == "__main__":
+try:
     install()
+
+except ImportError:
+    if __name__ == "__main__":
+        start()
+    
 

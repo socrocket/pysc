@@ -20,6 +20,7 @@ PyScRegisterSWIGModule(pysystemc);
 namespace pysc {
 namespace api {
 namespace systemc {
+
 void start() {
   // must be in the kernel thread on entry.  Exit it so we
   // know that no thread is active on entry to any other function
@@ -41,11 +42,15 @@ void start(double time, sc_core::sc_time_unit tu) {
 }
 
 void stop() {
+  PyEval_ReleaseThread(PyScThisModule());
   sc_core::sc_stop();
+  PyEval_AcquireThread(PyScThisModule());
 }
 
 void pause() {
+  PyEval_ReleaseThread(PyScThisModule());
   sc_core::sc_pause();
+  PyEval_AcquireThread(PyScThisModule());
 }
 
 void wait(double time, sc_core::sc_time_unit tu) {
