@@ -85,7 +85,7 @@ class SCCallback(object):
     def __init__(self, name):
         self.name = name
         self.all_runnables = dict()
-    def register(self, runnable, debug = False, time_unit = NS, keyargs = {}):
+    def register(self, runnable, obj=None, debug = False, time_unit = NS, keyargs = {}):
         if debug:
             runnable = sc_callback_debug_wrapper(runnable, PromptStr(interpreter_name(), self.name, time_unit))
         innm = interpreter_name()
@@ -101,6 +101,24 @@ class SCCallback(object):
             kw.update(**keyargs)
             run(*(k+(self.name,)), **kw)
 
+class SCCommand(object):
+    def __init__(self):
+        self.all_runnables = dict()
+    def register(self, runnable, obj, debug = False, time_unit = NS, keyargs = {}):
+        if debug:
+            runnable = sc_callback_debug_wrapper(runnable, PromptStr(interpreter_name(), self.name, time_unit))
+        if obj not in self.all_runnables:
+            self.all_runnables[obj] = []
+
+        self.all_runnables[obj].append((runnable, keyargs))
+    
+
+    def call(self, obj, **kw):
+        all_runners = self.all_runnables.get(obj, [])
+        for run, keyargs in all_runners:
+            kw.update(**keyargs)
+            run(**kw)
+
 
 PHASE = {
     "start_of_initialization": SCCallback("start_of_initialization"),
@@ -112,16 +130,22 @@ PHASE = {
     "start_of_evaluation": SCCallback("start_of_evaluation"),
     "end_of_evaluation": SCCallback("end_of_evaluation"),
     "pause_of_simulation": SCCallback("pause_of_simulation"),
-    "report": SCCallback("report")
+    "report": SCCallback("report"),
+    "command": SCCommand()
 }
 
-def on(phase, debug=False, time_unit = NS, keyargs = {}):
+
+
+def on(phase, obj=None, debug=False, time_unit = NS, keyargs = {}):
     """Register phase sccallback handler"""
     def do(funct):
         if PHASE.has_key(phase):
-            PHASE[phase].register(funct, debug, time_unit, keyargs)
+            PHASE[phase].register(funct, obj, debug=debug, time_unit=time_unit, keyargs=keyargs)
         else:
             print "No such phase as %s" % (phase)
         return funct
     return do
+
+def onCommandFrom(obj, debug=False, time_unit=NS, keyargs={}):
+    return on("command", obj, debug, time_unit, keyargs)
 
