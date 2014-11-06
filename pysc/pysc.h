@@ -61,7 +61,7 @@ class PythonModule: public sc_core::sc_module {
     /// Unblock our singleton thread
     static void unblock_threads();
 
-    static void signal(int sig);
+    static void(*signal(int sig, void (*handler)(int)))(int);
   private:
     /// internal load functionality
     bool private_load(const char *fullname);

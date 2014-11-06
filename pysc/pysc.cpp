@@ -292,11 +292,8 @@ void PythonModule::end_of_evaluation() {
     run_py_callback("end_of_evaluation");
 }
 
-void PythonModule::signal(int sig) {
-    PyObject *obj = PyTuple_New(1);
-    PyTuple_SetItem(obj, 1, PyInt_FromLong(sig));
-    PythonModule::globalInstance->run_py_callback("signal", obj);
-    Py_XDECREF(obj);
+void (*PythonModule::signal(int sig, void (*handler)(int)))(int) {
+    return PyOS_setsig(sig, handler);
 }
 
 // Code for creating a Python virtual machine.
@@ -316,7 +313,7 @@ extern "C" { void init_pysystemc(void); };
 void PythonModule::subscribe() {
     if(subscribers==0) {
         // Initialize Python without signal handlers
-        Py_InitializeEx(0);
+        Py_InitializeEx(1);
         PyEval_InitThreads();
         unblock_threads();
     }
