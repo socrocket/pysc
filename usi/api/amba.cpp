@@ -10,13 +10,13 @@
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
-#include "pysc/module.h"
+#include "usi.h"
 #include "core/common/amba.h"
 #include "core/models/utils/ahbdevicebase.h"
 #include "core/models/utils/apbdevicebase.h"
 #include "core/common/sc_find.h"
 
-PyScRegisterSWIGModule(pyamba);
+USI_REGISTER_MODULE(_amba);
 
 namespace pysc {
 namespace api {

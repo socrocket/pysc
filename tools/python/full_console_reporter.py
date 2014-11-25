@@ -1,4 +1,4 @@
-import pysc
+import usi
 import ctypes
 import json
 
@@ -49,7 +49,7 @@ def get_actions_str(actions):
 
   return result[:-1]
 
-@pysc.on("report")
+@usi.on("report")
 def report_full(
     message_type=None, 
     message_text=None,

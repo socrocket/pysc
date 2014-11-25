@@ -3,19 +3,18 @@
 /// @{
 /// @file report.cpp
 /// 
-///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
-#include "pysc/module.h"
-#include "pysc/api/report.h"
+#include "usi.h"
+#include "usi/api/report.h"
 #include "core/common/report.h"
 #include "core/common/sc_find.h"
 
-PyScRegisterSWIGModule(pyreport);
+USI_REGISTER_MODULE(_report);
 
 namespace pysc {
 namespace api {

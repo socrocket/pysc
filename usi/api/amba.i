@@ -1,4 +1,4 @@
-%module pyamba
+%module _amba
 
 %include "std_string.i"
 %include "stdint.i"
@@ -8,13 +8,13 @@
 #include "core/common/sc_find.h"
 #include "core/models/utils/ahbdevicebase.h"
 #include "core/models/utils/apbdevicebase.h"
-#include "pysc/api/amba.h"
+#include "usi/api/amba.h"
 %}
 
 %include "core/common/amba.h"
 %include "core/models/utils/ahbdevicebase.h"
 %include "core/models/utils/apbdevicebase.h"
-%include "pysc/api/amba.h"
+%include "usi/api/amba.h"
 PyObject *find_amba_device(std::string name);
 
 %{

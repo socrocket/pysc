@@ -1,4 +1,4 @@
-import pygc
+import _parameter
 
 """
 1) GC Database Access

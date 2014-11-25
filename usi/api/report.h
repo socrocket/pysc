@@ -3,14 +3,12 @@
 /// @{
 /// @file report.h
 /// 
-///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
-///
 #ifndef PYSC_API_REPORT_H
 #define PYSC_API_REPORT_H
 

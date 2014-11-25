@@ -1,4 +1,4 @@
-import pysc
+import usi
 import os
 import pandas as pd
 import warnings
@@ -53,18 +53,18 @@ class Logger():
       self.store_buffer()
       self.store.close()
 
-@pysc.on("start_of_initialization")
+@usi.on("start_of_initialization")
 def start_of_initialization(phase):
   verbosity = 500
   print "Set verbosity to level %d" % verbosity
-  print "Old verbosity level was %d" % pysc.set_verbosity(verbosity)
+  print "Old verbosity level was %d" % usi.set_verbosity(verbosity)
 
-@pysc.on("end_of_evaluation")
+@usi.on("end_of_evaluation")
 def save_db(phase):
   global logger
   logger.store_buffer()
 
-@pysc.on("report")
+@usi.on("report")
 def report(
     message_type=None, 
     message_text=None,

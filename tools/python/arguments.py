@@ -1,5 +1,5 @@
 import argparse
-import pysc
+import usi
 from tools.python import usage
 
 ARGS = None
@@ -12,7 +12,7 @@ parser.add_argument('--credits', dest='credits', action='store_true', help='Show
 parser.add_argument('--license', dest='license', action='store_true', help='Show license information')
 parser.add_argument('--copyright', dest='copyright', action='store_true', help='Show copyright information')
 
-@pysc.on("start_of_initialization")
+@usi.on("start_of_initialization")
 def args(*k, **kw):
   global ARGS
   if not ARGS:

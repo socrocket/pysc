@@ -2,22 +2,20 @@
 /// @addtogroup pysc
 /// @{
 /// @file gc.cpp
-/// 
 ///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
-/// @author 
+/// @author Rolf Meyer
 #include <Python.h>
 #include <map>
-#include "pysc/pysc.h"
-#include "pysc/api/gc.h"
-#include "pysc/api/systemc.h"
-#include "pysc/module.h"
+#include "usi.h"
+#include "usi/api/parameter.h"
+#include "usi/api/systemc.h"
 
-PyScRegisterSWIGModule(pygc);
+USI_REGISTER_MODULE(_parameter);
 
 namespace pysc {
 namespace api {

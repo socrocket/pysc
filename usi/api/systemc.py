@@ -1,4 +1,4 @@
-import pysystemc
+import _systemc
 
 # Renaming time constants for easy reuse
 FS = pysystemc.SC_FS

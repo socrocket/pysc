@@ -1,4 +1,4 @@
-import pysc
+import usi
 import sys
 
 def load(*k, **kw):
@@ -17,9 +17,9 @@ def view(*k, **kw):
         "int_power": "Internal power (dynamic): %0.4f uW",
         "swi_power": "Switching power (dynamic): %0.4f uW"
     }
-    params = pysc.api.gc.readPropertyDict()
-    params = pysc.api.gc.filterDict(params, "power")
-    param_list = pysc.api.gc.paramsToDict(params)
+    params = usi.api.parameter.readPropertyDict()
+    params = usi.api.parameter.filterDict(params, "power")
+    param_list = usi.api.parameter.paramsToDict(params)
     out = {}
     for base, value in param_list.iteritems():
         parts = base.rsplit(".power.", 1)
@@ -54,11 +54,11 @@ def view(*k, **kw):
     print "* ---------------------------------------------------"
     print "* Total Power: %0.4f" % total_sum, "uW"
     print "*****************************************************"
-    #pysc.api.gc.printDict(params)
+    #usi.api.parameter.printDict(params)
 
 def install():
     #load()
-    pysc.on("end_of_evaluation")(view)
+    usi.on("end_of_evaluation")(view)
 
 if __name__ == "__main__":
     install()

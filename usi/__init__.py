@@ -8,7 +8,7 @@ __standalone__ = True
 """ For context management """
 __interpreter_name__ = ""
 
-from pysc.api.systemc import *
+from usi.api.systemc import *
 
 def get_current_callback():
     """May be a spawned thread or a call-in from C++, or in elaboration"""

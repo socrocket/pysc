@@ -1,7 +1,7 @@
 // vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
 /// @addtogroup pysc
 /// @{
-/// @file pysc.cpp
+/// @file module.cpp
 /// 
 ///
 /// @date 2013-2014
@@ -9,7 +9,7 @@
 ///            Any reproduction, use, distribution or disclosure of this
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
-/// @author 
+/// @author Rolf Meyer
 ///
 #include <Python.h>
 // SystemC library
@@ -23,11 +23,10 @@
 #include <map>
 #include <set>
 
-
 #include "core/common/waf.h"
 #include "core/common/report.h"
-#include "pysc/pysc.h"
-#include "pysc/module.h"
+#include "usi/core/module.h"
+#include "usi/core/registry.h"
 
 PythonModule *PythonModule::globalInstance = NULL;
 
@@ -60,13 +59,6 @@ PythonModule::PythonModule(
     }
     PySys_SetArgvEx(argc, args, 0);
 
-    PyScIncludeModule(pysystemc);
-    PyScIncludeModule(pyreport);
-    PyScIncludeModule(pygc);
-    PyScIncludeModule(pymtrace);
-    PyScIncludeModule(pyamba);
-    PyScRegisterEmbeddedModules();
-
     // get a globals() dict for this PythonModule
     PyObject* main_module = PyImport_AddModule("__main__");  // borrowed ref
     if(!main_module) {
@@ -98,7 +90,7 @@ PythonModule::PythonModule(
     block_threads();
 
     // make sure there's a reference to the pysc module available
-    pysc_module = PyImport_ImportModuleEx(const_cast<char *>("pysc"), my_namespace, my_namespace, NULL);
+    pysc_module = PyImport_ImportModuleEx(const_cast<char *>("usi"), my_namespace, my_namespace, NULL);
     if(!pysc_module) {
         PyErr_Print();
         unblock_threads();

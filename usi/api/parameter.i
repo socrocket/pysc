@@ -1,4 +1,4 @@
-%module pygc
+%module _parameter
 
 %include "std_map.i"
 %include "std_string.i"
@@ -8,7 +8,7 @@ namespace std {
 };
 
 %{
-#include "pysc/api/gc.h"
+#include "usi/api/parameter.h"
 %}
 
-%include "pysc/api/gc.h"
+%include "usi/api/parameter.h"

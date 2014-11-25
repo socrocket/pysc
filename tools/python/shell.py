@@ -96,7 +96,7 @@ class Console(code.InteractiveConsole):
                 except EOFError:
                     self.write("\n")
                     try:
-                        from pysc.api import systemc
+                        from usi.api import systemc
                         systemc.stop()
 
                     except ImportError:
@@ -108,7 +108,7 @@ class Console(code.InteractiveConsole):
                 self.resetbuffer()
                 more = 0
                 #try:
-                #    from pysc.api import systemc
+                #    from usi.api import systemc
                 #    systemc.start()
 
                 #except ImportError:
@@ -170,10 +170,10 @@ def is_running(*k, **kw):
     return sys.modules['__main__'].CONSOLE.run
 
 def install():
-    import pysc
+    import usi
     #load()
-    #pysc.on("start_of_simulation")(start)
-    pysc.on("pause_of_simulation")(start)
+    usi.on("start_of_simulation")(start)
+    usi.on("pause_of_simulation")(start)
     #start()
 
 try:

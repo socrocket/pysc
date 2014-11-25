@@ -1,4 +1,4 @@
-import pymtrace
+import _mtrace
 
 def start():
   pymtrace.mtrace_start();

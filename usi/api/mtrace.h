@@ -3,7 +3,6 @@
 /// @{
 /// @file mtrace.h
 /// 
-///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this

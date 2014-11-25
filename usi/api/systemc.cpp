@@ -3,7 +3,6 @@
 /// @{
 /// @file systemc.cpp
 /// 
-///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
@@ -12,10 +11,10 @@
 /// @author Rolf Meyer
 #include <Python.h>
 #include <map>
-#include "pysc/api/systemc.h"
-#include "pysc/module.h"
+#include "usi.h"
+#include "usi/api/systemc.h"
 
-PyScRegisterSWIGModule(pysystemc);
+USI_REGISTER_MODULE(_systemc);
 
 namespace pysc {
 namespace api {

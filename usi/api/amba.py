@@ -1,4 +1,4 @@
-import pyamba
+import _amba
 
 class AMBADelegate(object):
     def __init__(self, devs):

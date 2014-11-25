@@ -43,3 +43,13 @@ def do_start(phase):
 
 print "Start"
 
+@pysc.onCommand('APBUart')
+def UARTInit(name):
+    instance = pysc.api.amba.find(name)
+
+    @pysc.onCommand(name)
+    def uart_connect(port):
+        import os
+        if os.environ.has_key('TMUX'):
+          import subprocess
+          subprocess.Popen('tmux split-window -h "nc localhost %d"' % port)

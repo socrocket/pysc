@@ -1,4 +1,4 @@
-import pyreport
+import _report
 
 SC_INFO = pyreport.SC_INFO
 SC_WARNING = pyreport.SC_WARNING

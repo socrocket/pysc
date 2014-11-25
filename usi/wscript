@@ -1,18 +1,20 @@
 #! /usr/bin/env python
 # vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 filetype=python :
-top = '..'
+top = '../..'
 
 def build(self):
   self(
-    target            = 'pysc',
+    target            = 'usi',
     features          = 'cxx cxxstlib pyembed venv_package',
     source            = [
-                          'pysc.cpp',
-                          'module.cpp',
+                          'core/registry.cpp',
+                          'core/module.cpp',
+                          'core/api.cpp',
+
                           'api/systemc.cpp',
                           'api/systemc.i',
-                          'api/gc.cpp',
-                          'api/gc.i',
+                          'api/parameter.cpp',
+                          'api/parameter.i',
                           'api/mtrace.cpp',
                           'api/mtrace.i',
                           'api/report.cpp',
@@ -28,9 +30,3 @@ def build(self):
     install_path      = '${PREFIX}/lib',
   )
 
-  self(
-      target          = 'pysc.1.test',
-      features        = 'cxx cxxprogram pyembed',
-      source          = 'tests/test1.cpp',
-      use             = 'pysc GREENSOCS SYSTEMC TLM PYTHON BOOST',
-  )

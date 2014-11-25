@@ -1,18 +1,16 @@
 // vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
 /// @addtogroup pysc
 /// @{
-/// @file module.h
+/// @file registry.h
 /// 
-///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
-/// @author 
-///
-#ifndef PYSC_MODULE_H
-#define PYSC_MODULE_H
+/// @author Rolf Meyer
+#ifndef PYSC_USI_CORE_REGISTRY_H_
+#define PYSC_USI_CORE_REGISTRY_H_
 
 #include <Python.h>
 
@@ -33,22 +31,25 @@ class PyScModule {
     PyScModule *next;
 };
 
-#define PyScRegisterSWIGModule(name) \
+#define PYSC_REGISTER_MODULE(name) \
   extern "C" { \
     void init_##name(void); \
   }; \
   static PyScModule __pysc_module(init_##name); \
   volatile PyScModule *__pysc_module_##name = &__pysc_module;
 
+#define PYSC_THIS_MODULE() \
+  (__pysc_module)
+
 #define PyScThisModule() \
   (__pysc_module)
 
-#define PyScRegisterEmbeddedModules() \
+#define PYSC_INIT_MODULES() \
   PyScModule::registerEmbedded();
 
-#define PyScIncludeModule(name) \
+#define PYSC_HAS_MODULE(name) \
   extern PyScModule *__pysc_module_##name; \
   __pysc_module_##name->embedded = true;
 
-#endif // Registry
+#endif // PYSC_USI_REGISTRY_H_
 /// @}
