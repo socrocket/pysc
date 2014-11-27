@@ -59,6 +59,8 @@ PythonModule::PythonModule(
     }
     PySys_SetArgvEx(argc, args, 0);
 
+    PYSC_INIT_MODULES();
+
     // get a globals() dict for this PythonModule
     PyObject* main_module = PyImport_AddModule("__main__");  // borrowed ref
     if(!main_module) {

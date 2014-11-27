@@ -1,4 +1,4 @@
-import _parameter
+import parameter_
 
 """
 1) GC Database Access
@@ -20,21 +20,21 @@ def addIndex(name, index):
     else:
         return index
 
-exists = pygc.exists
+exists = parameter_.exists
 
 def read(name):
     if not exists(name):
         raise GSParamNonExistent
-    return pygc.read(name)
+    return parameter_.read(name)
 
 def write(name, val):
     if isinstance(val, bool):
         val = int(val)
-    pygc.write(name, str(val))
+    parameter_.write(name, str(val))
 
-getType = pygc.get_type_string
-getDocumentation = pygc.get_documentation
-getProperties = pygc.get_properties
+getType = parameter_.get_type_string
+getDocumentation = parameter_.get_documentation
+getProperties = parameter_.get_properties
 
 def readList(name):
     result = []
@@ -102,14 +102,14 @@ def makeDict(name, list_of_names, readProperties = False):
                 # leaf
                 index = addIndex(name, head)
                 value = read(index)
-                if pygc.is_bool(index):
+                if parameter_.is_bool(index):
                     value = bool(value)
-                elif pygc.is_float(index):
+                elif parameter_.is_float(index):
                     value = float(value)
-                elif pygc.is_int(index):
+                elif parameter_.is_int(index):
                     value = int(value)
 
-                if not pygc.is_array(index):
+                if not parameter_.is_array(index):
                     if not readProperties:
                         result[head] = value
                     else:
@@ -122,10 +122,10 @@ def makeDict(name, list_of_names, readProperties = False):
 
 def listParams(name = ""):
     if name != "":
-        all_params = pygc.list(addIndex(name,"*"))
+        all_params = parameter_.list(addIndex(name,"*"))
         ln = len(name) + 1
     else:
-        all_params = pygc.list("")
+        all_params = parameter_.list("")
         ln = 0
 
     return [all_params.read(i)[ln:] for i in range(all_params.length())]
@@ -196,18 +196,18 @@ def paramsToDict(params, base = ""):
     return result
             
 
-pre_read = pygc.pre_read
-post_read = pygc.post_read
-reject_write = pygc.reject_write
-pre_write = pygc.pre_write
-post_write = pygc.post_write
-create_param = pygc.create_param
-destroy_param = pygc.destroy_param
-post_write_and_destroy = pygc.post_write_and_destroy
-no_callback = pygc.no_callback
+pre_read = parameter_.pre_read
+post_read = parameter_.post_read
+reject_write = parameter_.reject_write
+pre_write = parameter_.pre_write
+post_write = parameter_.post_write
+create_param = parameter_.create_param
+destroy_param = parameter_.destroy_param
+post_write_and_destroy = parameter_.post_write_and_destroy
+no_callback = parameter_.no_callback
 
-register = pygc.register_callback
-unregister = pygc.unregister_callback
+register = parameter_.register_callback
+unregister = parameter_.unregister_callback
 
 def on(name, type):
     def do(funct):

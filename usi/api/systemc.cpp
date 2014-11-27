@@ -14,7 +14,7 @@
 #include "usi.h"
 #include "usi/api/systemc.h"
 
-USI_REGISTER_MODULE(_systemc);
+USI_REGISTER_MODULE(systemc_);
 
 namespace pysc {
 namespace api {

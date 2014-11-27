@@ -11,11 +11,12 @@ def build(self):
                           'core/module.cpp',
                           'core/api.cpp',
 
+                          'api/usiobject.i',
                           'api/systemc.cpp',
                           'api/systemc.i',
                           'api/parameter.cpp',
                           'api/parameter.i',
-                          'api/mtrace.cpp',
+                          #'api/mtrace.cpp',
                           'api/mtrace.i',
                           #'api/report.cpp',
                           'api/report.i',

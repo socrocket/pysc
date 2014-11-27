@@ -1,4 +1,4 @@
-%module _parameter
+%module parameter_
 
 %include "std_map.i"
 %include "std_string.i"

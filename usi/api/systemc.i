@@ -1,4 +1,4 @@
-%module _systemc
+%module systemc_
 
 %include "std_string.i"
 

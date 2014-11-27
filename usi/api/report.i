@@ -1,10 +1,21 @@
-%module _report
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file report.i
+/// 
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author Rolf Meyer
+%module report
 
 %include "usi.i"
 %include "std_string.i"
 
 %{
-USI_REGISTER_MODULE(_report);
+USI_REGISTER_MODULE(report);
 %}
 
 namespace sc_core {

@@ -13,6 +13,7 @@
 #define PYSC_USI_CORE_REGISTRY_H_
 
 #include <Python.h>
+#include <systemc.h>
 
 class PyScModule {
   public:
@@ -50,6 +51,35 @@ class PyScModule {
 #define PYSC_HAS_MODULE(name) \
   extern PyScModule *__pysc_module_##name; \
   __pysc_module_##name->embedded = true;
+
+class PyScObjectGenerator {
+  public:
+    typedef PyObject *(*generator_f)(sc_core::sc_object *, std::string);
+    PyScObjectGenerator(generator_f funct = NULL);
+
+    static PyObject *find_object_by_ptr(sc_core::sc_object *obj);
+    static PyObject *find_object_by_name(std::string name);
+
+  private:
+    static PyScObjectGenerator *reg;
+    generator_f funct;
+    PyScObjectGenerator *next;
+};
+
+#define PYSC_REGISTER_OBJECT_GENERATOR(funct) \
+  static PyScObjectGenerator __pysc_generator_##funct##__(&funct); \
+  volatile PyScObjectGenerator *__pysc_generator_##funct = &__pysc_generator_##funct##__;
+
+#define PYSC_REGISTER_OBJECT(type) \
+PyObject *find_##type##_object(sc_core::sc_object *obj, std::string name) { \
+  PyObject *result = NULL; \
+  type *instance = dynamic_cast<type *>(obj); \
+  if(instance) { \
+    result = SWIG_NewPointerObj(SWIG_as_voidptr(instance), SWIGTYPE_p_##type, 0); \
+  } \
+  return result; \
+} \
+PYSC_REGISTER_OBJECT_GENERATOR(find_##type##_object);
 
 #endif // PYSC_USI_REGISTRY_H_
 /// @}
