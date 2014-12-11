@@ -74,7 +74,8 @@ class PythonModule: public sc_core::sc_module {
     PyObject *my_namespace, *pysc_module, *sys_path, *name_py;
 
     /// Number of subscriber to the singlton python instance
-    static unsigned subscribers;
+    static unsigned int subscribers;
+    static unsigned int blocking;
 
     /// The singleton python thread
     static PyThreadState *singleton;

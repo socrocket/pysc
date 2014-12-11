@@ -1,5 +1,5 @@
 
-__all__ = ["api.systemc"]
+__all__ = ["api.systemc", "api.usiobject"]
 
 """ Standalone mode (embedded change this to False) """
 __standalone__ = True
@@ -9,6 +9,7 @@ __standalone__ = True
 __interpreter_name__ = ""
 
 from usi.api.systemc import *
+from usi.api.usiobject import find
 
 def get_current_callback():
     """May be a spawned thread or a call-in from C++, or in elaboration"""
@@ -93,7 +94,6 @@ class SCCallback(object):
             self.all_runnables[innm] = []
 
         self.all_runnables[innm].append((runnable, keyargs))
-    
 
     def call(self, *k, **kw):
         all_runners = self.all_runnables.get(interpreter_name(), [])
@@ -104,21 +104,21 @@ class SCCallback(object):
 class SCCommand(object):
     def __init__(self):
         self.all_runnables = dict()
-    def register(self, runnable, obj, debug = False, time_unit = NS, keyargs = {}):
+    def register(self, runnable, typename, debug = False, time_unit = NS, keyargs = {}):
         if debug:
             runnable = sc_callback_debug_wrapper(runnable, PromptStr(interpreter_name(), self.name, time_unit))
-        if obj not in self.all_runnables:
-            self.all_runnables[obj] = []
+        if typename not in self.all_runnables:
+            self.all_runnables[typename] = []
 
-        self.all_runnables[obj].append((runnable, keyargs))
+        self.all_runnables[typename].append((runnable, keyargs))
     
-
-    def call(self, obj, **kw):
-        all_runners = self.all_runnables.get(obj, [])
+    def call(self, obj, typename, **kw):
+        all_runners = self.all_runnables.get(typename, [])
+        kw.update({"name":obj})
         for run, keyargs in all_runners:
-            kw.update(**keyargs)
-            run(**kw)
-
+            k = dict(kw)
+            k.update(**keyargs)
+            run(**k)
 
 PHASE = {
     "start_of_initialization": SCCallback("start_of_initialization"),
@@ -133,8 +133,6 @@ PHASE = {
     "report": SCCallback("report"),
     "command": SCCommand()
 }
-
-
 
 def on(phase, obj=None, debug=False, time_unit = NS, keyargs = {}):
     """Register phase sccallback handler"""

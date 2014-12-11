@@ -102,7 +102,11 @@ PyObject *find(std::string name) {
 
 %{
 PyObject *find_usiobject(sc_core::sc_object *obj, std::string name) {
-  return SWIG_NewPointerObj(SWIG_as_voidptr(new usiobject(obj)), SWIGTYPE_p_usiobject, SWIG_POINTER_OWN | 0); \
+  if(obj) {
+    return SWIG_NewPointerObj(SWIG_as_voidptr(new usiobject(obj)), SWIGTYPE_p_usiobject, SWIG_POINTER_OWN | 0); \
+  } else {
+    return NULL;  
+  }
 }
 USI_REGISTER_OBJECT_GENERATOR(find_usiobject);
 %}

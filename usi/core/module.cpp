@@ -292,14 +292,22 @@ void (*PythonModule::signal(int sig, void (*handler)(int)))(int) {
 
 // Code for creating a Python virtual machine.
 PyThreadState *PythonModule::singleton;
-unsigned PythonModule::subscribers = 0;
+unsigned int PythonModule::subscribers = 0;
+unsigned int PythonModule::blocking = 0;
 
 void PythonModule::block_threads() {
-    PyEval_RestoreThread(singleton);
+    /// @todo: This is not good we shuld think about removing the blocks
+    blocking--;
+    if(blocking == 0) {
+      PyEval_RestoreThread(singleton);
+    }
 }
 
 void PythonModule::unblock_threads() {
-    singleton = PyEval_SaveThread();
+    if(blocking == 0) {
+      singleton = PyEval_SaveThread();
+    }
+    blocking++;
 }
 
 extern "C" { void init_pysystemc(void); };
