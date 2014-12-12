@@ -99,7 +99,13 @@ class SCCallback(object):
         all_runners = self.all_runnables.get(interpreter_name(), [])
         for run, keyargs in all_runners:
             kw.update(**keyargs)
-            run(*(k+(self.name,)), **kw)
+            try:
+                run(*(k+(self.name,)), **kw)
+            except Exception as e:
+                import traceback, sys
+                print "An exception occured in %s" % (self.name)
+                print traceback.format_exc()
+                sys.exit(1)
 
 class SCCommand(object):
     def __init__(self):

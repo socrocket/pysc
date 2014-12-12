@@ -21,19 +21,19 @@ TIME_UNITS = {
 def start(*k, **kw):
   if systemc_.is_running():
       systemc_.start()
-  from tools.python import shell
+  from usi import shell
   if shell.is_running():
       shell.stop()
 
 def stop(*k, **kw):
   if systemc_.is_running():
       systemc_.stop()
-  from tools.python import shell
+  from usi import shell
   if shell.is_running():
       shell.stop()
 
 def pause(*k, **kw):
-  from tools.python import shell
+  from usi import shell
   if not shell.is_running():
       systemc_.pause()
 
