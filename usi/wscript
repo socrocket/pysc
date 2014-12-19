@@ -13,9 +13,9 @@ def build(self):
 
                           'api/systemc.cpp',
                           'api/systemc.i',
+                          'api/delegate.i',
                           'api/parameter.cpp',
                           'api/parameter.i',
-                          'api/usiobject.i',
                           'api/scireg.i',
                           'api/amba.i',
                           'api/mtrace.i',

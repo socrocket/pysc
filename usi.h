@@ -42,4 +42,6 @@
 #define USI_REGISTER_OBJECT(if) PYSC_REGISTER_OBJECT(if)
 #endif
 
+typedef PyScObject USIObject;
+
 #endif  // USI_H

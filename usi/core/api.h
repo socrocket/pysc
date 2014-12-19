@@ -12,6 +12,10 @@
 #ifndef PYSC_USI_CORE_API_H_
 #define PYSC_USI_CORE_API_H_
 
+#include <Python.h>
+
+typedef PyObject * PyScObject;
+
 void pysc_init(int argc, char *argv[]);
 void pysc_load(const char *module);
 void pysc_start_of_initialization();

@@ -58,7 +58,7 @@ class PyScObjectGenerator {
     PyScObjectGenerator(generator_f funct = NULL);
 
     static PyObject *find_object_by_ptr(sc_core::sc_object *obj);
-    static PyObject *find_object_by_name(std::string name);
+    static sc_core::sc_object *find_object_by_name(std::string name);
 
   private:
     static PyScObjectGenerator *reg;

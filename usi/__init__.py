@@ -1,5 +1,5 @@
 
-__all__ = ["api.systemc", "api.usiobject"]
+__all__ = ["api.systemc", "api.delegate"]
 
 """ Standalone mode (embedded change this to False) """
 __standalone__ = True
@@ -9,7 +9,10 @@ __standalone__ = True
 __interpreter_name__ = ""
 
 from usi.api.systemc import *
-from usi.api.usiobject import find
+from usi.api.delegate import USIDelegate
+
+def find(name):
+    return USIDelegate(name)
 
 def get_current_callback():
     """May be a spawned thread or a call-in from C++, or in elaboration"""

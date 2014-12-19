@@ -72,7 +72,7 @@ def install():
 
     usi.on("start_of_initialization")(args)
     #usi.on("start_of_simulation")(start)
-    #usi.on("pause_of_simulation")(start)
+    usi.on("pause_of_simulation")(start)
     #start()
 
 try:

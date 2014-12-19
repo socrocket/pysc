@@ -180,12 +180,13 @@ void scireg_initialize() {
 
 %}
 
-%pythoncode %{
+%pythoncode {
   import usi
   def scireg_end_of_initialization(*k, **kw):
       scireg_initialize()
+
   usi.on('end_of_initialization')(scireg_end_of_initialization)
-%}
+}
 
 namespace std {
    //%template(vector_byte) vector<unsigned char>;

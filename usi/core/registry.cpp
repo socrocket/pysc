@@ -64,8 +64,8 @@ PyObject *PyScObjectGenerator::find_object_by_ptr(sc_core::sc_object *obj) {
   return result;
 }
 
-PyObject *PyScObjectGenerator::find_object_by_name(std::string name) {
-  return PyScObjectGenerator::find_object_by_ptr(sc_find_by_name(name.c_str()));
+sc_core::sc_object *PyScObjectGenerator::find_object_by_name(std::string name) {
+  return sc_find_by_name(name.c_str());
 }
 
 /// @}
