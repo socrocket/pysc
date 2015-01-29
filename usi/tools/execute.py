@@ -5,7 +5,7 @@ from usi.tools.args import parser, get_args
 parser.add_argument('-s', '--script', dest='script', action='append', default=[], type=str, help='Execute script on start_of_initialization')
 
 def execscript(name):
-    execfile(name, globals=sys.modules['__main__'])
+    execfile(name, sys.modules['__main__'].__dict__)
 
 @usi.on('start_of_initialization')
 def start_of_initialization(*k, **kw):
