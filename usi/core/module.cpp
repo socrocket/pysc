@@ -144,13 +144,11 @@ void PythonModule::load(std::string script) {
     if(boost::algorithm::ends_with(script, ".py")) { 
         if(!private_load(script.c_str())) {
             std::string s(name());
-            s += std::string(" could not find ") + std::string(script);
+            s += std::string(" could not load ") + std::string(script);
             perror(s.c_str());
         }
-    } else {
-        if(PyImport_ImportModuleEx(const_cast<char *>(script.c_str()), my_namespace, my_namespace, NULL)) {
-            PyErr_Print();
-        }
+    } else if(PyImport_ImportModuleEx(const_cast<char *>(script.c_str()), my_namespace, my_namespace, NULL)) {
+        PyErr_Print();
     }
     unblock_threads();
 }
@@ -167,7 +165,10 @@ void PythonModule::exec(std::string statement) {
     // run the command
     PyObject *ret = PyRun_String(
         statement.c_str(), Py_single_input, my_namespace, my_namespace);
-    if(ret == NULL) PyErr_Print();
+    if(ret == NULL) {
+        PyErr_Print();
+    }
+
     Py_XDECREF(ret);
 
     unblock_threads();
@@ -197,10 +198,13 @@ bool PythonModule::private_load(const char *fullname) {
   PyObject *ret = PyRun_File(script, fullname, Py_file_input, my_namespace, my_namespace);
   if(ret == NULL) {
       PyErr_Print();
+      fclose(script);
+
+      return false;
   }
   Py_XDECREF(ret);
-
   fclose(script);
+
   return true;
 }
 
