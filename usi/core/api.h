@@ -19,6 +19,7 @@ typedef PyObject * PyScObject;
 void pysc_init(int argc, char *argv[]);
 void pysc_load(const char *module);
 void pysc_start_of_initialization();
+void pysc_end_of_initialization();
 void pysc_start();
 void pysc_signal_handler(int sig);
 

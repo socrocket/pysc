@@ -20,7 +20,10 @@ TIME_UNITS = {
 
 def start(*k, **kw):
   if systemc_.is_running():
-      systemc_.start()
+      if hasattr(systemc_, "start"):
+          systemc_.start()
+      else:
+          print "sc_start is not implemented"
   from usi import shell
   if shell.is_running():
       shell.stop()

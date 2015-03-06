@@ -57,13 +57,13 @@ USIObject USIObjectFromUSIDelegate(sc_core::sc_object *obj) {
 USIDelegate USIObjectToUSIDelegate(USIObject obj) {
   USIDelegate *result = NULL;
   /// @TODO: reference counting?
-  SWIG_ConvertPtr(obj, &result, SWIGTYPE_p_USIDelegate, 0 |  0 );
+  SWIG_ConvertPtr(obj, SWIG_as_voidptrptr(&result), SWIGTYPE_p_USIDelegate, 0 |  0 );
   return *result;
 }
 
 bool USIObjectIsUSIDelegate(USIObject obj) {
   USIDelegate *arg = NULL;
-  return SWIG_IsOK(SWIG_ConvertPtr(obj, &arg, SWIGTYPE_p_USIDelegate, 0 |  0 ));
+  return SWIG_IsOK(SWIG_ConvertPtr(obj, SWIG_as_voidptrptr(&arg), SWIGTYPE_p_USIDelegate, 0 |  0 ));
 }
 
 %}

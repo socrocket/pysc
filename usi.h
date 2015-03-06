@@ -18,6 +18,10 @@
 #define usi_start_of_initialization pysc_start_of_initialization
 #endif
 
+#ifndef usi_end_of_initialization
+#define usi_end_of_initialization pysc_end_of_initialization
+#endif
+
 #ifndef usi_start
 #define usi_start pysc_start
 #endif

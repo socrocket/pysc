@@ -32,6 +32,10 @@ void pysc_start_of_initialization() {
   python->start_of_initialization();
 }
 
+void pysc_end_of_initialization() {
+  python->end_of_initialization();
+}
+
 void pysc_signal_handler(int sig) {
   if (sig == SIGINT) {
     sc_core::sc_status status = sc_core::sc_get_status();

@@ -48,12 +48,14 @@ PyObject *PyScObjectGenerator::find_object_by_ptr(sc_core::sc_object *obj) {
   std::vector<PyObject *> objs;
 
   PyScObjectGenerator *gen = PyScObjectGenerator::reg;
-  while(gen) {
-    PyObject *pyobj = gen->funct(obj, obj->name());
-    if(pyobj) {
-      objs.push_back(pyobj);
+  if(obj) {
+    while(gen) {
+      PyObject *pyobj = gen->funct(obj, obj->name());
+      if(pyobj) {
+        objs.push_back(pyobj);
+      }
+      gen = gen->next;
     }
-    gen = gen->next;
   }
   
   result = PyTuple_New(objs.size());

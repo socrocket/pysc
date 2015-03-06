@@ -17,14 +17,18 @@
 #include <cstdlib>
 #include <string>
 #include <cstdio>
+#ifndef MTI_SYSTEMC
 #include <boost/filesystem.hpp>
+#endif
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <map>
 #include <set>
 
+#ifndef MTI_SYSTEMC
 #include "core/common/waf.h"
 #include "core/common/report.h"
+#endif
 #include "usi/core/module.h"
 #include "usi/core/registry.h"
 
@@ -47,6 +51,7 @@ PythonModule::PythonModule(
     subscribe();
     block_threads();
 
+#ifndef MTI_SYSTEMC
     Py_SetProgramName(argv[0]);
     char *args[argc];
     if(script_filename && *script_filename) {
@@ -58,6 +63,10 @@ PythonModule::PythonModule(
         args[i] = argv[i];
     }
     PySys_SetArgvEx(argc, args, 0);
+#else
+    Py_SetProgramName("vsim");
+    PySys_SetArgvEx(0, NULL, 0);
+#endif
 
     PYSC_INIT_MODULES();
 
@@ -82,12 +91,16 @@ PythonModule::PythonModule(
 
     // Now add the virtual env to the sys.path to load pysc and other socrocket modules
     unblock_threads();
+#ifndef MTI_SYSTEMC
     std::map<std::string, std::string> *wafConfig = getWafConfig(argv[0]);
     std::string outdir = (*wafConfig)["out_dir"];
     outdir.erase(std::remove(outdir.begin(), outdir.end(), '\''), outdir.end());
     boost::filesystem::path builddir(outdir);
     boost::filesystem::path venvactivate(".conf_check_venv/bin/activate_this.py");
     std::string activate = (builddir/venvactivate).string();
+#else
+    std::string activate = ("build/.conf_check_venv/bin/activate_this.py");
+#endif
     exec("execfile('"+activate+"', dict(__file__='"+activate+"'))");
     block_threads();
 
@@ -120,7 +133,9 @@ PythonModule::PythonModule(
       load(script_filename);
     }
 
+#ifndef MTI_SYSTEMC
     sr_report_handler::handler = report_handler;
+#endif
 }
 
 // desctructor
@@ -338,6 +353,7 @@ const char *str_value(const char *str) {
   return (str&&*str) ? str : "";
 }
 
+#ifndef MTI_SYSTEMC
 void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::sc_actions &actions) {
   if(rep.get_severity()==sc_core::SC_MAX_SEVERITY && rep.get_verbosity() == 0x0FFFFFFF && std::strncmp(rep.get_msg(), "command", 8) == 0) {
     const sr_report *srr = dynamic_cast<const sr_report *>(&rep);
@@ -413,6 +429,6 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
     sc_core::sc_report_handler::default_handler(rep, actions & ~(sc_core::SC_DISPLAY | sc_core::SC_LOG));
   }
 }
-
+#endif
 
 /// @}

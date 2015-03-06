@@ -14,6 +14,7 @@
 
 #include <Python.h>
 #include <systemc.h>
+#include "core/common/sc_find.h"
 
 class PyScModule {
   public:
@@ -80,6 +81,42 @@ PyObject *find_##type##_object(sc_core::sc_object *obj, std::string name) { \
   return result; \
 } \
 PYSC_REGISTER_OBJECT_GENERATOR(find_##type##_object);
+
+#ifdef MTI_SYSTEMC
+#define USI_MODULE_EXPORT(w, load) \
+  extern "C" void* mti__##w(const char* sc_module_name, int is_boundary_top) \
+  { \
+    sc_core::mti_is_elab_boundary_top = is_boundary_top; \
+    try \
+    { \
+      USI_HAS_MODULE(systemc_); \
+      USI_HAS_MODULE(delegate); \
+      /*USI_HAS_MODULE(scireg);*/ \
+      usi_init(0, NULL); \
+      load(); \
+      usi_start_of_initialization(); \
+      w *result = new w(sc_module_name); \
+      usi_end_of_initialization(); \
+      return result; \
+    } \
+    catch( const std::exception& rep ) \
+    { \
+      mti_PrintScMessage((char*)rep.what()); \
+      mti_ScError(); \
+    } \
+    catch( const char* s ) \
+    { \
+      sc_core::message_function(s); \
+      mti_ScError(); \
+    } \
+    catch( ... ) \
+    { \
+      sc_core::message_function("UNKNOWN SYSTEMC EXCEPTION OCCURED"); \
+      mti_ScError(); \
+    } \
+    return NULL; \
+  }
+#endif
 
 #endif // PYSC_USI_REGISTRY_H_
 /// @}

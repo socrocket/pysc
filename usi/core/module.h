@@ -91,8 +91,9 @@ class PythonModule: public sc_core::sc_module {
 
     /// Unsubscribe from the thread
     static void unsubscribe();
-
+#ifndef MTI_SYSTEMC
     static void report_handler(const sc_core::sc_report& rep, const sc_core::sc_actions& actions);
+#endif
 };
 
 #endif  // PYSC_USI_CORE_MODULE_H_
