@@ -34,7 +34,7 @@ void remove_sc_object_from_filter(std::string name);
 
 
 %{
-#include "core/common/report.h"
+#include "core/common/sr_report.h"
 
 void set_filter_to_whitelist(bool value) {
   sr_report_handler::set_filter_to_whitelist(value);

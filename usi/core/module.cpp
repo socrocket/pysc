@@ -27,7 +27,7 @@
 
 #ifndef MTI_SYSTEMC
 #include "core/common/waf.h"
-#include "core/common/report.h"
+#include "core/common/sr_report.h"
 #endif
 #include "usi/core/module.h"
 #include "usi/core/registry.h"
