@@ -11,9 +11,9 @@
 /// @author Rolf Meyer
 %module delegate
 
+%include "usi.i"
 %include "std_string.i"
 %include "std_vector.i"
-%include "usi.i"
 
 USI_REGISTER_MODULE(delegate)
 
