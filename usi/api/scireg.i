@@ -1,11 +1,11 @@
 %module scireg
 
+%include "usi.i"
 %include "typemaps.i"
 %include "std_string.i"
 %include "std_vector.i"
 %include "stdint.i"
 %include "cstring.i"
-%include "usi.i"
 
 USI_REGISTER_MODULE(scireg)
 
