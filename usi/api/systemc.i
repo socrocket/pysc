@@ -1,5 +1,6 @@
 %module systemc_
 
+%include "usi.i"
 %include "std_string.i"
 
 %{

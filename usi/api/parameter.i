@@ -1,5 +1,6 @@
 %module parameter_
 
+%include "usi.i"
 %include "std_map.i"
 %include "std_string.i"
 
