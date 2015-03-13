@@ -1,5 +1,5 @@
 
-__all__ = ["api.systemc", "api.delegate"]
+__all__ = ["api.systemc", "api.delegate", "api.registry"]
 
 """ Standalone mode (embedded change this to False) """
 __standalone__ = True
@@ -10,6 +10,7 @@ __interpreter_name__ = ""
 
 from usi.api.systemc import *
 from usi.api.delegate import USIDelegate
+from usi.api.registry import get_module_files
 
 def find(name):
     return USIDelegate(name)
@@ -156,3 +157,15 @@ def on(phase, obj=None, debug=False, time_unit = NS, keyargs = {}):
 def onCommandFrom(obj, debug=False, time_unit=NS, keyargs={}):
     return on("command", obj, debug, time_unit, keyargs)
 
+from usi.tools import waf
+import os
+waf_out_dir = waf.get_lockfile_attr("out_dir")
+
+for filename in get_module_files():
+    fullname = os.path.normpath(os.path.join(waf_out_dir, filename))
+    pypath = os.path.splitext(fullname)[0] + ".py"
+    pymodule = os.path.basename(os.path.splitext(fullname)[0])
+    #print fullname, pypath, pyfile
+    if os.path.exists(pypath):
+        import imp
+        imp.load_source(pymodule, pypath)

@@ -20,6 +20,7 @@ def build(self):
                           'api/amba.i',
                           'api/mtrace.i',
                           'api/report.i',
+                          'api/registry.i',
                         ],
     pysource          = self.path.ant_glob(['**/*.py']),
     export_includes   = self.repository_root.abspath(),
