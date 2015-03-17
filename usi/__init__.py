@@ -161,7 +161,7 @@ from usi.tools import waf
 import os
 waf_out_dir = waf.get_lockfile_attr("out_dir")
 
-for filename in get_module_files():
+for filename in get_module_files("module"):
     fullname = os.path.normpath(os.path.join(waf_out_dir, filename))
     pypath = os.path.splitext(fullname)[0] + ".py"
     pymodule = os.path.basename(os.path.splitext(fullname)[0])
