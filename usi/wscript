@@ -10,7 +10,6 @@ def build(self):
                           'core/registry.cpp',
                           'core/module.cpp',
                           'core/api.cpp',
-
                           'api/systemc.cpp',
                           'api/systemc.i',
                           'api/delegate.i',
@@ -21,6 +20,7 @@ def build(self):
                           'api/mtrace.i',
                           'api/report.i',
                           'api/registry.i',
+                          'api/greensocket.i',
                         ],
     pysource          = self.path.ant_glob(['**/*.py']),
     export_includes   = self.repository_root.abspath(),

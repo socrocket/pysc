@@ -8,7 +8,7 @@
 }
 
 %typemap(in) sc_core::sc_object * {
-  $1 = (sc_core::sc_object *)USIObjectToUSIDelegate;
+  $1 = USIObjectToUSIDelegate($input)->toObject();
 }
 
 %typemap(out) sc_core::sc_object * {

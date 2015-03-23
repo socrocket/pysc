@@ -32,7 +32,8 @@ USI_REGISTER_MODULE(delegate)
             result = getattr(iface, name, None)
             if result:
                 return result
-        super(InterfaceDelegate, self).__getattr__(name)
+        if hasattr(super(USIDelegate, self), name):
+            super(USIDelegate, self).__getattr__(name)
   }
 }
 
@@ -54,16 +55,18 @@ USIObject USIObjectFromUSIDelegate(sc_core::sc_object *obj) {
     return SWIG_NewPointerObj(SWIG_as_voidptr(new USIDelegate(obj)), SWIGTYPE_p_USIDelegate, SWIG_POINTER_OWN | 0);
 }
 
-USIDelegate USIObjectToUSIDelegate(USIObject obj) {
+USIDelegate *USIObjectToUSIDelegate(USIObject obj) {
+  void *argp1 = NULL;
   USIDelegate *result = NULL;
   /// @TODO: reference counting?
-  SWIG_ConvertPtr(obj, SWIG_as_voidptrptr(&result), SWIGTYPE_p_USIDelegate, 0 |  0 );
-  return *result;
+  SWIG_ConvertPtr(obj, &argp1, SWIGTYPE_p_USIDelegate, 0 |  0 );
+  result = reinterpret_cast<USIDelegate *>(argp1);
+  return result;
 }
 
 bool USIObjectIsUSIDelegate(USIObject obj) {
-  USIDelegate *arg = NULL;
-  return SWIG_IsOK(SWIG_ConvertPtr(obj, SWIG_as_voidptrptr(&arg), SWIGTYPE_p_USIDelegate, 0 |  0 ));
+  void *arg = NULL;
+  return SWIG_IsOK(SWIG_ConvertPtr(obj, &arg, SWIGTYPE_p_USIDelegate, 0 |  0 ));
 }
 
 %}

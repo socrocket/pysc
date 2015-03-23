@@ -51,6 +51,10 @@ class USIDelegate {
       // Returns a new reference
     }
 
+    sc_core::sc_object *toObject() {
+      return this->m_object;
+    }
+
     operator sc_core::sc_object *() {
       return this->m_object;
     }
@@ -58,10 +62,11 @@ class USIDelegate {
 
     ~USIDelegate() {
       /// @todo Decrement ifs count  
-      Py_XINCREF(this->ifs);
+      Py_XDECREF(this->ifs);
     }
 
     USIObject get_if_tuple() {
+      Py_XINCREF(this->ifs);
       return ifs;
     }
 
@@ -72,7 +77,7 @@ class USIDelegate {
 
 #ifndef SWIG
 USIObject USIObjectFromUSIDelegate(sc_core::sc_object *obj);
-USIDelegate USIObjectToUSIDelegate(USIObject obj);
+USIDelegate *USIObjectToUSIDelegate(USIObject obj);
 bool USIObjectIsUSIDelegate(USIObject obj);
 #endif
 
