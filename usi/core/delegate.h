@@ -4,14 +4,54 @@
 #include <systemc.h>
 #include <vector>
 #include "usi.h"
+#include "core/common/gs_config.h"
 
 class USIDelegate;
 
 class USIBaseDelegate {
   public:
-    const char *name() { return (m_object) ? m_object->name(): ""; }
-    const char *basename() { return (m_object) ? m_object->basename(): ""; }
-    const char *kind() { return (m_object) ? m_object->kind(): ""; }
+    const char *name() {
+      gs::cnf::gs_param_base *param = dynamic_cast<gs::cnf::gs_param_base *>(m_object);
+      if(param) {
+        return param->getName().c_str();
+      } else if(m_object) {
+        return m_object->name();
+      } else {
+        return "";
+      }
+
+    }
+    const char *basename() {
+      gs::cnf::gs_param_base *param = dynamic_cast<gs::cnf::gs_param_base *>(m_object);
+      if(param) {
+        size_t offset = 0;
+        sc_core::sc_object *parent = m_object->get_parent();
+        gs::cnf::gs_param_base *parent_param = dynamic_cast<gs::cnf::gs_param_base *>(parent);
+        if(parent_param) {
+          offset = parent_param->getName().length();
+        } else if(parent) {
+          offset = sizeof(parent->name());
+        }
+        if(offset) {
+          offset++;
+        }
+        return param->getName().substr(offset).c_str();
+      } else if(m_object) {
+        return m_object->basename();
+      } else {
+        return "";
+      }
+    }
+    const char *kind() {
+      gs::cnf::gs_param_base *param = dynamic_cast<gs::cnf::gs_param_base *>(m_object);
+      if(param) {
+        return param->getTypeString().c_str();
+      } else if(m_object) {
+        return m_object->kind();
+      } else {
+        return "";
+      }
+    }
     sc_core::sc_object *parent() {
       if(m_object) {
         return m_object->get_parent();
