@@ -8,6 +8,7 @@ REPOSITORY_TOOLS = [
 #  "blas",
 #  "lapack",
   "virtualenv",
+#  "consolelog",
 #  "shell",
 ]
 
