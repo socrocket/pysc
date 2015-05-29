@@ -95,6 +95,10 @@ bool is_running() {
 #endif
 }
 
+std::vector<sc_core::sc_object *> get_top_level_objects() {
+  return sc_core::sc_get_top_level_objects();
+}
+
 }; // systemc
 }; // api
 }; // pysc

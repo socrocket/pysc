@@ -45,6 +45,7 @@ delta_count = systemc_.delta_count
 set_verbosity = systemc_.set_verbosity
 #spawn = systemc_.spawn
 is_running = systemc_.is_running
+get_top_level_objects = systemc_.get_top_level_objects
 
 def wait(obj, tu=None):
     """
