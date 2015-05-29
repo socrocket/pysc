@@ -1,7 +1,13 @@
 import code
 import os
 import sys
-from usi.usage import *
+try:
+  from usi.usage import *
+except ImportError:
+  help_text = help
+  credits_text = ""
+  copyright_text = ""
+  license_text = ""
 from console import Console
 
 CONSOLE = None
