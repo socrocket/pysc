@@ -1,5 +1,5 @@
 
-__all__ = ["api.systemc", "api.delegate", "api.registry"]
+__all__ = ["api.systemc", "api.delegate", "api.registry", "api.report"]
 
 """ Standalone mode (embedded change this to False) """
 __standalone__ = True
@@ -11,9 +11,53 @@ __interpreter_name__ = ""
 from usi.api.systemc import *
 from usi.api.delegate import USIDelegate
 from usi.api.registry import get_module_files
+import usi.api.report as report
 
 def find(name):
-    return USIDelegate(name)
+    result = []
+    def recursive(objs):
+        result = list(objs)
+        for obj in list(objs):
+            result += recursive(list(obj.children()))
+        return result
+
+    if name == "*":
+        result += list(get_top_level_objects())
+    elif name.endswith(".*"):
+       obj = USIDelegate(name[:-2])
+       result.append(obj)
+    else:
+       obj = USIDelegate(name)
+       if not any(obj.get_if_tuple()):
+         return []
+       return [obj]
+
+    result = recursive(result)
+    return result
+
+def add_to_reporting_list(name, severity, verbosity):
+    print name
+    if isinstance(name, list):
+        for obj in name:
+            add_to_reporting_list(obj, severity, verbosity)
+    elif isinstance(name, str):
+        add_to_reporting_list(find(name), severity, verbosity)
+    elif isinstance(name, USIDelegate):
+        print "Filter", name.name(), severity, verbosity
+        report.add_sc_object_to_filter(name, severity, verbosity)
+    else:
+        raise Exception("Unknown Type")
+
+def remove_from_reporting_list(name):
+    if isinstance(name, list):
+        for obj in name:
+            remove_from_reporting_list(obj)
+    elif isinstance(name, str):
+        remove_from_reporting_list(find(name))
+    elif isinstance(name, USIDelegate):
+        report.remove_sc_object_from_filter(name)
+    else:
+        raise Exception("Unknown Type")
 
 def get_current_callback():
     """May be a spawned thread or a call-in from C++, or in elaboration"""

@@ -29,8 +29,8 @@ enum sc_severity {
 }
 
 void set_filter_to_whitelist(bool value);
-void add_sc_object_to_filter(std::string name, sc_core::sc_severity severity, int verbosity);
-void remove_sc_object_from_filter(std::string name);
+void add_sc_object_to_filter(sc_core::sc_object *obj, sc_core::sc_severity severity, int verbosity);
+void remove_sc_object_from_filter(sc_core::sc_object *obj);
 
 
 %{
@@ -40,19 +40,24 @@ void set_filter_to_whitelist(bool value) {
   sr_report_handler::set_filter_to_whitelist(value);
 }
 
-void add_sc_object_to_filter(std::string name, sc_severity severity, int verbosity) {
-  sc_core::sc_object *obj = sc_find_by_name(name.c_str());
+void add_sc_object_to_filter(sc_core::sc_object *obj, sc_severity severity, int verbosity) {
   if(obj) {
     sr_report_handler::add_sc_object_to_filter(obj, severity, verbosity);
   }
 }
 
-void remove_sc_object_from_filter(std::string name) {
-  sc_core::sc_object *obj = sc_find_by_name(name.c_str());
+void remove_sc_object_from_filter(sc_core::sc_object *obj) {
   if(obj) {
     sr_report_handler::remove_sc_object_from_filter(obj);
   }
 }
+
+/*
+std::vector<sc_core::sc_object *> show_sc_object_in_filter() {
+  sr_report_handler::show_sc_object_in_filter();
+}
+*/
+
 %}
 
 
