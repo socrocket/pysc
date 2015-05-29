@@ -74,14 +74,14 @@ def venv_package(self):
 
 def configure(self):
     try:
-      self.find_program('virtualenv', var="VIRTUALENV", mandatory=True, okmsg="ok")
+      self.find_program('virtualenv2', var="VIRTUALENV", mandatory=True, okmsg="ok")
     except:
         name    = "virtualenv"
         version = "trunk"
         self.dep_fetch(
-            name    = name, 
-            version = version,
-            git_url = "https://github.com/pypa/virtualenv.git",
+          name    = name, 
+          version = version,
+          git_url = "https://github.com/pypa/virtualenv.git",
         )
         self.find_program('virtualenv.py', var="VIRTUALENV", mandatory=True, okmsg="ok", path_list=[self.dep_path(name, version)])
     self.start_msg("Create python virtualenv")
