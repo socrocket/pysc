@@ -25,13 +25,13 @@ namespace std {
    %template(set_string) set<std::string>;
 }
 
-sc_object *create_object_by_name(std::string group, std::string type, std::string name);
+sc_core::sc_object *create_object_by_name(std::string group, std::string type, std::string name);
 std::set<std::string> get_module_files(std::string group);
 
 %{
 #include "core/common/sr_registry.h"
 
-sc_object *create_object_by_name(std::string group, std::string type, std::string name) {
+sc_core::sc_object *create_object_by_name(std::string group, std::string type, std::string name) {
   return SrModuleRegistry::create_object_by_name(group, type, name);
 }
 
