@@ -52,6 +52,10 @@ class USIBaseDelegate {
         return "";
       }
     }
+    size_t id() {
+      return reinterpret_cast<size_t>(m_object);
+    }
+
     sc_core::sc_object *parent() {
       if(m_object) {
         return m_object->get_parent();

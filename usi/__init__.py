@@ -36,14 +36,12 @@ def find(name):
     return result
 
 def add_to_reporting_list(name, severity, verbosity):
-    print name
     if isinstance(name, list):
         for obj in name:
             add_to_reporting_list(obj, severity, verbosity)
     elif isinstance(name, str):
         add_to_reporting_list(find(name), severity, verbosity)
     elif isinstance(name, USIDelegate):
-        print "Filter", name.name(), severity, verbosity
         report.add_sc_object_to_filter(name, severity, verbosity)
     else:
         raise Exception("Unknown Type")

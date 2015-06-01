@@ -19,6 +19,9 @@ USI_REGISTER_MODULE(delegate)
 
 %extend USIDelegate {
   %pythoncode {
+    def __repr__(self):
+        return "USIDelegate('%s')" % (self.name())
+
     def __dir__(self):
         result = set()
         for iface in self.get_if_tuple():

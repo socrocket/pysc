@@ -23,6 +23,8 @@ typedef gs::socket::initiator_socket_callback_base<32, tlm::tlm_base_protocol_ty
 typedef gs::socket::initiator_socket_callback_base<32, tlm::tlm_base_protocol_types, 1> iscb_321;
 typedef gs::socket::target_socket_callback_base<32, tlm::tlm_base_protocol_types, 0> tscb_320;
 typedef gs::socket::target_socket_callback_base<32, tlm::tlm_base_protocol_types, 1> tscb_321;
+
+typedef gs::socket::bind_checker<tlm::tlm_base_protocol_types> bchk;
 %}
 
 %inline %{
@@ -36,7 +38,7 @@ class USIInitiatorSocket {
       }
     }
 
-    void bind(sc_core::sc_object *obj) {
+    void socket_bind(sc_core::sc_object *obj) {
       switch(type) {
         case ISCB_320: {
           iscb_320::base_target_socket_type *o = dynamic_cast<iscb_320::base_target_socket_type *>(obj);
@@ -62,6 +64,66 @@ class USIInitiatorSocket {
       }
     }
 
+    unsigned int socket_get_num_bindings() {
+      switch(type) {
+        case ISCB_320: {
+          return socket<iscb_320>()->size();
+        } break;
+        case ISCB_321: {
+          return 1;
+        } break;
+        default: return 0; /// @TODO Error
+      }
+    }
+    sc_core::sc_object *socket_get_other_side(uint32_t id = 0) {
+      uint32_t a = 0;
+      return dynamic_cast<sc_object *>(socket<bchk>()->get_other_side(id, a));
+    }
+
+#ifndef SWIG
+    enum type_t {
+      NONE,
+      ISCB_320,
+      ISCB_321,
+      TSCB_320,
+      TSCB_321
+    };
+    type_t type;
+  private:
+    sc_core::sc_object *m_obj;
+
+    template<typename T> T *socket() {
+      return dynamic_cast<T *>(m_obj);
+    }  
+#endif
+};
+
+class USITargetSocket {
+  public:
+    USITargetSocket(sc_core::sc_object *obj) : type(NONE), m_obj(obj) {
+      if(socket<tscb_320>()) {
+        type = TSCB_320;
+      } else if(socket<tscb_321>()) {
+        type = TSCB_321;
+      }
+    }
+
+    unsigned int socket_get_num_bindings() {
+      switch(type) {
+        case TSCB_320: {
+          return socket<tscb_320>()->size();
+        } break;
+        case TSCB_321: {
+          return 1;
+        } break;
+        default: return 0; /// @TODO Error
+      }
+    }
+    sc_core::sc_object *socket_get_other_side(uint32_t id = 0) {
+      uint32_t a = 0;
+      return dynamic_cast<sc_object *>(socket<bchk>()->get_other_side(id, a));
+    }
+
 #ifndef SWIG
     enum type_t {
       NONE,
@@ -80,8 +142,9 @@ class USIInitiatorSocket {
 #endif
 };
 %}
+
 %{
-USIObject find_USISocket_object(sc_core::sc_object *obj, std::string name) {
+USIObject find_USIInitiatorSocket_object(sc_core::sc_object *obj, std::string name) {
   PyObject *result = NULL;
   USIInitiatorSocket *instance = new USIInitiatorSocket(obj);
   if(instance) {
@@ -93,6 +156,20 @@ USIObject find_USISocket_object(sc_core::sc_object *obj, std::string name) {
   }
   return result;
 }
-USI_REGISTER_OBJECT_GENERATOR(find_USISocket_object);
+
+USIObject find_USITargetSocket_object(sc_core::sc_object *obj, std::string name) {
+  PyObject *result = NULL;
+  USITargetSocket *instance = new USITargetSocket(obj);
+  if(instance) {
+    if(instance->type != USITargetSocket::NONE) {
+      result = SWIG_NewPointerObj(SWIG_as_voidptr(instance), SWIGTYPE_p_USITargetSocket, 1);
+    } else {
+      delete instance;
+    }
+  }
+  return result;
+}
+USI_REGISTER_OBJECT_GENERATOR(find_USIInitiatorSocket_object);
+USI_REGISTER_OBJECT_GENERATOR(find_USITargetSocket_object);
 %}
 
