@@ -14,6 +14,14 @@ from usi.api.registry import get_module_files
 import usi.api.report as report
 
 def find(name):
+    """
+      Finds SystemC sc_objects and returns USIDelegates to each matching object
+
+      Simply provide the name: find('mctrl') -> [USIDelegate('mctrl')]
+      Use dots to seperate in hierachy like in SystemC: find('top.leon3_0.mmu.tlb')
+      The function can handle wildcards: find('mctrl') -> [USIDelegate('mctrl'), USIDelegate('mctrl.generics'), ...]
+      To simplify the function always returns a list of USIDelegate objects.
+    """
     result = []
     def recursive(objs):
         result = list(objs)
@@ -34,6 +42,18 @@ def find(name):
 
     result = recursive(result)
     return result
+
+def refind(regex):
+    import re
+    if isinstance(regex, str):
+        regex = re.compile(regex)
+
+    allobj = find('*')
+    results = []
+    for obj in allobj:
+        if regex.match(obj.name()):
+            results.append(obj)
+    return results
 
 def add_to_reporting_list(name, severity, verbosity):
     if isinstance(name, list):
