@@ -27,6 +27,8 @@ namespace std {
 
 sc_core::sc_object *create_object_by_name(std::string group, std::string type, std::string name);
 std::set<std::string> get_module_files(std::string group);
+std::set<std::string> get_module_names(std::string group);
+std::set<std::string> get_group_names();
 
 %{
 #include "core/common/sr_registry.h"
@@ -37,6 +39,14 @@ sc_core::sc_object *create_object_by_name(std::string group, std::string type, s
 
 std::set<std::string> get_module_files(std::string group) {
   return SrModuleRegistry::get_module_files(group);
+}
+
+std::set<std::string> get_module_names(std::string group) {
+  return SrModuleRegistry::get_module_names(group);
+}
+
+std::set<std::string> get_group_names() {
+  return SrModuleRegistry::get_group_names();
 }
 %}
 
