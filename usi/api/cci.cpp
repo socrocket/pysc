@@ -1,7 +1,7 @@
 // vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
 /// @addtogroup pysc
 /// @{
-/// @file gc.cpp
+/// @file cci.cpp
 ///
 /// @date 2013-2014
 /// @copyright All rights reserved.
@@ -12,14 +12,14 @@
 #include <Python.h>
 #include <map>
 #include "usi.h"
-#include "usi/api/parameter.h"
+#include "usi/api/cci.h"
 #include "usi/api/systemc.h"
 
 USI_REGISTER_MODULE(parameter_);
 
 namespace pysc {
 namespace api {
-namespace gc {
+namespace cci {
 
 bool exists(std::string name) {
     gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
@@ -262,7 +262,7 @@ void USICCIParam::cci_unregister_callback(PyObject *callback) {
     }
 }
 
-}; // gc
+}; // cci
 }; // api
 }; // pysc
 /// @}

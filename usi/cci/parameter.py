@@ -1,4 +1,5 @@
-import parameter_
+import usi.api.cci as api
+from callbacks import *
 
 """
 1) GC Database Access
@@ -20,21 +21,21 @@ def addIndex(name, index):
     else:
         return index
 
-exists = parameter_.exists
+exists = api.exists
 
 def read(name):
     if not exists(name):
         raise GSParamNonExistent
-    return parameter_.read(name)
+    return api.read(name)
 
 def write(name, val):
     if isinstance(val, bool):
         val = int(val)
-    parameter_.write(name, str(val))
+    api.write(name, str(val))
 
-getType = parameter_.get_type_string
-getDocumentation = parameter_.get_documentation
-getProperties = parameter_.get_properties
+getType = api.get_type_string
+getDocumentation = api.get_documentation
+getProperties = api.get_properties
 
 def readList(name):
     result = []
@@ -102,14 +103,14 @@ def makeDict(name, list_of_names, readProperties = False):
                 # leaf
                 index = addIndex(name, head)
                 value = read(index)
-                if parameter_.is_bool(index):
+                if api.is_bool(index):
                     value = bool(value)
-                elif parameter_.is_float(index):
+                elif api.is_float(index):
                     value = float(value)
-                elif parameter_.is_int(index):
+                elif api.is_int(index):
                     value = int(value)
 
-                if not parameter_.is_array(index):
+                if not api.is_array(index):
                     if not readProperties:
                         result[head] = value
                     else:
@@ -122,10 +123,10 @@ def makeDict(name, list_of_names, readProperties = False):
 
 def listParams(name = ""):
     if name != "":
-        all_params = parameter_.list(addIndex(name,"*"))
+        all_params = api.list(addIndex(name,"*"))
         ln = len(name) + 1
     else:
-        all_params = parameter_.list("")
+        all_params = api.list("")
         ln = 0
 
     return [all_params.read(i)[ln:] for i in range(all_params.length())]
@@ -194,22 +195,4 @@ def paramsToDict(params, base = ""):
         else:
             result[base] = value
     return result
-            
 
-pre_read = parameter_.pre_read
-post_read = parameter_.post_read
-reject_write = parameter_.reject_write
-pre_write = parameter_.pre_write
-post_write = parameter_.post_write
-create_param = parameter_.create_param
-destroy_param = parameter_.destroy_param
-post_write_and_destroy = parameter_.post_write_and_destroy
-no_callback = parameter_.no_callback
-
-register = parameter_.register_callback
-unregister = parameter_.unregister_callback
-
-def on(name, type):
-    def do(funct):
-        return register(name, funct, type)
-    return do

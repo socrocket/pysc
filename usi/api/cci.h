@@ -1,7 +1,7 @@
 // vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
 /// @addtogroup pysc
 /// @{
-/// @file gc.h
+/// @file cci.h
 /// 
 /// @date 2013-2014
 /// @copyright All rights reserved.
@@ -9,8 +9,8 @@
 ///            program, without the express, prior written consent of the 
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer 
-#ifndef PYSC_API_GSPARAM_H_
-#define PYSC_API_GSPARAM_H_
+#ifndef PYSC_API_CCI_H_
+#define PYSC_API_CCI_H_
 
 #include <Python.h>
 
@@ -37,7 +37,7 @@ namespace gs {
 
 namespace pysc {
 namespace api {
-namespace gc {
+namespace cci {
 
 bool exists(std::string name);
 std::string read(std::string name);
@@ -160,9 +160,9 @@ class USICCIParam {
     gs::gs_param_base *m_object;
 };
 
-}  // namespace gc
+}  // namespace cci
 }  // namespace api
 }  // namesapce pysc
 
-#endif  // PYSC_API_GSPARAM_H
+#endif  // PYSC_API_CCI_H
 /// @}

@@ -1,7 +1,7 @@
 import usi
 import sys
 import json
-import usi.api.parameter
+import parameter
 from usi.tools.args import parser, get_args
 
 """Load initial model configuration"""
@@ -19,8 +19,8 @@ def parse_args(*k, **kw):
         if len(l) == 2:
             name = l[0]
             value = l[1]
-            #if usi.api.parameter.exists(name):
-            usi.api.parameter.write(name, value)
+            #if parameter.exists(name):
+            parameter.write(name, value)
             #else:
             #    print "Option does not exist: %s" % (name)
             #    sys.exit(1)
@@ -37,7 +37,7 @@ def show_configuration(*k, **kw):
         if len(l) == 2:
             name = l[0]
             value = l[1]
-            if not usi.api.parameter.exists(name):
+            if not parameter.exists(name):
                 print "Option does not exist: %s" % (name)
                 malformated = True
     if malformated:
@@ -46,8 +46,8 @@ def show_configuration(*k, **kw):
 
     if get_args().list:
         print "Parameter List:"
-        params = usi.api.parameter.readPropertyDict()
-        usi.api.parameter.printDict(params)
-        #params = usi.api.parameter.filterDict(params, "generics")
+        params = parameter.readPropertyDict()
+        parameter.printDict(params)
+        #params = parameter.filterDict(params, "generics")
         sys.exit(0)
 
