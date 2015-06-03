@@ -1,4 +1,4 @@
-import usi.api.cci as api
+from usi.api import cci as api
 from callback import *
 
 """

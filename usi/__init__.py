@@ -1,5 +1,5 @@
 
-__all__ = ["api.systemc", "api.delegate", "api.registry", "api.report"]
+__all__ = ["systemc", "api.delegate", "api.registry", "api.report"]
 
 """ Standalone mode (embedded change this to False) """
 __standalone__ = True
@@ -8,10 +8,10 @@ __standalone__ = True
 """ For context management """
 __interpreter_name__ = ""
 
-from usi.api.systemc import *
+from usi.systemc import *
 from usi.api.delegate import USIDelegate
 from usi.api.registry import get_module_files
-import usi.api.report as report
+from usi.api import report
 
 def find(name):
     """

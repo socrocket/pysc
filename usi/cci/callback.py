@@ -1,4 +1,4 @@
-import usi.api.cci as api
+from usi.api import cci as api
 
 pre_read = api.pre_read
 post_read = api.post_read
