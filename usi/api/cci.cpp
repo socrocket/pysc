@@ -15,7 +15,7 @@
 #include "usi/api/cci.h"
 #include "usi/api/systemc.h"
 
-USI_REGISTER_MODULE(parameter_);
+USI_REGISTER_MODULE(cci);
 
 namespace pysc {
 namespace api {

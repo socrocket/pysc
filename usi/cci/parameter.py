@@ -1,5 +1,5 @@
 import usi.api.cci as api
-from callbacks import *
+from callback import *
 
 """
 1) GC Database Access
