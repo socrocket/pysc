@@ -236,6 +236,32 @@ void unregister_callback(PyObject *callback) {
     }
 }
 
+void USICCIParam::cci_register_callback(PyObject *callback, gs::cnf::callback_type type) {
+    callback_map.insert(
+        std::pair<PyObject *, boost::shared_ptr<gs::cnf::ParamCallbAdapt_b> >(
+            callback,
+            m_object->registerParamCallback(
+                boost::shared_ptr<gs::cnf::ParamCallbAdapt_b>(
+                    new CallbackAdapter(callback, NULL, m_object)
+                ),
+                type
+            )
+        )
+    );
+}
+
+void USICCIParam::cci_unregister_callback(PyObject *callback) {
+    std::map<PyObject *, boost::shared_ptr<gs::cnf::ParamCallbAdapt_b> >::iterator iter =
+        callback_map.find(callback);
+    if(iter!=callback_map.end()) {
+        iter->second->unregister_at_parameter();
+        //gs::gs_param_base *param = iter->second->get_caller_param();
+        //gs::cnf::ParamCallbAdapt_b *adapt = &(*iter->second);
+        //param->unregisterParamCallback(adapt);
+        callback_map.erase(iter);
+    }
+}
+
 }; // gc
 }; // api
 }; // pysc

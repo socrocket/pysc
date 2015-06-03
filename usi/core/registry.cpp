@@ -11,6 +11,7 @@
 /// @author Rolf Meyer
 #include "usi/core/registry.h"
 #include "core/common/sc_find.h"
+#include "core/common/gs_config.h"
 
 PyScModule *PyScModule::reg = NULL;
 
@@ -67,6 +68,13 @@ PyObject *PyScObjectGenerator::find_object_by_ptr(sc_core::sc_object *obj) {
 }
 
 sc_core::sc_object *PyScObjectGenerator::find_object_by_name(std::string name) {
+  gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
+  if(configAPI) {
+    gs::gs_param_base *param = configAPI->getPar(name);
+    if(param) {
+      return param;
+    }
+  }
   return sc_find_by_name(name.c_str());
 }
 
