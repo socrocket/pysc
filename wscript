@@ -9,7 +9,7 @@ REPOSITORY_TOOLS = [
 #  "lapack",
   "virtualenv",
 #  "consolelog",
-#  "shell",
+  "shell",
 ]
 
 def build(self):
