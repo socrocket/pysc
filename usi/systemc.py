@@ -1,12 +1,12 @@
-import systemc_
+import usi.api.systemc as api
 
 # Renaming time constants for easy reuse
-FS = systemc_.SC_FS
-PS = systemc_.SC_PS
-NS = systemc_.SC_NS
-US = systemc_.SC_US
-MS = systemc_.SC_MS
-SEC = systemc_.SC_SEC
+FS = api.SC_FS
+PS = api.SC_PS
+NS = api.SC_NS
+US = api.SC_US
+MS = api.SC_MS
+SEC = api.SC_SEC
 
 """Time constants units"""
 TIME_UNITS = {
@@ -19,9 +19,9 @@ TIME_UNITS = {
 }
 
 def start(*k, **kw):
-  if systemc_.is_running():
-      if hasattr(systemc_, "start"):
-          systemc_.start()
+  if api.is_running():
+      if hasattr(api, "start"):
+          api.start()
       else:
           print "sc_start is not implemented"
   from usi import shell
@@ -29,8 +29,8 @@ def start(*k, **kw):
       shell.stop()
 
 def stop(*k, **kw):
-  if systemc_.is_running():
-      systemc_.stop()
+  if api.is_running():
+      api.stop()
   from usi import shell
   if shell.is_running():
       shell.stop()
@@ -38,14 +38,14 @@ def stop(*k, **kw):
 def pause(*k, **kw):
   from usi import shell
   if not shell.is_running():
-      systemc_.pause()
+      api.pause()
 
-simulation_time = systemc_.simulation_time
-delta_count = systemc_.delta_count
-set_verbosity = systemc_.set_verbosity
-#spawn = systemc_.spawn
-is_running = systemc_.is_running
-get_top_level_objects = systemc_.get_top_level_objects
+simulation_time = api.simulation_time
+delta_count = api.delta_count
+set_verbosity = api.set_verbosity
+#spawn = api.spawn
+is_running = api.is_running
+get_top_level_objects = api.get_top_level_objects
 
 def wait(obj, tu=None):
     """
@@ -57,9 +57,9 @@ def wait(obj, tu=None):
         obj.wait()
         return
     if tu == None:
-        systemc_.wait(obj)
+        api.wait(obj)
     else:
-        systemc_.wait(obj, tu)
+        api.wait(obj, tu)
     # support for thread manipulation: pause, reset, kill, etc
     #thread_control()
 

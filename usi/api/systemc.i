@@ -1,4 +1,4 @@
-%module systemc_
+%module systemc
 
 %include "usi.i"
 %include "std_string.i"

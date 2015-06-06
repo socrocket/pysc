@@ -1,7 +1,7 @@
 // vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
 /// @addtogroup pysc
 /// @{
-/// @file gc.cpp
+/// @file cci.cpp
 ///
 /// @date 2013-2014
 /// @copyright All rights reserved.
@@ -12,14 +12,14 @@
 #include <Python.h>
 #include <map>
 #include "usi.h"
-#include "usi/api/parameter.h"
+#include "usi/api/cci.h"
 #include "usi/api/systemc.h"
 
-USI_REGISTER_MODULE(parameter_);
+USI_REGISTER_MODULE(cci);
 
 namespace pysc {
 namespace api {
-namespace gc {
+namespace cci {
 
 bool exists(std::string name) {
     gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
@@ -236,7 +236,33 @@ void unregister_callback(PyObject *callback) {
     }
 }
 
-}; // gc
+void USICCIParam::cci_register_callback(PyObject *callback, gs::cnf::callback_type type) {
+    callback_map.insert(
+        std::pair<PyObject *, boost::shared_ptr<gs::cnf::ParamCallbAdapt_b> >(
+            callback,
+            m_object->registerParamCallback(
+                boost::shared_ptr<gs::cnf::ParamCallbAdapt_b>(
+                    new CallbackAdapter(callback, NULL, m_object)
+                ),
+                type
+            )
+        )
+    );
+}
+
+void USICCIParam::cci_unregister_callback(PyObject *callback) {
+    std::map<PyObject *, boost::shared_ptr<gs::cnf::ParamCallbAdapt_b> >::iterator iter =
+        callback_map.find(callback);
+    if(iter!=callback_map.end()) {
+        iter->second->unregister_at_parameter();
+        //gs::gs_param_base *param = iter->second->get_caller_param();
+        //gs::cnf::ParamCallbAdapt_b *adapt = &(*iter->second);
+        //param->unregisterParamCallback(adapt);
+        callback_map.erase(iter);
+    }
+}
+
+}; // cci
 }; // api
 }; // pysc
 /// @}

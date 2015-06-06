@@ -17,26 +17,41 @@
 
 USI_REGISTER_MODULE(delegate)
 
+#if 0
+%pythonappend USIDelegate::USIDelegate %{
+  from usi.sc_object import usi_extend_delegate
+  usi_extend_delegate(self)
+%}
+#endif
+
 %extend USIDelegate {
   %pythoncode {
     def __repr__(self):
         return "USIDelegate('%s')" % (self.name())
 
     def __dir__(self):
-        result = set()
+        result = set(dir(self.if_externsion))
         for iface in self.get_if_tuple():
             result.update(dir(iface))
         result.discard('this')
         return sorted(result)
 
     def __getattr__(self, name):
-        result = None
+        result = self.__dict__.get("if_extension", {}).get(name, None)
+        if result:
+            return result
         for iface in self.get_if_tuple():
             result = getattr(iface, name, None)
             if result:
                 return result
         if hasattr(super(USIDelegate, self), name):
             super(USIDelegate, self).__getattr__(name)
+
+    def __setattr__(self, name, value):
+        if name in ["this", "if_extension"]:
+            super(USIDelegate, self).__setattr__(name, value)
+        else:
+            super(USIDelegate, self).__getattr__("if_extension")[name] = value
   }
 }
 
