@@ -17,12 +17,10 @@
 
 USI_REGISTER_MODULE(delegate)
 
-#if 0
 %pythonappend USIDelegate::USIDelegate %{
   from usi.sc_object import usi_extend_delegate
   usi_extend_delegate(self)
 %}
-#endif
 
 %extend USIDelegate {
   %pythoncode {
@@ -30,14 +28,14 @@ USI_REGISTER_MODULE(delegate)
         return "USIDelegate('%s')" % (self.name())
 
     def __dir__(self):
-        result = set(dir(self.if_externsion))
+        result = set(self.__dict__['if_data'].keys())
         for iface in self.get_if_tuple():
             result.update(dir(iface))
         result.discard('this')
         return sorted(result)
 
     def __getattr__(self, name):
-        result = self.__dict__.get("if_extension", {}).get(name, None)
+        result = self.__dict__.setdefault('if_data', {}).get(name) # result = USIDelegate.__getattr__(self, 'if_data').get(name) #result = super(USIDelegate, self).__getattr__('if_data').get(name, None)
         if result:
             return result
         for iface in self.get_if_tuple():
@@ -48,10 +46,10 @@ USI_REGISTER_MODULE(delegate)
             super(USIDelegate, self).__getattr__(name)
 
     def __setattr__(self, name, value):
-        if name in ["this", "if_extension"]:
-            super(USIDelegate, self).__setattr__(name, value)
+        if name in ["this", "if_data"]:
+            self.__dict__[name] = value #USIDelegate.__setattr__(self, name, value) #super(USIDelegate, self).__setattr__(name, value)
         else:
-            super(USIDelegate, self).__getattr__("if_extension")[name] = value
+            self.if_data[name] = value
   }
 }
 
