@@ -19,13 +19,20 @@ packages = [
     "blockdiag==1.3.0",
     "Pygments==1.6",
     "Sphinx==1.1.3",
+    "Jinja2==2.7.1",
+    "termcolor==1.1.0",
+    "pyelftools",
+    "pydot",
+    "tmuxp",
+]
 
+"""
+packages_for_ipython
     "cov-core==1.7",
     "coverage==3.7.1",
     "nose==1.3.0",
     "nose-cov==1.6",
 
-    "Jinja2==2.7.1",
     "MarkupSafe==0.18",
     #"basemap==1.0.7", -> World map views, external dependency, maybe?
     "funcparserlib==0.3.6",
@@ -52,10 +59,10 @@ packages = [
     "numexpr==2.4",
     "cython==0.20.2",
     "tables==3.1.1",
-    "termcolor==1.1.0",
     "patsy==0.3.0",
     "statsmodels==0.5.0",
 ]
+"""
 
 ACTIVATE = """
 #!/bin/bash
@@ -108,6 +115,7 @@ class Bash(BuildContext):
 
 setattr(Context.g_module, 'bash', bash)
 
+""" # For IPython
 def console(self):
     vexecute(self, "ipython qtconsole --colors=linux")
 
@@ -125,3 +133,4 @@ class XConsole(BuildContext):
     fun = 'xconsole'
 
 setattr(Context.g_module, 'xconsole', console)
+"""

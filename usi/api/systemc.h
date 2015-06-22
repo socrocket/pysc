@@ -40,6 +40,7 @@ int set_verbosity(int verbosity);
 
 long get_curr_process_handle();
 bool is_running();
+std::vector<sc_core::sc_object *> get_top_level_objects();
 
 };
 };

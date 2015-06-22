@@ -1,5 +1,5 @@
 
-__all__ = ["api.systemc", "api.delegate", "api.registry"]
+__all__ = ["systemc", "api.delegate", "api.registry", "api.report"]
 
 """ Standalone mode (embedded change this to False) """
 __standalone__ = True
@@ -8,12 +8,74 @@ __standalone__ = True
 """ For context management """
 __interpreter_name__ = ""
 
-from usi.api.systemc import *
+from usi.systemc import *
 from usi.api.delegate import USIDelegate
 from usi.api.registry import get_module_files
+from usi.api import report
 
 def find(name):
-    return USIDelegate(name)
+    """
+      Finds SystemC sc_objects and returns USIDelegates to each matching object
+
+      Simply provide the name: find('mctrl') -> [USIDelegate('mctrl')]
+      Use dots to seperate in hierachy like in SystemC: find('top.leon3_0.mmu.tlb')
+      The function can handle wildcards: find('mctrl') -> [USIDelegate('mctrl'), USIDelegate('mctrl.generics'), ...]
+      To simplify the function always returns a list of USIDelegate objects.
+    """
+    result = []
+    def recursive(objs):
+        result = list(objs)
+        for obj in list(objs):
+            result += recursive(list(obj.children()))
+        return result
+
+    if name == "*":
+        result += list(get_top_level_objects())
+    elif name.endswith(".*"):
+       obj = USIDelegate(name[:-2])
+       result.append(obj)
+    else:
+       obj = USIDelegate(name)
+       if not any(obj.get_if_tuple()):
+         return []
+       return [obj]
+
+    result = recursive(result)
+    return result
+
+def refind(regex):
+    import re
+    if isinstance(regex, str):
+        regex = re.compile(regex)
+
+    allobj = find('*')
+    results = []
+    for obj in allobj:
+        if regex.match(obj.name()):
+            results.append(obj)
+    return results
+
+def add_to_reporting_list(name, severity, verbosity):
+    if isinstance(name, list):
+        for obj in name:
+            add_to_reporting_list(obj, severity, verbosity)
+    elif isinstance(name, str):
+        add_to_reporting_list(find(name), severity, verbosity)
+    elif isinstance(name, USIDelegate):
+        report.add_sc_object_to_filter(name, severity, verbosity)
+    else:
+        raise Exception("Unknown Type")
+
+def remove_from_reporting_list(name):
+    if isinstance(name, list):
+        for obj in name:
+            remove_from_reporting_list(obj)
+    elif isinstance(name, str):
+        remove_from_reporting_list(find(name))
+    elif isinstance(name, USIDelegate):
+        report.remove_sc_object_from_filter(name)
+    else:
+        raise Exception("Unknown Type")
 
 def get_current_callback():
     """May be a spawned thread or a call-in from C++, or in elaboration"""

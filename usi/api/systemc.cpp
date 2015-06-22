@@ -14,7 +14,7 @@
 #include "usi.h"
 #include "usi/api/systemc.h"
 
-USI_REGISTER_MODULE(systemc_);
+USI_REGISTER_MODULE(systemc);
 
 namespace pysc {
 namespace api {
@@ -93,6 +93,10 @@ bool is_running() {
 #error Unknown SystemC API to call for sc_is_running
   return false;
 #endif
+}
+
+std::vector<sc_core::sc_object *> get_top_level_objects() {
+  return sc_core::sc_get_top_level_objects();
 }
 
 }; // systemc

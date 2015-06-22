@@ -63,6 +63,10 @@ class USIBaseDelegate {
       }
     }
 
+    size_t id() {
+      return reinterpret_cast<size_t>(m_object);
+    }
+
     /// Returns the hierachial parent of the sc_object
     sc_core::sc_object *parent() {
       if(m_object) {

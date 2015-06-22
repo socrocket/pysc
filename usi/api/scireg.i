@@ -208,6 +208,16 @@ PyObject *find_usi_scireg_parent(sc_core::sc_object *obj, std::string name) {
   }
 }
 USI_REGISTER_OBJECT_GENERATOR(find_usi_scireg_parent);
+
+PyObject *find_scireg_region_if(sc_core::sc_object *obj, std::string name) {
+  scireg_ns::scireg_region_if *instance = dynamic_cast<scireg_ns::scireg_region_if *>(obj);
+  if(instance) {
+    return SWIG_NewPointerObj(SWIG_as_voidptr(instance), SWIGTYPE_p_scireg_ns__scireg_region_if, 0);
+  } else {
+    return NULL;
+  }
+}
+USI_REGISTER_OBJECT_GENERATOR(find_scireg_region_if);
 %}
 
 %init %{
