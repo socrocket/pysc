@@ -221,13 +221,13 @@ def onCommandFrom(obj, debug=False, time_unit=NS, keyargs={}):
 
 from usi.tools import waf
 import os
+import imp
 waf_out_dir = waf.get_lockfile_attr("out_dir")
 
 for filename in get_module_files("module"):
     fullname = os.path.normpath(os.path.join(waf_out_dir, filename))
     pypath = os.path.splitext(fullname)[0] + ".py"
     pymodule = os.path.basename(os.path.splitext(fullname)[0])
-    #print fullname, pypath, pyfile
+    #print fullname, pypath, pymodule
     if os.path.exists(pypath):
-        import imp
         imp.load_source(pymodule, pypath)

@@ -35,7 +35,7 @@ USI_REGISTER_MODULE(delegate)
         return sorted(result)
 
     def __getattr__(self, name):
-        result = self.__dict__.setdefault('if_data', {}).get(name) # result = USIDelegate.__getattr__(self, 'if_data').get(name) #result = super(USIDelegate, self).__getattr__('if_data').get(name, None)
+        result = self.__dict__.setdefault('if_data', {}).get(name)
         if result:
             return result
         for iface in self.get_if_tuple():
@@ -47,7 +47,7 @@ USI_REGISTER_MODULE(delegate)
 
     def __setattr__(self, name, value):
         if name in ["this", "if_data"]:
-            self.__dict__[name] = value #USIDelegate.__setattr__(self, name, value) #super(USIDelegate, self).__setattr__(name, value)
+            self.__dict__[name] = value
         else:
             self.if_data[name] = value
   }
