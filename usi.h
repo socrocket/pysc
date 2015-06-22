@@ -1,3 +1,18 @@
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file usi.h
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author Rolf Meyer
+/// This file renames the python systemc function names to usi function names.
+/// It is the main header file for the usi bindings.
+/// Include it from the main simulation routine to access the Python USI implementation.
+/// Util APIs should import the usi.i from SWIG. It will import all neccecary headers as well 
+/// but furthermore set up the SWIG environment.
 #ifndef USI_H
 #define USI_H
 

@@ -1,3 +1,14 @@
+// vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 :
+/// @addtogroup pysc
+/// @{
+/// @file usi.i
+/// 
+/// @date 2013-2014
+/// @copyright All rights reserved.
+///            Any reproduction, use, distribution or disclosure of this
+///            program, without the express, prior written consent of the 
+///            authors is strictly prohibited.
+/// @author Rolf Meyer
 %include "usi/sc_object.i"
 
 %begin %{
