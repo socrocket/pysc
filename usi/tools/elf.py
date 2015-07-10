@@ -17,7 +17,7 @@ def start_of_initialization(*k, **kw):
             print "-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-e sdram=hello.sparc(0x40000000)'" % (param)
         filename = paramlist2[0]
         if len(paramlist2) == 2:
-            base = paramlist2[1].strip(')')
+            base = int(paramlist2[1].strip(')'), 0) # not 100% right, won't work in the case when there is no 0x in front of Hex string!
         elif filename.endswith('.sparc'):
             base = 0x40000000
         else:
