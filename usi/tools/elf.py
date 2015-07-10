@@ -31,7 +31,7 @@ def start_of_initialization(*k, **kw):
         with open(filename, "rb") as stream:
             elf = ELFFile(stream)
             for section in elf.iter_sections():
-                if section.header["sh_flags"] != constants.SH_FLAGS.SHF_ALLOC:
+                if section.header["sh_flags"] == constants.SH_FLAGS.SHF_ALLOC:
                     addr = section.header["sh_addr"] - base
                     data = section.data()
                     
