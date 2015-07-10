@@ -7,6 +7,7 @@ parser.add_argument('-e', '--loadelf', dest='loadelf', action='append', default=
 @usi.on('start_of_simulation')
 def start_of_initialization(*k, **kw):
     from elftools.elf.elffile import ELFFile
+    from elftools.elf import constants
     for param in get_args().loadelf:
         paramlist = param.split('=')
         if len(paramlist) != 2:
@@ -27,12 +28,10 @@ def start_of_initialization(*k, **kw):
             print "scireg %s not found in simulation for parameter -e %s" % (obj, param)
 
         print "Loading %s into %s at address %s" % (filename, obj, base)
-
         with open(filename, "rb") as stream:
             elf = ELFFile(stream)
-            for sectionname in [".text", ".data", ".bss"]:
-                section = elf.get_section_by_name(sectionname)
-                if section:
+            for section in elf.iter_sections():
+                if section.header["sh_flags"] != constants.SH_FLAGS.SHF_ALLOC:
                     addr = section.header["sh_addr"] - base
                     data = section.data()
                     
