@@ -90,7 +90,7 @@ def configure(self):
     self.start_msg("Create python virtualenv")
     self.env["VENV_PATH"] = os.path.join(self.bldnode.abspath(), ".conf_check_venv")
     self.cmd_and_log(
-        [self.env.VIRTUALENV, self.env.VENV_PATH],
+        [self.env.VIRTUALENV, "-p", "/usr/bin/python2.7", self.env.VENV_PATH],
         output=Context.BOTH,
         cwd=self.bldnode.abspath()
     )

@@ -11,18 +11,18 @@ def options(self):
     pass
 
 packages = [
-    "Pillow==2.2.1",
-    "docutils==0.11",
-    "actdiag==0.5.0",
-    "nwdiag==1.0.0",
-    "seqdiag==0.9.0",
-    "blockdiag==1.3.0",
+#    "Pillow==2.2.1",
+#    "docutils==0.11",
+#    "actdiag==0.5.0",
+#    "nwdiag==1.0.0",
+#    "seqdiag==0.9.0",
+#    "blockdiag==1.3.0",
     "Pygments==1.6",
-    "Sphinx==1.1.3",
+#    "Sphinx==1.1.3",
     "Jinja2==2.7.1",
     "termcolor==1.1.0",
     "pyelftools",
-    "pydot",
+#    "pydot",
     "tmuxp",
 ]
 
