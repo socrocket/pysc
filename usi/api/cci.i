@@ -24,3 +24,4 @@ USI_REGISTER_OBJECT_GENERATOR(find_cci_parameter);
 %}
 
 %include "usi/api/cci.h"
+

@@ -143,15 +143,15 @@ def writeValueDict(name, values):
     if isinstance(values, dict):
         # is it a dictionary?
         for n, v in values.iteritems():
-            writeDict(addIndex(name, n), v)
+            writeValueDict(addIndex(name, n), v)
         return
     if isinstance(values,list) or isinstance(values, tuple):
         # may be an embedded list?
         for i, v in enumerate(values):
-            writeDict(addIndex(name, i), v)
+            writeValueDict(addIndex(name, i), v)
         return
     # must be a leaf value
-    write(name, values)
+    write(name, str(values))
 
 def printDict(params, indent=0):
     for name, value in params.iteritems():

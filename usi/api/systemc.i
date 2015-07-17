@@ -1,7 +1,7 @@
 %module systemc
 
-%include "usi.i"
 %include "std_string.i"
+%include "usi.i"
 
 %{
 #include "usi/api/systemc.h"
