@@ -2,7 +2,7 @@
 /// @addtogroup pysc
 /// @{
 /// @file usi.h
-/// @date 2013-2014
+/// @date 2013-2015
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
 ///            program, without the express, prior written consent of the 
