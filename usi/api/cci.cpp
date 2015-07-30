@@ -154,9 +154,9 @@ PyObject *get_properties(std::string name) {
   gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
   PyObject * dict = PyDict_New();
   if(configAPI) {
-    gs::gs_param_base *base = configAPI->getPar(name);
+    gs::cnf::gs_param_base *base = configAPI->getPar(name);
     if(base) {
-      gs::cnf::gs_config_base *param = dynamic_cast<gs::cnf::gs_config_base *>(base);
+      sr_param_base *param = dynamic_cast<sr_param_base *>(base);
       if(param) {
         std::map<std::string, std::string> properties = param->getProperties();
         for(std::map<std::string, std::string>::iterator iter = properties.begin(); iter!=properties.end(); ++iter) {

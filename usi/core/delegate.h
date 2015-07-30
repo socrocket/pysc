@@ -4,7 +4,7 @@
 #include <systemc.h>
 #include <vector>
 #include "usi.h"
-#include "core/common/gs_config.h"
+#include "core/common/sr_param.h"
 
 /// Forward declaration of USIDelegate
 /// It will be the collector object delegating the function calls to all the interfaces

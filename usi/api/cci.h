@@ -15,7 +15,7 @@
 #include <Python.h>
 
 // GreenConfig
-#include "core/common/gs_config.h"
+#include "core/common/sr_param.h"
 
 #if SWIG
 namespace gs {
@@ -141,7 +141,7 @@ class USICCIParam {
 
     USIObject cci_properties() {
         PyObject *dict = PyDict_New();
-        gs::cnf::gs_config_base *param = dynamic_cast<gs::cnf::gs_config_base *>(m_object);
+        sr_param_base *param = dynamic_cast<sr_param_base *>(m_object);
         if(param) {
             std::map<std::string, std::string> properties = param->getProperties();
             for(std::map<std::string, std::string>::iterator iter = properties.begin(); iter!=properties.end(); ++iter) {
