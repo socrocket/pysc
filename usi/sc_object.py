@@ -22,7 +22,7 @@ def usi_extend_delegate(obj):
        Object cache?
       
     """
-    from usi.api import registry
+    from sr_registry import sr_registry as registry
     name = obj.name()
     klass = registry.get_type_of(obj)
     if not name in OBJECTSTORE:

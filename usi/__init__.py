@@ -10,8 +10,8 @@ __interpreter_name__ = ""
 
 from usi.systemc import *
 from usi.api.delegate import USIDelegate
-from usi.api.registry import get_module_files
-from usi.api import report
+from sr_registry.sr_registry import get_module_files
+from sr_report import sr_report as report
 
 def find(name):
     """
