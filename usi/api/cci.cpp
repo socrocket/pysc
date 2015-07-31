@@ -192,7 +192,7 @@ class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {
           PyTuple_SetItem(args, 0, PyString_FromString(param.getName().c_str()));
           PyTuple_SetItem(args, 1, PyString_FromString(param.getString().c_str()));
           PyTuple_SetItem(args, 2, PyFloat_FromDouble(pysc::api::systemc::simulation_time(sc_core::SC_NS)));
-          PyTuple_SetItem(args, 3, PyInt_FromLong(reason));
+          PyTuple_SetItem(args, 3, PyLong_FromLong(reason));
           PythonModule::block_threads();
           PyObject *result = PyObject_Call(callback, args, NULL);
           PythonModule::unblock_threads();

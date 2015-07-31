@@ -362,15 +362,15 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
       for(std::vector<v::pair>::const_iterator iter = srr->pairs.begin(); iter!=srr->pairs.end(); iter++) {
         PyObject *i;
         switch(iter->type) {
-          case v::pair::INT32:  i = PyInt_FromLong(boost::any_cast<int32_t>(iter->data)); break;
-          case v::pair::UINT32: i = PyInt_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
+          case v::pair::INT32:  i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data)); break;
+          case v::pair::UINT32: i = PyLong_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
           case v::pair::INT64:  i = PyLong_FromLongLong(boost::any_cast<int64_t>(iter->data)); break;
           case v::pair::UINT64: i = PyLong_FromUnsignedLongLong(boost::any_cast<uint64_t>(iter->data)); break;
           case v::pair::STRING: i = PyString_FromString(boost::any_cast<std::string>(iter->data).c_str()); break;
           case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? Py_True : Py_False; break;
           case v::pair::DOUBLE: i = PyFloat_FromDouble(boost::any_cast<double>(iter->data)); break;
           case v::pair::TIME:   i = PyFloat_FromDouble(boost::any_cast<sc_core::sc_time>(iter->data).to_default_time_units()); break;
-          default:              i = PyInt_FromLong(boost::any_cast<int32_t>(iter->data));
+          default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
         }
         PyDict_SetItemString(pairs, iter->name.c_str(), i);
         if(iter->type != v::pair::BOOL) {
@@ -391,15 +391,15 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
       for(std::vector<v::pair>::const_iterator iter = srr->pairs.begin(); iter!=srr->pairs.end(); iter++) {
         PyObject *i;
         switch(iter->type) {
-          case v::pair::INT32:  i = PyInt_FromLong(boost::any_cast<int32_t>(iter->data)); break;
-          case v::pair::UINT32: i = PyInt_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
+          case v::pair::INT32:  i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data)); break;
+          case v::pair::UINT32: i = PyLong_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
           case v::pair::INT64:  i = PyLong_FromLongLong(boost::any_cast<int64_t>(iter->data)); break;
           case v::pair::UINT64: i = PyLong_FromUnsignedLongLong(boost::any_cast<uint64_t>(iter->data)); break;
           case v::pair::STRING: i = PyString_FromString(boost::any_cast<std::string>(iter->data).c_str()); break;
           case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? Py_True : Py_False; break;
           case v::pair::DOUBLE: i = PyFloat_FromDouble(boost::any_cast<double>(iter->data)); break;
           case v::pair::TIME:   i = PyFloat_FromDouble(boost::any_cast<sc_core::sc_time>(iter->data).to_default_time_units()); break;
-          default:              i = PyInt_FromLong(boost::any_cast<int32_t>(iter->data));
+          default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
         }
         PyDict_SetItemString(pairs, iter->name.c_str(), i);
         if(iter->type != v::pair::BOOL) {
@@ -410,15 +410,15 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
     PyObject *obj = PyTuple_New(11);
     PyTuple_SetItem(obj, 0, PyString_FromString(str_value(rep.get_msg_type())));
     PyTuple_SetItem(obj, 1, PyString_FromString(str_value(rep.get_msg())));
-    PyTuple_SetItem(obj, 2, PyInt_FromLong(rep.get_severity()));
+    PyTuple_SetItem(obj, 2, PyLong_FromLong(rep.get_severity()));
     PyTuple_SetItem(obj, 3, PyString_FromString(str_value(rep.get_file_name())));
-    PyTuple_SetItem(obj, 4, PyInt_FromLong(rep.get_line_number()));
+    PyTuple_SetItem(obj, 4, PyLong_FromLong(rep.get_line_number()));
     PyTuple_SetItem(obj, 5, PyFloat_FromDouble(rep.get_time().to_default_time_units()));
-    PyTuple_SetItem(obj, 6, PyInt_FromLong(sc_core::sc_delta_count()));
+    PyTuple_SetItem(obj, 6, PyLong_FromLong(sc_core::sc_delta_count()));
     PyTuple_SetItem(obj, 7, PyString_FromString(str_value(rep.get_process_name())));
-    PyTuple_SetItem(obj, 8, PyInt_FromLong(rep.get_verbosity()));
+    PyTuple_SetItem(obj, 8, PyLong_FromLong(rep.get_verbosity()));
     PyTuple_SetItem(obj, 9, PyString_FromString(str_value(rep.what())));
-    PyTuple_SetItem(obj, 10, PyInt_FromLong(actions));
+    PyTuple_SetItem(obj, 10, PyLong_FromLong(actions));
     //PyTuple_SetItem(obj, 11, pairs);
     PythonModule::globalInstance->run_py_callback("report", obj, pairs );
     Py_XDECREF(pairs);
