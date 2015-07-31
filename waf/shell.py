@@ -24,6 +24,7 @@ packages = [
     "pyelftools",
 #    "pydot",
     "tmuxp",
+    "future"
 ]
 
 """
@@ -83,7 +84,7 @@ def vexecute(self, cmd = ""):
     path = []
     libpath = []
     pythonpath = []
-    for key in self.env.table.keys():
+    for key in list(self.env.table.keys()):
         if key.startswith("PATH_"):
             for val in self.env[key]:
                 if not val in path:

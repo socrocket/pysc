@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pysc
 import json
 
@@ -24,11 +25,11 @@ import json
 @pysc.on("start_of_evaluation")
 @pysc.on("end_of_evaluation")
 def do_phase(phase):
-    print "Phase", phase
+    print("Phase", phase)
 
 @pysc.on("report")
 def report(*args, **kwargs):
-    print "XXXX report", args, kwargs
+    print("XXXX report", args, kwargs)
 
 #@pysc.on("start_of_simulation")
 def do_start(phase):
@@ -41,7 +42,7 @@ def do_start(phase):
     pysc.stop();
     g.collect()
 
-print "Start"
+print("Start")
 
 @pysc.onCommand('APBUart')
 def UARTInit(name):
@@ -50,6 +51,6 @@ def UARTInit(name):
     @pysc.onCommand(name)
     def uart_connect(port):
         import os
-        if os.environ.has_key('TMUX'):
+        if 'TMUX' in os.environ:
           import subprocess
           subprocess.Popen('tmux split-window -h "nc localhost %d"' % port)

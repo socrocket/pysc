@@ -1,3 +1,4 @@
+from __future__ import print_function
 import usi.api.systemc as api
 
 # Renaming time constants for easy reuse
@@ -23,7 +24,7 @@ def start(*k, **kw):
       if hasattr(api, "start"):
           api.start()
       else:
-          print "sc_start is not implemented"
+          print("sc_start is not implemented")
   from usi import shell
   if shell.is_running():
       shell.stop()

@@ -1,3 +1,4 @@
+from builtins import str
 import code
 import sys
 
@@ -63,7 +64,7 @@ class Console(code.InteractiveConsole):
                     line = self.raw_input(prompt)
                     # Can be None if sys.stdin was redefined
                     encoding = getattr(sys.stdin, "encoding", None)
-                    if encoding and not isinstance(line, unicode):
+                    if encoding and not isinstance(line, str):
                         line = line.decode(encoding)
                     if not self.run:
                         break

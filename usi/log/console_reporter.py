@@ -1,3 +1,4 @@
+from __future__ import print_function
 import usi
 import json
 from termcolor import colored
@@ -27,7 +28,7 @@ def report(
   
   parameters = ""
   for value in kwargs:
-    if isinstance(kwargs[value], int) or isinstance(kwargs[value], long):
+    if isinstance(kwargs[value], int):
       parameters += "{0}={1:#x} ".format(value, kwargs[value])
     else:
       parameters += "{0}={1} ".format(value, kwargs[value])
@@ -39,10 +40,10 @@ def report(
   else:
     severity_color = 'red'
 
-  print "@{0} ns /{1} ({2}): {3}: {4} {5}".format(time, 
+  print("@{0} ns /{1} ({2}): {3}: {4} {5}".format(time, 
       delta_count,
       colored(message_type, 'blue'),
       colored(severity_text[severity], severity_color), 
       message_text, 
-      parameters)
+      parameters))
 

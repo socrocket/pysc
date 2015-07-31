@@ -1,3 +1,4 @@
+from __future__ import print_function
 import re
 import pandas as pd
 import sys
@@ -38,7 +39,7 @@ def read_log(filename):
                 data_aggr.append(data)
                 index += 1
                 if index % 25000 == 0:
-                    store.append('log', pd.DataFrame(data_aggr), min_itemsize = 50, data_columns= data.keys())
+                    store.append('log', pd.DataFrame(data_aggr), min_itemsize = 50, data_columns=list(data.keys()))
                     data_aggr = []
     if len(data_aggr) > 0:
         store.append('log', pd.DataFrame(data_aggr), min_itemsize = 50)

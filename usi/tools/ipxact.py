@@ -1,11 +1,13 @@
-mport xml.etree.ElementTree as ET
+from __future__ import print_function
+from builtins import object
 import pprint
 import re
 import usi
-from usi.api import registry
-from usi import parameter as cci
+from sr_registry import sr_registry as registry
+from usi import cci
+import xml.etree.ElementTree as ET
 
-class IP_XACT:
+class IP_XACT(object):
     def __init__(self, filename):
         self.namespaces = {'ipxact': 'http://www.accellera.org/XMLSchema/IPXACT/1685-2014'}
         self.root = ET.parse(filename)

@@ -1,5 +1,7 @@
+from future import standard_library
+standard_library.install_aliases()
 import threading
-from Queue import Queue
+from queue import Queue
 
 class Thread(threading.Thread):
     queues = []

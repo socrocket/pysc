@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 __all__ = ["systemc", "api.delegate", "api.registry", "api.report"]
 
@@ -8,6 +9,7 @@ __standalone__ = True
 """ For context management """
 __interpreter_name__ = ""
 
+from builtins import object
 from usi.systemc import *
 from usi.api.delegate import USIDelegate
 from sr_registry.sr_registry import get_module_files
@@ -107,10 +109,10 @@ class ThreadReset(Exception):
 class DuplicateThreadHandle(Exception):
     pass
 
-class REPEAT_SPAWN:
+class REPEAT_SPAWN(object):
     pass
 
-class PromptStr:
+class PromptStr(object):
     def __init__(self, iname, tname, tunit = NS):
         self.iname = iname
         self.tname = tname
@@ -126,7 +128,7 @@ class PromptStr:
     def strip(self):
         return "(%s::%s)" % (self.iname, self.tname)
 
-class DebugWrapper:
+class DebugWrapper(object):
     "Wrapper to run a thread inside the debugger"
 
     def __init__(self, runnable, prompt):
@@ -135,7 +137,7 @@ class DebugWrapper:
         self.debugger.prompt = prompt
         self.runnable = runnable
         if hasattr(runnable, "func_name"):
-          self.func_name = runnable.func_name
+          self.__name__ = runnable.__name__
 
     def __call__(self, oargs, **nargs):
         return self.debugger.runcall(self.runnable, *oargs, **nargs)
@@ -169,8 +171,8 @@ class SCCallback(object):
                 run(*(k+(self.name,)), **kw)
             except Exception as e:
                 import traceback, sys
-                print "An exception occured in %s" % (self.name)
-                print traceback.format_exc()
+                print("An exception occured in %s" % (self.name))
+                print(traceback.format_exc())
                 sys.exit(1)
 
 class SCCommand(object):
@@ -209,10 +211,10 @@ PHASE = {
 def on(phase, obj=None, debug=False, time_unit = NS, keyargs = {}):
     """Register phase sccallback handler"""
     def do(funct):
-        if PHASE.has_key(phase):
+        if phase in PHASE:
             PHASE[phase].register(funct, obj, debug=debug, time_unit=time_unit, keyargs=keyargs)
         else:
-            print "No such phase as %s" % (phase)
+            print("No such phase as %s" % (phase))
         return funct
     return do
 

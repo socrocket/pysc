@@ -7,7 +7,7 @@ def attach(klass, name, member):
 
 def usi_extend_creation(obj, klass):
     result = {}
-    for name, item in FACTORYSTORE.get(klass, {}).iteritems():
+    for name, item in FACTORYSTORE.get(klass, {}).items():
         i = item
         if hasattr(item, '__call__'):
             i = item.__get__(obj)

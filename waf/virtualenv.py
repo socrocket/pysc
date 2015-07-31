@@ -65,7 +65,7 @@ class venv_link_task(Task.Task):
 def venv_package(self):
     srclist = []
     for src in Utils.to_list(getattr(self, "pysource", [])):
-        if isinstance(src, basestring):
+        if isinstance(src, str):
             snode = self.path.find_node(src)
         else:
             snode = src

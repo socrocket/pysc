@@ -1,5 +1,9 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
+from builtins import range
 from usi.api import cci as api
-from callback import *
+from .callback import *
 
 """
 1) GC Database Access
@@ -31,7 +35,7 @@ def read(name):
 def write(name, val):
     if isinstance(val, bool):
         val = int(val)
-    api.write(name, str(val))
+    api.write(name, bytes(val))
 
 getType = api.get_type_string
 getDocumentation = api.get_documentation
@@ -95,7 +99,7 @@ def makeDict(name, list_of_names, readProperties = False):
     else:
         # mixed names so make a dictionary
         result = {}
-        for head, tails in breakdown.iteritems():
+        for head, tails in breakdown.items():
             if any(tails):
                 # some further hierarchy
                 result[head] = makeDict(addIndex(name, head), tails, readProperties)
@@ -142,7 +146,7 @@ def readValueDict(name = ""):
 def writeValueDict(name, values):
     if isinstance(values, dict):
         # is it a dictionary?
-        for n, v in values.iteritems():
+        for n, v in values.items():
             writeValueDict(addIndex(name, n), v)
         return
     if isinstance(values,list) or isinstance(values, tuple):
@@ -154,26 +158,26 @@ def writeValueDict(name, values):
     write(name, str(values))
 
 def printDict(params, indent=0):
-    for name, value in params.iteritems():
+    for name, value in params.items():
         if isinstance(value, dict):
-            print (" " * indent) + name + ":"
+            print((" " * indent) + name + ":")
             printDict(value, indent + 4)
-            print
+            print("")
         elif isinstance(value, list):
             if any(value) and (isinstance(value[0], dict) or isinstance(value[0], list)):
-                print (" " * indent) + name + ":"
+                print((" " * indent) + name + ":")
                 for index, val in enumerate(value):
-                    print " " * (indent + 4) + str(index) + ":"
+                    print(" " * (indent + 4) + str(index) + ":")
                     printDict(val, indent + 8)
-                    print
+                    print('')
             else:
-                print (" " * indent) + name + ": " + ', '.join(value)
+                print((" " * indent) + name + ": " + ', '.join(value))
         else:
-            print (" " * indent) + name + ": " + str(value)
+            print((" " * indent) + name + ": " + str(value))
             
 def filterDict(params, match, parents = []):
     result = {}
-    for name, value in params.iteritems():
+    for name, value in params.items():
         if name == match:
             obj = result
             for parent in parents:
@@ -186,7 +190,7 @@ def filterDict(params, match, parents = []):
 
 def paramsToDict(params, base = ""):
     result = {}
-    for name, value in params.iteritems():
+    for name, value in params.items():
         if isinstance(value, dict):
             result.update(paramsToDict(value, addIndex(base, name)))
         elif isinstance(value, list):

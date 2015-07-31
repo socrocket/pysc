@@ -1,3 +1,6 @@
+from __future__ import print_function
+from builtins import range
+from builtins import object
 import usi
 import os
 import pandas as pd
@@ -5,7 +8,7 @@ import warnings
 
 logger = None
 
-class Logger():
+class Logger(object):
   def __init__(self, log_file):
     with warnings.catch_warnings():
       warnings.simplefilter("ignore")
@@ -28,7 +31,7 @@ class Logger():
       warnings.simplefilter("ignore")
       if len(self.msg_buffer) > 0:
         # create continous index
-        index_col = range(self.index, self.index + len(self.msg_buffer))
+        index_col = list(range(self.index, self.index + len(self.msg_buffer)))
         self.index += len(self.msg_buffer)
   
         df = pd.DataFrame(self.msg_buffer, index=index_col)
@@ -48,7 +51,7 @@ class Logger():
         self.chunk_a += 1
 
   def __del__(self):
-    print "destructor logger"
+    print("destructor logger")
     if hasattr(self, "store"):
       self.store_buffer()
       self.store.close()
@@ -56,8 +59,8 @@ class Logger():
 @usi.on("start_of_initialization")
 def start_of_initialization(phase):
   verbosity = 500
-  print "Set verbosity to level %d" % verbosity
-  print "Old verbosity level was %d" % usi.set_verbosity(verbosity)
+  print("Set verbosity to level %d" % verbosity)
+  print("Old verbosity level was %d" % usi.set_verbosity(verbosity))
 
 @usi.on("end_of_evaluation")
 def save_db(phase):
@@ -98,7 +101,7 @@ def report(
       "phase" : phase,
       }
 
-  message_dict = dict(message_dict.items() + kwargs.items())
+  message_dict = dict(list(message_dict.items()) + list(kwargs.items()))
 
   if logger is None:
     logger = Logger("log.h5")

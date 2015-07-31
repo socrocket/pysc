@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 HELP = "SoCRocket - The Space TLM Framework"
 
@@ -11,19 +12,19 @@ USAGE = "%(prog)s [options]"
 
 def help_text(*k, **kw):
     import os
-    print HELP
-    if not os.environ.has_key('SSH_CONNECTION'):
+    print(HELP)
+    if 'SSH_CONNECTION 'not in os.environ:
       import webbrowser
       webbrowser.open('http://socrocket.github.io/')
-    elif os.environ.has_key('TMUX'):
+    elif 'TMUX' in os.environ:
       pass
     help(*k, **kw)
 def credits_text():
-    print CREDITS
+    print(CREDITS)
 
 def copyright_text():
-    print COPYRIGHT
+    print(COPYRIGHT)
 
 def license_text():
-    print LICENSE
+    print(LICENSE)
 

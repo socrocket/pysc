@@ -1,3 +1,4 @@
+from __future__ import print_function
 import usi
 import ctypes
 import json
@@ -67,19 +68,19 @@ def report_full(
 
   severity_text = ["Info", "Warning", "Error", "Fatal"]
 
-  print "------------------------------------------------------------------------"
-  print "message_type : ", message_type
-  print "message_text : ", message_text
-  print "severity     : ", severity_text[severity]
-  print "file_name    : ", file_name
-  print "line_number  : ", line_number
-  print "time         : ", time
-  print "delta_count  : ", delta_count
-  print "process_name : ", process_name
-  print "verbosity    : ", verbosity
-  print "what         : ", what
-  print "actions      : ", get_actions_str(actions)
-  print "phase        : ", phase
-  print "parameters   : ", json.dumps(kwargs)
-  print "------------------------------------------------------------------------"
+  print("------------------------------------------------------------------------")
+  print("message_type : ", message_type)
+  print("message_text : ", message_text)
+  print("severity     : ", severity_text[severity])
+  print("file_name    : ", file_name)
+  print("line_number  : ", line_number)
+  print("time         : ", time)
+  print("delta_count  : ", delta_count)
+  print("process_name : ", process_name)
+  print("verbosity    : ", verbosity)
+  print("what         : ", what)
+  print("actions      : ", get_actions_str(actions))
+  print("phase        : ", phase)
+  print("parameters   : ", json.dumps(kwargs))
+  print("------------------------------------------------------------------------")
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 # <-- removing this magic comment breaks Python 3.4 on Windows
 """
@@ -18,6 +19,9 @@ __author__  = 'anatoly techtonik <techtonik@gmail.com>'
 __license__ = 'Public Domain'
 __url__ = 'https://bitbucket.org/techtonik/hexdump/'
 
+from builtins import bytes
+from builtins import chr
+from builtins import range
 import binascii  # binascii is required for Python 3
 import sys
 

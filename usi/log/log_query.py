@@ -1,7 +1,8 @@
+from builtins import object
 import pandas as pd
 import re
 
-class LogQuery():
+class LogQuery(object):
   """
   Class for reading SoCRocket logs from HDF5-databases
 
@@ -18,7 +19,7 @@ class LogQuery():
   def __init__(self, logfile):
     self.store = pd.HDFStore(logfile)
     self.keys = []
-    for key in self.store.keys():
+    for key in list(self.store.keys()):
       if re.match(r"/log\d+", key):
         self.keys.append(key)
 

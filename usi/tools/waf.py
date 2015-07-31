@@ -11,7 +11,9 @@ def get_lockfile():
     if directory == "":
         return None
     obj = {}
-    execfile(os.path.join(directory, lockfilename), {}, obj)
+    with open(os.path.join(directory, lockfilename), "r") as script:
+        code = compile(script.read(), os.path.join(directory, lockfilename), 'exec')
+        exec(code, {}, obj)
     return obj
 
 def get_lockfile_attr(key):

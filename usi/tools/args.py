@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse
 import usi
 from usi import usage
@@ -23,14 +24,14 @@ def args(*k, **kw):
   get_args()
 
   if ARGS.credits:
-      print usage.CREDITS
+      print(usage.CREDITS)
       sys.exit()
 
   if ARGS.license:
-      print usage.LICENSE
+      print(usage.LICENSE)
       sys.exit()
 
   if ARGS.copyright:
-      print usage.COPYRIGHT
+      print(usage.COPYRIGHT)
       sys.exit()
 

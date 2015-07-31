@@ -1,3 +1,4 @@
+from __future__ import print_function
 import usi
 import sys
 
@@ -21,39 +22,39 @@ def view(*k, **kw):
     params = usi.api.parameter.filterDict(params, "power")
     param_list = usi.api.parameter.paramsToDict(params)
     out = {}
-    for base, value in param_list.iteritems():
+    for base, value in param_list.items():
         parts = base.rsplit(".power.", 1)
         if len(parts) == 2:
           name = parts[0]
           var = parts[1]
-          if not out.has_key(name):
+          if name not in out:
             out[name] = dict()
           out[name][var] = value
         else:
-          print "Mal formated power parameter:", base
+          print("Mal formated power parameter:", base)
         
-    for comp, var in out.iteritems():
-        print "*****************************************************"
-        print "* Component:", comp
-        print "* ---------------------------------------------------"
-        for name, val in var.iteritems():
-            if name in out_category.keys():
-                print "*", out_category[name] % val
-                if not total.has_key(name):
+    for comp, var in out.items():
+        print("*****************************************************")
+        print("* Component:", comp)
+        print("* ---------------------------------------------------")
+        for name, val in var.items():
+            if name in list(out_category.keys()):
+                print("*", out_category[name] % val)
+                if name not in total.has_key:
                   total[name] = 0.0
                 total[name] += val
-        print "*****************************************************"
-    print "*****************************************************"
-    print "* Power Summary:", comp
-    print "* ---------------------------------------------------"
+        print ("*****************************************************")
+    print ("*****************************************************")
+    print ("* Power Summary:", comp)
+    print ("* ---------------------------------------------------")
     total_sum = 0.0
     total["sta_power"] /= 10e+6
-    for name in out_category.keys():
-        print "*", out_category[name] % total[name]
+    for name in list(out_category.keys()):
+        print("*", out_category[name] % total[name])
         total_sum += total[name]
-    print "* ---------------------------------------------------"
-    print "* Total Power: %0.4f" % total_sum, "uW"
-    print "*****************************************************"
+    print("* ---------------------------------------------------")
+    print("* Total Power: %0.4f" % total_sum, "uW")
+    print("*****************************************************")
     #usi.api.parameter.printDict(params)
 
 def install():

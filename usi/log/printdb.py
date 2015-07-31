@@ -1,10 +1,12 @@
+from __future__ import print_function
+from __future__ import absolute_import
 import pandas as pd
-import log_query as lq
+from . import log_query as lq
 import warnings
 import sys
 
 if len(sys.argv) == 1:
-  print "Usage: python printdb.py <logfile> <optional PyTables query string>"
+  print("Usage: python printdb.py <logfile> <optional PyTables query string>")
   sys.exit()
 
 if len(sys.argv) == 2:
@@ -18,6 +20,6 @@ with warnings.catch_warnings():
   df = log.select(where=query,
       columns=["index", "time", "message_type", "message_text"])
   for row in df.iterrows():
-    print "{0:<4} {1:<15.1f} {2:<35} {3}".format(row[0], row[1]['time'],
-        row[1]['message_type'], row[1]['message_text'])
+    print("{0:<4} {1:<15.1f} {2:<35} {3}".format(row[0], row[1]['time'],
+        row[1]['message_type'], row[1]['message_text']))
   log.close_file()

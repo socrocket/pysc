@@ -1,3 +1,4 @@
+from __future__ import print_function
 import usi
 import sys
 import re
@@ -54,15 +55,20 @@ def load_elf_into_scireg(filename, stores, base):
                 if isinstance(stores, usi.USIDelegate):
                     stores = [stores]
                 for store in stores:
-                    print "Loading %s into %s at address %s" % (filename, store.name(), base)
-                    store.scireg_write(data, addr)
+                    if isinstance(store, str):
+                        store = store.encode('utf-8')
+                    print("Loading %s into %s at address %s" % (filename, store.name(), base))
+                    print(store.get_if_tuple()[1])
+                    print(data.__class__)
+                    print(dir(store))
+                    store.scireg_write(data, long(addr))
 
 def load_elf_intrinsics_to_processor(filename, cpus, intrinsics):
     with open(filename, "rb") as stream:
         elf = ELFFile(stream)
         for section in elf.iter_sections():
             if section.header['sh_type'] == 'SHT_SYMTAB':
-                for name, klass, entry in [(symbol.name, intrinsics[symbol.name], symbol.entry) for symbol in section.iter_symbols() if symbol.name in intrinsics.keys()]:
+                for name, klass, entry in [(symbol.name, intrinsics[symbol.name], symbol.entry) for symbol in section.iter_symbols() if symbol.name in list(intrinsics.keys())]:
                     for cpu in cpus:
                         intrinsic_manager = None
                         if 'register_intrinsic' in dir(cpu):
@@ -74,26 +80,25 @@ def load_elf_intrinsics_to_processor(filename, cpus, intrinsics):
                                     break
 
                         if not intrinsic_manager:
-                            print "intrinsic manager for cpu %s not found" % cpu.name()
-                        print "Intrinsic on symbol %s at address %x is inserted with class %s " % (name, entry['st_value'], klass)
+                            print("intrinsic manager for cpu %s not found" % cpu.name())
+                        print("Intrinsic on symbol %s at address %x is inserted with class %s " % (name, entry['st_value'], klass))
                         intrinsic_instance = registry.create_object_by_name('PlatformIntrinsic', klass, name)
                         intrinsic_manager.register_intrinsic(entry['st_value'], intrinsic_instance)
 
 @usi.on('start_of_simulation')
-def start_of_initialization(*k, **kw):
+def start_of_simulation(*k, **kw):
     for param in get_args().loadelf:
         result = memoryre.match(param)
         if not result:
-            print "-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-e sdram=hello.sparc(0x40000000)'" % (param)
+            print("-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-e sdram=hello.sparc(0x40000000)'" % (param))
             continue
         groups = result.groupdict()
         if not 'object' in groups or not 'filename' in groups:
-            print "-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-e sdram=hello.sparc(0x40000000)'" % (param)
+            print("-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-e sdram=hello.sparc(0x40000000)'" % (param))
             continue
         obj = groups['object']
         filename = groups['filename']
         if "baseaddr" in groups and groups['baseaddr']:
-            print groups['baseaddr']
             base = int(groups['baseaddr'], 0) # not 100% right, won't work in the case when there is no 0x in front of Hex string!
         elif filename.endswith('.sparc') or filename.endswith('.dsu'):
             base = 0x40000000
@@ -101,7 +106,7 @@ def start_of_initialization(*k, **kw):
             base = 0x00000000
         stores = usi.find(obj)
         if len(stores) == 0:
-            print "scireg %s not found in simulation for parameter -e %s" % (obj, param)
+            print("scireg %s not found in simulation for parameter -e %s" % (obj, param))
             continue
 
         load_elf_into_scireg(filename, stores, base)
@@ -109,11 +114,11 @@ def start_of_initialization(*k, **kw):
     for param in get_args().intrinsics:
         result = intrinsicre.match(param)
         if not result:
-            print "-i takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a list of intrinsics: '-i leon3_0=hello.sparc(open,close)'" % (param)
+            print("-i takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a list of intrinsics: '-i leon3_0=hello.sparc(open,close)'" % (param))
             continue
         groups = result.groupdict()
         if not 'object' in groups or not 'filename' in groups or not 'intrinsics':
-            print "-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-i leon3_0=hello.sparc(open,close)'" % (param)
+            print("-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-i leon3_0=hello.sparc(open,close)'" % (param))
             continue
         obj = groups['object']
         filename = groups['filename']
@@ -136,7 +141,7 @@ def start_of_initialization(*k, **kw):
                 pass
         cpus = usi.find(obj)
         if len(cpus) == 0:
-            print "cpu %s not found in simulation for parameter -i %s" % (obj, param)
+            print("cpu %s not found in simulation for parameter -i %s" % (obj, param))
             continue
 
         load_elf_intrinsics_to_processor(filename, cpus, intrinsics)

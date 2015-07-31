@@ -1,3 +1,4 @@
+from __future__ import print_function
 import re
 import pandas as pd
 import sys
@@ -36,7 +37,7 @@ def read_log(filename):
                     data['time'] = data['time'] * time_unit_factor(data['time_unit'])
                     data['time_unit'] = "ps"
                     data['index_p'] = index
-                    data = dict(data.items() + parse_message(message).items())
+                    data = dict(data.items() + list(parse_message(message).items()))
                     data_aggr.append(data)
                     index += 1
                     if index % 25000 == 0:

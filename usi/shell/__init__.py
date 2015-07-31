@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 import code
 import os
 import sys
@@ -8,7 +10,7 @@ except ImportError:
   credits_text = ""
   copyright_text = ""
   license_text = ""
-from console import Console
+from .console import Console
 
 CONSOLE = None
 
@@ -28,7 +30,7 @@ def start(*k, **kw):
     if not CONSOLE:
 
         if not readline:
-            print "Python shell enhancement modules not available."
+            print("Python shell enhancement modules not available.")
         else:
             if 'libedit' in readline.__doc__:
                 readline.parse_and_bind("bind ^I rl_complete")
@@ -41,7 +43,7 @@ def start(*k, **kw):
             if os.path.isfile(rcfile):
                 readline.read_init_file(rcfile)
 
-            print "Python shell history and tab completion are enabled."
+            print("Python shell history and tab completion are enabled.")
 
         sys.modules['__main__'].__dict__.update({
           "help": help_text,
