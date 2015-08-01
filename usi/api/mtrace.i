@@ -20,19 +20,15 @@ static void start() {
   // must be in the kernel thread on entry.  Exit it so we
   // know that no thread is active on entry to any other function
   // called by the kernel
-  PyEval_ReleaseThread(PyScThisModule());
   ::mtrace();
   // re-acquire thread before returning control to Python
-  PyEval_AcquireThread(PyScThisModule());
 }
 
 static void end() {
   // must be in the kernel thread on entry.  Exit it so we
   // know that no thread is active on entry to any other function
   // called by the kernel
-  PyEval_ReleaseThread(PyScThisModule());
   ::muntrace();
   // re-acquire thread before returning control to Python
-  PyEval_AcquireThread(PyScThisModule());
 }
 %}

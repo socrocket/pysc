@@ -145,8 +145,8 @@ class USICCIParam {
         if(param) {
             std::map<std::string, std::string> properties = param->getProperties();
             for(std::map<std::string, std::string>::iterator iter = properties.begin(); iter!=properties.end(); ++iter) {
-                PyObject *key = PyString_FromStringAndSize(iter->first.c_str(), iter->first.length());
-                PyObject *val = PyString_FromStringAndSize(iter->second.c_str(), iter->second.length());
+                PyObject *key = PyUnicode_DecodeUTF8(iter->first.c_str(), iter->first.length(), NULL);
+                PyObject *val = PyUnicode_DecodeUTF8(iter->second.c_str(), iter->second.length(), NULL);
                 PyDict_SetItem(dict, key, val);
             }
         }

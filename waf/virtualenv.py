@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: set expandtab:ts=4:sw=4:setfiletype python
-import os
+import os, sys
 import subprocess
 from waflib.TaskGen import taskgen_method
 from waflib import Context
@@ -57,7 +57,6 @@ class venv_link_task(Task.Task):
       snode = sdirnode.abspath()
       dnode = os.path.join(self.env["VENV_PATH"], "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode))
       if not os.path.exists(dnode):
-          print(os.path.relpath(snode, os.path.join(dnode, "..")), dnode)
           os.symlink(os.path.relpath(snode, os.path.join(dnode, "..")), dnode)
       return 0
 
@@ -77,23 +76,23 @@ def venv_package(self):
 
 def configure(self):
     try:
-        self.find_program('virtualenv2', var="VIRTUALENV", mandatory=True, okmsg="ok")
-    except:
-        try:
+        if sys.version_info >= (3, 0):
             self.find_program('virtualenv', var="VIRTUALENV", mandatory=True, okmsg="ok")
-        except:
-            name    = "virtualenv"
-            version = "trunk"
-            self.dep_fetch(
-              name    = name, 
-              version = version,
-              git_url = "https://github.com/pypa/virtualenv.git",
-            )
-            self.find_program('virtualenv.py', var="VIRTUALENV", mandatory=True, okmsg="ok", path_list=[self.dep_path(name, version)])
+        else:
+            self.find_program('virtualenv2', var="VIRTUALENV", mandatory=True, okmsg="ok")
+    except:
+        name    = "virtualenv"
+        version = "trunk"
+        self.dep_fetch(
+          name    = name, 
+          version = version,
+          git_url = "https://github.com/pypa/virtualenv.git",
+        )
+        self.find_program('virtualenv.py', var="VIRTUALENV", mandatory=True, okmsg="ok", path_list=[self.dep_path(name, version)])
     self.start_msg("Create python virtualenv")
     self.env["VENV_PATH"] = os.path.join(self.bldnode.abspath(), ".conf_check_venv")
     self.cmd_and_log(
-        [self.env.VIRTUALENV, "-p", "/usr/bin/python2.7", self.env.VENV_PATH],
+        [self.env.VIRTUALENV, "-p", sys.executable, self.env.VENV_PATH],
         output=Context.BOTH,
         cwd=self.bldnode.abspath()
     )

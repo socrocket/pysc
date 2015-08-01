@@ -15,24 +15,39 @@
 
 PyScModule *PyScModule::reg = NULL;
 
-PyScModule::PyScModule(PyScModule::init_f funct) : funct(funct) {
+PyScModule::PyScModule(const char *name, PyScModule::init_f funct) : funct(funct), name(name) {
   next = reg;
   reg = this;
 };
 
 void PyScModule::registerEmbedded() {
+#if PY_VERSION_HEX >= 0x03000000
   PyScModule *mod = reg;
   while(mod) {
     mod->initModule();
     mod = mod->next;
   }
+#endif
 }
 
+void PyScModule::prepareEmbedded() {
+#if PY_VERSION_HEX < 0x03000000
+  PyScModule *mod = reg;
+  while(mod) {
+    mod->initModule();
+    mod = mod->next;
+  }
+#endif
+}
+
+
 void PyScModule::initModule() {
-  PyEval_InitThreads();
-  module_thread = PyThreadState_Get();
   if(funct) {
+#if PY_VERSION_HEX >= 0x03000000
+    PyImport_AppendInittab(name, funct);
+#else
     funct();
+#endif
   }
 }
 

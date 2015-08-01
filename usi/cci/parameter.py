@@ -35,7 +35,7 @@ def read(name):
 def write(name, val):
     if isinstance(val, bool):
         val = int(val)
-    api.write(name, bytes(val))
+    api.write(name, val)
 
 getType = api.get_type_string
 getDocumentation = api.get_documentation

@@ -18,11 +18,16 @@
 
 class PyScModule {
   public:
+#if PY_VERSION_HEX >= 0x03000000
+    typedef PyObject *(*init_f)(void);
+#else
     typedef void (*init_f)(void);
-    PyScModule(init_f funct = NULL);
+#endif
+    PyScModule(const char *, init_f funct = NULL);
     operator PyThreadState*() { return module_thread; };
     operator PyInterpreterState*() { return module_thread->interp; };
     static void registerEmbedded();
+    static void prepareEmbedded();
     bool embedded;
   private:
     static PyScModule *reg;
@@ -30,15 +35,23 @@ class PyScModule {
 
     PyThreadState *module_thread;
     init_f funct;
+    const char *name;
     PyScModule *next;
 };
 
+#if PY_VERSION_HEX >= 0x03000000
+#define PYSC_REGISTER_MODULE(name) \
+  PyMODINIT_FUNC PyInit__##name(void); \
+  static PyScModule __pysc_module("_"#name, PyInit__##name); \
+  volatile PyScModule *__pysc_module_##name = &__pysc_module;
+#else
 #define PYSC_REGISTER_MODULE(name) \
   extern "C" { \
     void init_##name(void); \
   }; \
-  static PyScModule __pysc_module(init_##name); \
+  static PyScModule __pysc_module("_"#name, init_##name); \
   volatile PyScModule *__pysc_module_##name = &__pysc_module;
+#endif
 
 #define PYSC_THIS_MODULE() \
   (__pysc_module)
@@ -48,6 +61,9 @@ class PyScModule {
 
 #define PYSC_INIT_MODULES() \
   PyScModule::registerEmbedded();
+
+#define PYSC_PREPARE_MODULES() \
+  PyScModule::prepareEmbedded();
 
 #define PYSC_HAS_MODULE(name) \
   extern PyScModule *__pysc_module_##name; \

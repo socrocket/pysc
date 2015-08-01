@@ -32,6 +32,7 @@
 #include "usi/core/module.h"
 #include "usi/core/registry.h"
 
+#define PyString_FromString(x) PyUnicode_FromStringAndSize(x, strlen(x))
 PythonModule *PythonModule::globalInstance = NULL;
 
 // constructor
@@ -47,28 +48,44 @@ PythonModule::PythonModule(
         sys_path(NULL),
         name_py(NULL) {
 
+    PYSC_INIT_MODULES();
+
     // set up interpreter and gs module and context object
     subscribe();
     block_threads();
 
+    PYSC_PREPARE_MODULES();
+
 #ifndef MTI_SYSTEMC
-    Py_SetProgramName(argv[0]);
-    char *args[argc];
-    if(script_filename && *script_filename) {
-      args[0] = const_cast<char *>(script_filename);
-    } else {
-      args[0] = argv[0];
+#if PY_MAJOR_VERSION >= 3
+    wchar_t *args[argc];
+    for(int i = 0; i< argc; i++) {
+        args[i] = new wchar_t[strlen(argv[i])+1];
+        mbstowcs(args[i], argv[i], strlen(argv[i])+1);
     }
-    for(int i = 1; i< argc; i++) {
-        args[i] = argv[i];
+    Py_SetProgramName(args[0]);
+    if(script_filename && *script_filename) {
+      delete args[0];
+      args[0] = new wchar_t[strlen(script_filename)+1];
+      mbstowcs(args[0], script_filename, strlen(script_filename)+1);
     }
     PySys_SetArgvEx(argc, args, 0);
+#else
+    char *args[argc];
+    for(int i = 0; i< argc; i++) {
+        args[i] = argv[i];
+    }
+    Py_SetProgramName(args[0]);
+    if(script_filename && *script_filename) {
+      args[0] = const_cast<char *>(script_filename);
+    }
+    PySys_SetArgvEx(argc, args, 0);
+#endif
+
 #else
     Py_SetProgramName("vsim");
     PySys_SetArgvEx(0, NULL, 0);
 #endif
-
-    PYSC_INIT_MODULES();
 
     // get a globals() dict for this PythonModule
     PyObject* main_module = PyImport_AddModule("__main__");  // borrowed ref
@@ -101,7 +118,10 @@ PythonModule::PythonModule(
 #else
     std::string activate = ("build/.conf_check_venv/bin/activate_this.py");
 #endif
-    exec("execfile('"+activate+"', dict(__file__='"+activate+"'))");
+    exec(
+        "with open('"+activate+"') as script:\n" +
+        "    code = compile(script.read(), '"+activate+"', 'exec')\n" +
+        "    exec(code, dict(__file__='"+activate+"'))");
     block_threads();
 
     // make sure there's a reference to the pysc module available
@@ -367,15 +387,13 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
           case v::pair::INT64:  i = PyLong_FromLongLong(boost::any_cast<int64_t>(iter->data)); break;
           case v::pair::UINT64: i = PyLong_FromUnsignedLongLong(boost::any_cast<uint64_t>(iter->data)); break;
           case v::pair::STRING: i = PyString_FromString(boost::any_cast<std::string>(iter->data).c_str()); break;
-          case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? Py_True : Py_False; break;
+          case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? (Py_INCREF(Py_True), Py_True) : (Py_INCREF(Py_False), Py_False); break;
           case v::pair::DOUBLE: i = PyFloat_FromDouble(boost::any_cast<double>(iter->data)); break;
           case v::pair::TIME:   i = PyFloat_FromDouble(boost::any_cast<sc_core::sc_time>(iter->data).to_default_time_units()); break;
           default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
         }
-        PyDict_SetItemString(pairs, iter->name.c_str(), i);
-        if(iter->type != v::pair::BOOL) {
-          Py_XDECREF(i);
-        }
+        PyDict_SetItem(pairs, PyUnicode_FromString(iter->name.c_str()), i);
+        Py_XDECREF(i);
       }
     }
     PyObject *obj = PyTuple_New(1);
@@ -396,14 +414,16 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
           case v::pair::INT64:  i = PyLong_FromLongLong(boost::any_cast<int64_t>(iter->data)); break;
           case v::pair::UINT64: i = PyLong_FromUnsignedLongLong(boost::any_cast<uint64_t>(iter->data)); break;
           case v::pair::STRING: i = PyString_FromString(boost::any_cast<std::string>(iter->data).c_str()); break;
-          case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? Py_True : Py_False; break;
+          case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? (Py_INCREF(Py_True), Py_True) : (Py_INCREF(Py_False), Py_False); break;
           case v::pair::DOUBLE: i = PyFloat_FromDouble(boost::any_cast<double>(iter->data)); break;
           case v::pair::TIME:   i = PyFloat_FromDouble(boost::any_cast<sc_core::sc_time>(iter->data).to_default_time_units()); break;
           default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
         }
-        PyDict_SetItemString(pairs, iter->name.c_str(), i);
-        if(iter->type != v::pair::BOOL) {
+        if(i) {
+          PyDict_SetItem(pairs, PyUnicode_FromString(iter->name.c_str()), i);
           Py_XDECREF(i);
+        } else {
+          std::cout << "could not convert to python: " << iter->name << std::endl;
         }
       }
     }
@@ -419,7 +439,6 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
     PyTuple_SetItem(obj, 8, PyLong_FromLong(rep.get_verbosity()));
     PyTuple_SetItem(obj, 9, PyString_FromString(str_value(rep.what())));
     PyTuple_SetItem(obj, 10, PyLong_FromLong(actions));
-    //PyTuple_SetItem(obj, 11, pairs);
     PythonModule::globalInstance->run_py_callback("report", obj, pairs );
     Py_XDECREF(pairs);
     Py_XDECREF(obj);

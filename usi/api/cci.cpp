@@ -160,8 +160,8 @@ PyObject *get_properties(std::string name) {
       if(param) {
         std::map<std::string, std::string> properties = param->getProperties();
         for(std::map<std::string, std::string>::iterator iter = properties.begin(); iter!=properties.end(); ++iter) {
-          PyObject *key = PyString_FromStringAndSize(iter->first.c_str(), iter->first.length());
-          PyObject *val = PyString_FromStringAndSize(iter->second.c_str(), iter->second.length());
+          PyObject *key = PyUnicode_FromString(iter->first.c_str());
+          PyObject *val = PyUnicode_FromString(iter->second.c_str());
           PyDict_SetItem(dict, key, val);
         }
         return dict;
@@ -189,8 +189,8 @@ class CallbackAdapter : public gs::cnf::ParamCallbAdapt_b {
 
         gs::cnf::callback_return_type call(gs::gs_param_base& param, gs::cnf::callback_type& reason) {
           PyObject *args = PyTuple_New(4);
-          PyTuple_SetItem(args, 0, PyString_FromString(param.getName().c_str()));
-          PyTuple_SetItem(args, 1, PyString_FromString(param.getString().c_str()));
+          PyTuple_SetItem(args, 0, PyUnicode_FromString(param.getName().c_str()));
+          PyTuple_SetItem(args, 1, PyUnicode_FromString(param.getString().c_str()));
           PyTuple_SetItem(args, 2, PyFloat_FromDouble(pysc::api::systemc::simulation_time(sc_core::SC_NS)));
           PyTuple_SetItem(args, 3, PyLong_FromLong(reason));
           PythonModule::block_threads();

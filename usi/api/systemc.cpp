@@ -24,32 +24,24 @@ void start() {
   // must be in the kernel thread on entry.  Exit it so we
   // know that no thread is active on entry to any other function
   // called by the kernel
-  PyEval_ReleaseThread(PyScThisModule());
   sc_core::sc_start();
   // re-acquire thread before returning control to Python
-  PyEval_AcquireThread(PyScThisModule());
 }
 
 void start(double time, sc_core::sc_time_unit tu) {
   // must be in the kernel thread on entry.  Exit it so we
   // know that no thread is active on entry to any other function
   // called by the kernel
-  PyEval_ReleaseThread(PyScThisModule());
   sc_core::sc_start(sc_core::sc_time(time, tu));
   // re-acquire thread before returning control to Python
-  PyEval_AcquireThread(PyScThisModule());
 }
 
 void stop() {
-  PyEval_ReleaseThread(PyScThisModule());
   sc_core::sc_stop();
-  PyEval_AcquireThread(PyScThisModule());
 }
 
 void pause() {
-  PyEval_ReleaseThread(PyScThisModule());
   sc_core::sc_pause();
-  PyEval_AcquireThread(PyScThisModule());
 }
 
 void wait(double time, sc_core::sc_time_unit tu) {
