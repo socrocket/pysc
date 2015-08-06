@@ -82,7 +82,7 @@ def load_elf_intrinsics_to_processor(filename, cpus, intrinsics):
                         if not intrinsic_manager:
                             print("intrinsic manager for cpu %s not found" % cpu.name())
                         print("Intrinsic on symbol %s at address %x is inserted with class %s " % (name, entry['st_value'], klass))
-                        intrinsic_instance = registry.create_object_by_name('PlatformIntrinsic', klass, name)
+                        intrinsic_instance = registry.create_object_by_name('PlatformIntrinsic', klass, str(name))
                         intrinsic_manager.register_intrinsic(entry['st_value'], intrinsic_instance)
 
 @usi.on('start_of_simulation')
@@ -112,7 +112,6 @@ def start_of_simulation(*k, **kw):
         load_elf_into_scireg(filename, stores, base)
 
     for param in get_args().intrinsics:
-        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
         result = intrinsicre.match(param)
         if not result:
             print("-i takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a list of intrinsics: '-i leon3_0=hello.sparc(open,close)'" % (param))
@@ -144,6 +143,5 @@ def start_of_simulation(*k, **kw):
         if len(cpus) == 0:
             print("cpu %s not found in simulation for parameter -i %s" % (obj, param))
             continue
-        print("CPU ", cpus[0])
 
         load_elf_intrinsics_to_processor(filename, cpus, intrinsics)
