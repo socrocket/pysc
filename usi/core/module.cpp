@@ -269,10 +269,10 @@ void PythonModule::run_py_callback(const char *name, PyObject *args, PyObject *k
         PyObject *function = PyObject_GetAttrString(member, "call");
         if(function) {
           PyObject *ret = PyObject_Call(function, args, kwargs);
-          if(ret) {
-            Py_XDECREF(ret);
-          } else {
+          if(PyErr_Occurred() || !ret) {
             PyErr_Print();
+          } else {
+            Py_XDECREF(ret);
           }
           Py_XDECREF(function);
         } else {

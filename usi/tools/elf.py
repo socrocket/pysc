@@ -68,7 +68,7 @@ def load_elf_intrinsics_to_processor(filename, cpus, intrinsics):
         elf = ELFFile(stream)
         for section in elf.iter_sections():
             if section.header['sh_type'] == 'SHT_SYMTAB':
-                for name, klass, entry in [(symbol.name, intrinsics[symbol.name], symbol.entry) for symbol in section.iter_symbols() if symbol.name in list(intrinsics.keys())]:
+                for name, klass, entry in [(name, intrinsics[name], entry) for name, entry in [(symbol.name.decode('utf-8'), symbol.entry) for symbol in section.iter_symbols()] if name in list(intrinsics.keys())]:
                     for cpu in cpus:
                         intrinsic_manager = None
                         if 'register_intrinsic' in dir(cpu):
@@ -112,13 +112,14 @@ def start_of_simulation(*k, **kw):
         load_elf_into_scireg(filename, stores, base)
 
     for param in get_args().intrinsics:
+        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
         result = intrinsicre.match(param)
         if not result:
             print("-i takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a list of intrinsics: '-i leon3_0=hello.sparc(open,close)'" % (param))
             continue
         groups = result.groupdict()
         if not 'object' in groups or not 'filename' in groups or not 'intrinsics':
-            print("-e takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-i leon3_0=hello.sparc(open,close)'" % (param))
+            print("-i takes always a key/value pair. '%s' is not a key/value pair. The value must be contain a file name and a base address: '-i leon3_0=hello.sparc(open,close)'" % (param))
             continue
         obj = groups['object']
         filename = groups['filename']
@@ -143,5 +144,6 @@ def start_of_simulation(*k, **kw):
         if len(cpus) == 0:
             print("cpu %s not found in simulation for parameter -i %s" % (obj, param))
             continue
+        print("CPU ", cpus[0])
 
         load_elf_intrinsics_to_processor(filename, cpus, intrinsics)
