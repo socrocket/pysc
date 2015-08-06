@@ -349,8 +349,6 @@ void PythonModule::unblock_threads() {
     blocking++;
 }
 
-extern "C" { void init_pysystemc(void); };
-
 void PythonModule::subscribe() {
     if(subscribers==0) {
         // Initialize Python without signal handlers
@@ -375,12 +373,13 @@ const char *str_value(const char *str) {
 
 #ifndef MTI_SYSTEMC
 void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::sc_actions &actions) {
+  block_threads();
   if(rep.get_severity()==sc_core::SC_MAX_SEVERITY && rep.get_verbosity() == 0x0FFFFFFF && std::strncmp(rep.get_msg(), "command", 8) == 0) {
     const sr_report *srr = dynamic_cast<const sr_report *>(&rep);
     PyObject *pairs = PyDict_New();
     if(srr) {
       for(std::vector<v::pair>::const_iterator iter = srr->pairs.begin(); iter!=srr->pairs.end(); iter++) {
-        PyObject *i;
+        PyObject *i = NULL;
         switch(iter->type) {
           case v::pair::INT32:  i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data)); break;
           case v::pair::UINT32: i = PyLong_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
@@ -405,9 +404,10 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
   } else if(actions & (sc_core::SC_DISPLAY | sc_core::SC_LOG)) {
     const sr_report *srr = dynamic_cast<const sr_report *>(&rep);
     PyObject *pairs = PyDict_New();
+    Py_INCREF(pairs);
     if(srr) {
       for(std::vector<v::pair>::const_iterator iter = srr->pairs.begin(); iter!=srr->pairs.end(); iter++) {
-        PyObject *i;
+        PyObject *i = NULL;
         switch(iter->type) {
           case v::pair::INT32:  i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data)); break;
           case v::pair::UINT32: i = PyLong_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
@@ -420,7 +420,8 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
           default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
         }
         if(i) {
-          PyDict_SetItem(pairs, PyUnicode_FromString(iter->name.c_str()), i);
+          PyObject *key = PyUnicode_FromString(iter->name.c_str());
+          PyDict_SetItem(pairs, key, i);
           Py_XDECREF(i);
         } else {
           std::cout << "could not convert to python: " << iter->name << std::endl;
@@ -439,7 +440,7 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
     PyTuple_SetItem(obj, 8, PyLong_FromLong(rep.get_verbosity()));
     PyTuple_SetItem(obj, 9, PyString_FromString(str_value(rep.what())));
     PyTuple_SetItem(obj, 10, PyLong_FromLong(actions));
-    PythonModule::globalInstance->run_py_callback("report", obj, pairs );
+    PythonModule::globalInstance->run_py_callback("report", obj, pairs);
     Py_XDECREF(pairs);
     Py_XDECREF(obj);
   }
@@ -447,6 +448,7 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
   if(actions & (sc_core::SC_STOP | sc_core::SC_ABORT | sc_core::SC_INTERRUPT | sc_core::SC_THROW)) {
     sc_core::sc_report_handler::default_handler(rep, actions & ~(sc_core::SC_DISPLAY | sc_core::SC_LOG));
   }
+  unblock_threads();
 }
 #endif
 

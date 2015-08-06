@@ -160,9 +160,9 @@ PyObject *get_properties(std::string name) {
       if(param) {
         std::map<std::string, std::string> properties = param->getProperties();
         for(std::map<std::string, std::string>::iterator iter = properties.begin(); iter!=properties.end(); ++iter) {
-          PyObject *key = PyUnicode_FromString(iter->first.c_str());
           PyObject *val = PyUnicode_FromString(iter->second.c_str());
-          PyDict_SetItem(dict, key, val);
+          PyDict_SetItemString(dict, iter->first.c_str(), val);
+          Py_XDECREF(val);
         }
         return dict;
       }

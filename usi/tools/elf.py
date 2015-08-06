@@ -58,10 +58,10 @@ def load_elf_into_scireg(filename, stores, base):
                     if isinstance(store, str):
                         store = store.encode('utf-8')
                     print("Loading %s into %s at address %s" % (filename, store.name(), base))
-                    print(store.get_if_tuple()[1])
-                    print(data.__class__)
-                    print(dir(store))
-                    store.scireg_write(data, long(addr))
+                    if sys.version_info >= (3,0):
+                        store.scireg_write(data, int(addr))
+                    else:
+                        store.scireg_write(data, long(addr))
 
 def load_elf_intrinsics_to_processor(filename, cpus, intrinsics):
     with open(filename, "rb") as stream:

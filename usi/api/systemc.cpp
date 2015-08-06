@@ -49,7 +49,7 @@ void wait(double time, sc_core::sc_time_unit tu) {
   PyThreadState *_save = PyEval_SaveThread();
   sc_core::wait(time, tu);
   // now re-establish the previous thread
-  PyEval_AcquireThread(_save);
+  PyEval_RestoreThread(_save);
 }
 
 double simulation_time(sc_core::sc_time_unit tu) {
