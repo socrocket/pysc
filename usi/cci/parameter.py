@@ -31,7 +31,7 @@ def read(name):
 def write(name, val):
     if isinstance(val, bool):
         val = int(val)
-    api.write(name, str(val))
+    api.write(str(name), str(val))
 
 getType = api.get_type_string
 getDocumentation = api.get_documentation
@@ -151,6 +151,9 @@ def writeValueDict(name, values):
             writeValueDict(addIndex(name, i), v)
         return
     # must be a leaf value
+    print name, values
+    if isinstance(values, bool):
+        values = int(values)
     write(name, str(values))
 
 def printDict(params, indent=0):
