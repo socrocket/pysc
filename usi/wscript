@@ -27,7 +27,7 @@ def build(self):
     export_includes   = self.repository_root.abspath(),
     includes          = self.repository_root.abspath(),
     swig_flags        = '-c++ -python -Wall',
-    use               = 'common GREENSOCS SYSTEMC TLM PYTHON BOOST',
+    use               = 'base PYTHON',
     install_path      = '${PREFIX}/lib',
   )
 

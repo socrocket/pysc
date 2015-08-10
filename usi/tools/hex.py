@@ -84,7 +84,10 @@ def dump(data, binary = False):
   else:
     base = '>02X'
 
-  return ' '.join(format(ord(x), base) for x in data)
+  if PY3K:
+    return ' '.join(format(x, base) for x in data)
+  else:
+    return ' '.join(format(ord(x), base) for x in data)
 
 def dumpgen(data, binary = False):
   '''

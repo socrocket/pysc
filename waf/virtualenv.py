@@ -24,7 +24,7 @@ def options(self):
 def python_get(self, name):
     self.start_msg("Install %s into virtualenv" % (name))
     self.cmd_and_log(
-        [self.env.VPIP, "install", name], 
+        [Utils.subst_vars('${VPIP}',self.env), "install", name], 
         output=Context.BOTH,
         cwd=self.env.VENV_PATH
     )
@@ -92,7 +92,7 @@ def configure(self):
     self.start_msg("Create python virtualenv")
     self.env["VENV_PATH"] = os.path.join(self.bldnode.abspath(), ".conf_check_venv")
     self.cmd_and_log(
-        [self.env.VIRTUALENV, "-p", sys.executable, self.env.VENV_PATH],
+        [Utils.subst_vars('${VIRTUALENV}',self.env), "-p", sys.executable, self.env.VENV_PATH],
         output=Context.BOTH,
         cwd=self.bldnode.abspath()
     )
