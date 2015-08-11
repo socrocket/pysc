@@ -155,7 +155,7 @@ def writeValueDict(name, values):
             writeValueDict(addIndex(name, i), v)
         return
     # must be a leaf value
-    print name, values
+    print (name, values)
     if isinstance(values, bool):
         values = int(values)
     write(name, str(values))
