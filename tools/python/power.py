@@ -18,9 +18,9 @@ def view(*k, **kw):
         "int_power": "Internal power (dynamic): %0.4f uW",
         "swi_power": "Switching power (dynamic): %0.4f uW"
     }
-    params = usi.api.parameter.readPropertyDict()
-    params = usi.api.parameter.filterDict(params, "power")
-    param_list = usi.api.parameter.paramsToDict(params)
+    params = usi.cci.parameter.readPropertyDict()
+    params = usi.cci.parameter.filterDict(params, "power")
+    param_list = usi.cci.parameter.paramsToDict(params)
     out = {}
     for base, value in param_list.items():
         parts = base.rsplit(".power.", 1)

@@ -15,7 +15,9 @@ parser.add_argument('-l', '--list', dest='list', action='store_true', help='List
 def parse_args(*k, **kw):
     for jsonfile in get_args().json:
         with open(jsonfile) as openfile:
-            json.load(openfile)
+            values = json.load(openfile)
+            parameter.writeValueDict('', values)
+
     for option in get_args().option:
         l = option.split('=')
         if len(l) == 2:
