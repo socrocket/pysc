@@ -178,18 +178,15 @@ def printDict(params, indent=0):
         else:
             print((" " * indent) + name + ": " + str(value))
             
-def filterDict(params, match, parents = []):
-    result = {}
+def filterDict(params, match, parents = [], result = {}):
     for name, value in params.items():
         if name == match:
             obj = result
             for parent in parents:
-                if not parent in obj:
-                    obj[parent] = {}
-                obj = obj[parent]
+                obj = obj.setdefault(parent, {})
             obj[name] = value
         if isinstance(value, dict):
-            result.update(filterDict(value, match, parents + [name]))
+            result = filterDict(value, match, parents + [name], result)
     return result
 
 def paramsToDict(params, base = ""):
