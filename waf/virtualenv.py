@@ -4,6 +4,7 @@
 import os, sys
 import subprocess
 from waflib.TaskGen import taskgen_method
+from waflib.Errors import ConfigurationError
 from waflib import Context
 from waflib import Task
 from waflib import TaskGen
@@ -80,7 +81,7 @@ def configure(self):
             self.find_program('virtualenv', var="VIRTUALENV", mandatory=True, okmsg="ok")
         else:
             self.find_program('virtualenv2', var="VIRTUALENV", mandatory=True, okmsg="ok")
-    except:
+    except ConfigurationError as e:
         name    = "virtualenv"
         version = "trunk"
         self.dep_fetch(
