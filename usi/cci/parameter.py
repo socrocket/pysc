@@ -184,8 +184,9 @@ def filterDict(params, match, parents = []):
         if name == match:
             obj = result
             for parent in parents:
-              obj[parent] = {}
-              obj = obj[parent]
+                if not parent in obj:
+                    obj[parent] = {}
+                obj = obj[parent]
             obj[name] = value
         if isinstance(value, dict):
             result.update(filterDict(value, match, parents + [name]))
