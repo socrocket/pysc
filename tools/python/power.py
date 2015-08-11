@@ -40,7 +40,7 @@ def view(*k, **kw):
         for name, val in var.items():
             if name in list(out_category.keys()):
                 print("*", out_category[name] % val)
-                if name not in total.has_key:
+                if name not in total:
                   total[name] = 0.0
                 total[name] += val
         print ("*****************************************************")
