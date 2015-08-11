@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim: set expandtab:ts=4:sw=4:setfiletype python
 import os
+from waflib.Errors import ConfigurationError
 
 def options(self):
     self.add_option(
@@ -47,7 +48,7 @@ def configure(self):
             find(self, self.options.blasdir)
         else:
             find(self)
-    except:
+    except ConfigurationError as e:
         self.fatal("BLAS cannot installed automaticaly. Please install it within your system.")
 
 
