@@ -112,7 +112,7 @@ def makeDict(name, list_of_names, readProperties = False):
                 index = addIndex(name, head)
                 value = read(index)
                 if api.is_bool(index):
-                    value = bool(value)
+                    value = value != '0' and value != 'false'
                 elif api.is_float(index):
                     value = float(value)
                 elif api.is_int(index):
