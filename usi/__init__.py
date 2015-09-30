@@ -186,7 +186,7 @@ class SCCommand(object):
 
         self.all_runnables[typename].append((runnable, keyargs))
     
-    def call(self, obj, typename, **kw):
+    def call(self, obj, typename, *k, **kw):
         all_runners = self.all_runnables.get(typename, [])
         kw.update({"name":obj})
         for run, keyargs in all_runners:

@@ -1,7 +1,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
 import pandas as pd
-from . import log_query as lq
+import log_query as lq
 import warnings
 import sys
 

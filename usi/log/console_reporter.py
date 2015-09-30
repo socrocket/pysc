@@ -3,47 +3,41 @@ import usi
 import json
 from termcolor import colored
 
-@usi.on("start_of_initialization")
-def start_of_initialization(phase):
-  verbosity = 500
-  usi.set_verbosity(verbosity)
-
-@usi.on("report")
-def report(
-    message_type=None, 
-    message_text=None,
-    severity=None,
-    file_name=None,
-    line_number=None,
-    time=None,
-    delta_count=None,
-    process_name=None,
-    verbosity=None,
-    what=None,
-    actions=None,
-    phase=None,
-    **kwargs):
-
-  severity_text = ["Info", "Warning", "Error", "Fatal"]
+SEVERITY = [
+    colored('Info', 'green'),
+    colored('Warning', 'yellow'),
+    colored('Error', 'red'),
+    colored('Fatal', 'red')
+]
   
-  parameters = ""
-  for value in kwargs:
-    if isinstance(kwargs[value], int):
-      parameters += "{0}={1:#x} ".format(value, kwargs[value])
-    else:
-      parameters += "{0}={1} ".format(value, kwargs[value])
+def report(
+      message_type=None, 
+      message_text=None,
+      severity=None,
+      file_name=None,
+      line_number=None,
+      time=None,
+      delta_count=None,
+      process_name=None,
+      verbosity=None,
+      what=None,
+      actions=None,
+      phase=None,
+      **kwargs):
+    global SEVERITY
 
-  if severity == 0:
-    severity_color = 'green'
-  elif severity == 1:
-    severity_color = 'yellow'
-  else:
-    severity_color = 'red'
+    parameters = ""
+    for value in kwargs:
+        if isinstance(kwargs[value], int):
+            parameters += "{0}={1:#x} ".format(value, kwargs[value])
+        else:
+            parameters += "{0}={1} ".format(value, kwargs[value])
 
-  print("@{0} ns /{1} ({2}): {3}: {4} {5}".format(time, 
-      delta_count,
-      colored(message_type, 'blue'),
-      colored(severity_text[severity], severity_color), 
-      message_text, 
-      parameters))
+
+    print("@{0} ns /{1} ({2}): {3}: {4} {5}".format(time, 
+          delta_count,
+          colored(message_type, 'blue'),
+          SEVERITY[severity], 
+          message_text, 
+          parameters))
 

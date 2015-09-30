@@ -56,18 +56,12 @@ class Logger(object):
       self.store_buffer()
       self.store.close()
 
-@usi.on("start_of_initialization")
-def start_of_initialization(phase):
-  verbosity = 500
-  print("Set verbosity to level %d" % verbosity)
-  print("Old verbosity level was %d" % usi.set_verbosity(verbosity))
-
 @usi.on("end_of_evaluation")
 def save_db(phase):
-  global logger
-  logger.store_buffer()
+    global logger
+    if logger:
+        logger.store_buffer()
 
-@usi.on("report")
 def report(
     message_type=None, 
     message_text=None,

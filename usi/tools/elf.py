@@ -9,7 +9,7 @@ from usi.api import intrinsics
 from sr_registry import sr_registry as registry
 
 memoryre = re.compile(r"^(?P<object>[a-zA-Z0-9_.]+)=(?P<filename>[a-zA-Z0-9_\-./]+)(\((?P<baseaddr>\d+|0x\d+)\))?$", re.U)
-intrinsicre = re.compile(r"^(?P<object>[a-zA-Z0-9_.]+)=(?P<filename>[a-zA-Z0-9_\-./]+)(\((?P<intrinsics>[a-zA-Z0-9_.,]+)\))?$", re.U)
+intrinsicre = re.compile(r"^(?P<object>[a-zA-Z0-9_.]+)=(?P<filename>[a-zA-Z0-9_\-./]+)(\((?P<intrinsics>[a-zA-Z0-9_.,=]+)\))?$", re.U)
 intrinsic_groups = {
     'standard': {
       '_exit': '_exitIntrinsic32',

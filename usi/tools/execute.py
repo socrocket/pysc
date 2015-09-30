@@ -1,5 +1,6 @@
 import usi
 import sys
+import os.path
 from usi.tools.args import parser, get_args
 
 parser.add_argument('-s', '--script', dest='script', action='append', default=[], type=str, help='Execute script on start_of_initialization')
