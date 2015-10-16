@@ -33,7 +33,7 @@ class USIBaseDelegate {
       gs::cnf::gs_param_base *param = dynamic_cast<gs::cnf::gs_param_base *>(m_object);
       if(param) {
         size_t offset = 0;
-        sc_core::sc_object *parent = m_object->get_parent();
+        sc_core::sc_object *parent = m_object->get_parent_object();
         gs::cnf::gs_param_base *parent_param = dynamic_cast<gs::cnf::gs_param_base *>(parent);
         if(parent_param) {
           offset = parent_param->getName().length();
@@ -70,7 +70,7 @@ class USIBaseDelegate {
     /// Returns the hierachial parent of the sc_object
     sc_core::sc_object *parent() {
       if(m_object) {
-        return m_object->get_parent();
+        return m_object->get_parent_object();
       } else {
         return NULL;
       }

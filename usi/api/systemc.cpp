@@ -67,7 +67,7 @@ int set_verbosity(int verbosity) {
 long get_curr_process_handle() {
 #if SYSTEMC_API == 210
   return (long) sc_core::sc_get_curr_process_handle();
-#elif SYSTEMC_API == 220 || SYSTEMC_API == 230
+#elif SYSTEMC_API == 220 || SYSTEMC_API == 230 || SYSTEMC_API == 231
   return (long) sc_core::sc_get_curr_simcontext()->get_curr_proc_info()->process_handle;
 #else
 #error Unknown SystemC API to call for sc_get_current_process_handle
@@ -79,7 +79,7 @@ long get_curr_process_handle() {
 bool is_running() {
 #if SYSTEMC_API == 210
   return sc_core::sc_get_curr_simcontext()->is_running();
-#elif SYSTEMC_API == 220 || SYSTEMC_API == 230
+#elif SYSTEMC_API == 220 || SYSTEMC_API == 230 || SYSTEMC_API == 231
   return sc_core::sc_is_running();
 #else
 #error Unknown SystemC API to call for sc_is_running
