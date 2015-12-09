@@ -33,20 +33,20 @@ class Logger(object):
         # create continous index
         index_col = list(range(self.index, self.index + len(self.msg_buffer)))
         self.index += len(self.msg_buffer)
-  
+
         df = pd.DataFrame(self.msg_buffer, index=index_col)
-  
+
         # convert bool columns into str to avoid mixed column exception
         for column in df.columns:
           if df[column].dtype == 'object':
             df[column] = df[column].astype(str)
-        
+
         # store buffer and free
         self.store.append("log{0}".format(self.chunk_a), df, min_itemsize=250, index=False, data_columns=True)
         self.store.close()
         self.store.open()
         #self.store.create_table_index("log%d" % self.chunk_a, kind="full")
-        
+
         self.msg_buffer = []
         self.chunk_a += 1
 
@@ -63,7 +63,7 @@ def save_db(phase):
         logger.store_buffer()
 
 def report(
-    message_type=None, 
+    message_type=None,
     message_text=None,
     severity=None,
     file_name=None,
@@ -79,7 +79,7 @@ def report(
   global logger
 
   severity_text = ["Info", "Warning", "Error", "Fatal"]
-  
+
   message_dict = {
       "message_type" : message_type,
       "message_text" : message_text,

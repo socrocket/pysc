@@ -120,9 +120,9 @@ class PromptStr(object):
         self.tunitstr = TIME_UNITS[tunit]
     def __str__(self):
         return "(%s*%s @ %.6g %s) " % (
-            self.iname, 
-            self.tname, 
-            simulation_time(self.tunit), 
+            self.iname,
+            self.tname,
+            simulation_time(self.tunit),
             self.tunitstr
         )
     def strip(self):
@@ -185,7 +185,7 @@ class SCCommand(object):
             self.all_runnables[typename] = []
 
         self.all_runnables[typename].append((runnable, keyargs))
-    
+
     def call(self, obj, typename, *k, **kw):
         all_runners = self.all_runnables.get(typename, [])
         kw.update({"name":obj})

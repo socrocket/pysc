@@ -11,11 +11,11 @@ SEC = api.SC_SEC
 
 """Time constants units"""
 TIME_UNITS = {
-    FS:"fs", 
-    PS:"ps", 
-    NS:"ns", 
-    US:"us", 
-    MS:"ms", 
+    FS:"fs",
+    PS:"ps",
+    NS:"ns",
+    US:"us",
+    MS:"ms",
     SEC:"s"
 }
 
@@ -50,7 +50,7 @@ get_top_level_objects = api.get_top_level_objects
 
 def wait(obj, tu=None):
     """
-       if obj is event or event tree, 
+       if obj is event or event tree,
        call obj.wait(); else it is a scalar
     """
     #from pysc import thread_control

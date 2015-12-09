@@ -10,7 +10,7 @@ class LogQuery(object):
 
   import pandas as pd
   import log_query as lq
-  
+
   log = lq.LogQuery("log.h5")
   df = log.select(where="index >= -1", columns=['index', 'time', 'message_text'])
   print df

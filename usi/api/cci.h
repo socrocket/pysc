@@ -2,13 +2,13 @@
 /// @addtogroup pysc
 /// @{
 /// @file cci.h
-/// 
+///
 /// @date 2013-2015
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
-///            program, without the express, prior written consent of the 
+///            program, without the express, prior written consent of the
 ///            authors is strictly prohibited.
-/// @author Rolf Meyer 
+/// @author Rolf Meyer
 #ifndef PYSC_API_CCI_H_
 #define PYSC_API_CCI_H_
 
@@ -89,9 +89,9 @@ class USICCIParam {
             (t == gs::cnf::PARTYPE_SC_BIGINT) ||
             (t == gs::cnf::PARTYPE_SC_BIGUINT)
         );
-      
+
     }
-    
+
     bool cci_isFloat() {
         gs::cnf::Param_type t = m_object->getType();
         return (

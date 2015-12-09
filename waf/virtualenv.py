@@ -25,7 +25,7 @@ def options(self):
 def python_get(self, name):
     self.start_msg("Install %s into virtualenv" % (name))
     self.cmd_and_log(
-        [Utils.subst_vars('${VPIP}',self.env), "install", name], 
+        [Utils.subst_vars('${VPIP}',self.env), "install", name],
         output=Context.BOTH,
         cwd=self.env.VENV_PATH
     )
@@ -42,7 +42,7 @@ class venv_link_task(Task.Task):
 
   def __str__(self):
       return "venv: %s -> virtualenv\n" % (os.path.basename(self.generator.path.get_bld().abspath()))
-    
+
   def run(self):
       sdirnode = self.generator.path.get_bld()
       sdirnode.mkdir()
@@ -85,7 +85,7 @@ def configure(self):
         name    = "virtualenv"
         version = "trunk"
         self.dep_fetch(
-          name    = name, 
+          name    = name,
           version = version,
           git_url = "https://github.com/pypa/virtualenv.git",
         )

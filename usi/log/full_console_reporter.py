@@ -30,21 +30,21 @@ def get_actions_str(actions):
   else:
     flags = ActionFlags()
     flags.raw = actions
-    if flags.SC_DO_NOTHING == 1: 
+    if flags.SC_DO_NOTHING == 1:
       result += "SC_DO_NOTHING|"
-    if flags.SC_THROW == 1: 
+    if flags.SC_THROW == 1:
       result += "SC_THROW|"
-    if flags.SC_LOG == 1: 
+    if flags.SC_LOG == 1:
       result += "SC_LOG|"
-    if flags.SC_DISPLAY == 1: 
+    if flags.SC_DISPLAY == 1:
       result += "SC_DISPLAY|"
-    if flags.SC_CACHE_REPORT == 1: 
+    if flags.SC_CACHE_REPORT == 1:
       result += "SC_CACHE_REPORT|"
-    if flags.SC_INTERRUPT == 1: 
+    if flags.SC_INTERRUPT == 1:
       result += "SC_INTERRUPT|"
-    if flags.SC_STOP == 1: 
+    if flags.SC_STOP == 1:
       result += "SC_STOP|"
-    if flags.SC_ABORT == 1: 
+    if flags.SC_ABORT == 1:
       result += "SC_ABORT|"
 
 
@@ -52,7 +52,7 @@ def get_actions_str(actions):
 
 @usi.on("report")
 def report_full(
-    message_type=None, 
+    message_type=None,
     message_text=None,
     severity=None,
     file_name=None,

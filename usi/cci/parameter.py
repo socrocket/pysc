@@ -178,7 +178,7 @@ def printDict(params, indent=0):
                 print((" " * indent) + name + ": " + ', '.join(value))
         else:
             print((" " * indent) + name + ": " + str(value))
-            
+
 def filterDict(params, match, parents = [], result = {}):
     for name, value in params.items():
         if name == match:

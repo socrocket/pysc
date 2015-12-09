@@ -9,9 +9,9 @@ SEVERITY = [
     colored('Error', 'red'),
     colored('Fatal', 'red')
 ]
-  
+
 def report(
-      message_type=None, 
+      message_type=None,
       message_text=None,
       severity=None,
       file_name=None,
@@ -34,10 +34,10 @@ def report(
             parameters += "{0}={1} ".format(value, kwargs[value])
 
 
-    print("@{0} ns /{1} ({2}): {3}: {4} {5}".format(time, 
+    print("@{0} ns /{1} ({2}): {3}: {4} {5}".format(time,
           delta_count,
           colored(message_type, 'blue'),
-          SEVERITY[severity], 
-          message_text, 
+          SEVERITY[severity],
+          message_text,
           parameters))
 

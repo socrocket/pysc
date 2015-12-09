@@ -7,10 +7,10 @@ from waflib.Errors import ConfigurationError
 def options(self):
     self.load('compiler_fc')
     self.add_option(
-        '--with-lapack', 
-        type='string', 
-        help='LAPACK installation directory', 
-        dest='lapackdir', 
+        '--with-lapack',
+        type='string',
+        help='LAPACK installation directory',
+        dest='lapackdir',
         default=os.environ.get("LAPACK_HOME")
     )
 
@@ -30,7 +30,7 @@ def find(self, path = None):
       libpath      = libpath,
       errmsg       = "LAPACK Library not found. Use --with-lapack option or set $LAPACK_HOME.",
       okmsg        = "ok"
-    ) 
+    )
     #self.check_cxx(
     #  header_name  = 'lapack.h',
     #  uselib_store = 'LAPACK',
@@ -38,8 +38,8 @@ def find(self, path = None):
     #  includes     = incpath,
     #  uselib       = 'LAPACK',
     #  okmsg        = "ok"
-    #) 
-    
+    #)
+
     if path:
         self.env["HOME_LAPACK"] = path
 

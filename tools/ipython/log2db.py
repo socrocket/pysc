@@ -10,18 +10,18 @@ def read_log(filename):
     log_re = re.compile("\A@")
     message_re = re.compile("\A@(\d+)\s+([a-z]+)\s+/(\d+)\s+\((\S+)\):\s+(\S+):\s+(.*)")
     ansi_escape_re = re.compile(r'\x1b[^m]*m')
-    
+
     file = open(filename)
-    
+
     h5_path = filename+".h5"
     if os.path.exists(h5_path):
         os.remove(h5_path)
-    
+
     store = pd.HDFStore(h5_path)
     index = 0
 
     data_aggr = []
- 
+
     for line in file:
         if log_re.match(line):
             pure_line = ansi_escape_re.sub('', line)

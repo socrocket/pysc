@@ -33,7 +33,7 @@ def set_json_attr(jsonfile, attributes=[]):
   for param in attributes:
     obj = root
     pair = param.split('=')
-    
+
     if len(pair) != 2:
       sys.exit("Parameter %s is wrong please use 'key=value' as pattern" % (param))
 
