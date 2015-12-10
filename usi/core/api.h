@@ -2,13 +2,13 @@
 /// @addtogroup pysc
 /// @{
 /// @file api.h
-/// 
+///
 /// @date 2013-2015
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
-///            program, without the express, prior written consent of the 
+///            program, without the express, prior written consent of the
 ///            authors is strictly prohibited.
-/// @author Rolf Meyer 
+/// @author Rolf Meyer
 #ifndef PYSC_USI_CORE_API_H_
 #define PYSC_USI_CORE_API_H_
 

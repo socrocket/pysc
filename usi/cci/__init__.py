@@ -10,7 +10,7 @@ from usi.tools.args import parser, get_args
 parser.add_argument('-o', '--option', dest='option', action='append', default=[], type=str, help='Give configuration option')
 parser.add_argument('-j', '--json', dest='json', action='append', default=[], type=str, help='Read JSON configuration')
 parser.add_argument('-l', '--list', dest='list', action='store_true', help='List options')
-    
+
 @usi.on("start_of_initialization")
 def parse_args(*k, **kw):
     for jsonfile in get_args().json:

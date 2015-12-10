@@ -51,7 +51,7 @@ def load_elf_into_scireg(filename, stores, base):
             if section.header["sh_flags"] & constants.SH_FLAGS.SHF_ALLOC:
                 addr = section.header["sh_addr"] - base
                 data = section.data()
-                
+
                 if isinstance(stores, usi.USIDelegate):
                     stores = [stores]
                 for store in stores:
@@ -131,7 +131,7 @@ def start_of_simulation(*k, **kw):
                     intrinsics.update(intrinsic_groups[splitted[0]])
                 else:
                     intrinsics[splitted[0]] = splitted[0]
-                
+
             elif len(splitted) > 1:
                 if splitted[1] == 'None':
                     del(intrinsics[splitted[0]])

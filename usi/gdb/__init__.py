@@ -8,6 +8,6 @@ def debug_simulation():
   window = session.new_window(window_name="GDB Simulation")
   #usi.shell.stop()
   window.pane[0].send_keys("gdb program %s" % os.getpid())
-  
+
 
 

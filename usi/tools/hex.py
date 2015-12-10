@@ -99,7 +99,7 @@ def dumpgen(data, binary = False):
   for addr, d in enumerate(generator):
     # 00000000:
     line = '%08X: ' % (addr*16)
-    # 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
+    # 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
     dumpstr = dump(d, binary)
     if binary:
       line += dumpstr[:8*9]
@@ -130,7 +130,7 @@ def dumpgen(data, binary = False):
       else:
         line += '.'
     yield line
-  
+
 def dumps(data, result='print', binary=False):
   '''
   Transform binary data to the hex dump text format:
@@ -215,7 +215,7 @@ if __name__ == '__main__':
     sys.exit(-1)
   else:
     if not options.restore:
-      # [x] memory effective dump 
+      # [x] memory effective dump
       dumps(open(args[0], 'rb'), binary=options.binary)
     else:
       # [ ] memory efficient restore

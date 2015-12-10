@@ -2,11 +2,11 @@
 /// @addtogroup pysc
 /// @{
 /// @file registry.h
-/// 
+///
 /// @date 2013-2015
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
-///            program, without the express, prior written consent of the 
+///            program, without the express, prior written consent of the
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
 #ifndef PYSC_USI_CORE_REGISTRY_H_

@@ -46,7 +46,7 @@ struct Initiator: sc_module {
   SC_HAS_PROCESS(Initiator);
   tlm_utils::simple_initiator_socket<Initiator> socket;
 
-  Initiator(sc_core::sc_module_name mn) : 
+  Initiator(sc_core::sc_module_name mn) :
     sc_core::sc_module(mn),
     socket("socket") { // Construct and name socket
     SC_THREAD(thread_process);
@@ -101,7 +101,7 @@ struct Memory: sc_module {
 
   enum { SIZE = 256 };
 
-  Memory(sc_core::sc_module_name mn) : 
+  Memory(sc_core::sc_module_name mn) :
     sc_core::sc_module(mn),
     socket("socket") {
     // Register callback for incoming b_transport interface method call
@@ -192,7 +192,7 @@ static void toload() {
   usi_load("testusi");
 }
 USI_MODULE_EXPORT(
-  Top, 
+  Top,
   toload
 );
 #endif

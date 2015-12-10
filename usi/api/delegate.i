@@ -2,11 +2,11 @@
 /// @addtogroup pysc
 /// @{
 /// @file delegate.i
-/// 
+///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
-///            program, without the express, prior written consent of the 
+///            program, without the express, prior written consent of the
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
 %module delegate
@@ -62,7 +62,7 @@ USIObject find_USIBaseDelegate(sc_core::sc_object *obj, std::string name) {
   if(obj) {
     return SWIG_NewPointerObj(SWIG_as_voidptr(new USIBaseDelegate(obj)), SWIGTYPE_p_USIBaseDelegate, SWIG_POINTER_OWN | 0);
   } else {
-    return NULL;  
+    return NULL;
   }
 }
 USI_REGISTER_OBJECT_GENERATOR(find_USIBaseDelegate);

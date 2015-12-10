@@ -2,12 +2,12 @@
 /// @addtogroup pysc
 /// @{
 /// @file module.cpp
-/// 
+///
 ///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
-///            program, without the express, prior written consent of the 
+///            program, without the express, prior written consent of the
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
 ///
@@ -37,9 +37,9 @@ PythonModule *PythonModule::globalInstance = NULL;
 
 // constructor
 PythonModule::PythonModule(
-    sc_core::sc_module_name name_p, 
+    sc_core::sc_module_name name_p,
     const char* script_filename,
-    int argc, 
+    int argc,
     char **argv) :
         sc_core::sc_module(name_p),
         initialised(false),
@@ -176,7 +176,7 @@ void PythonModule::load(std::string script) {
         return;
     }
     block_threads();
-    if(boost::algorithm::ends_with(script, ".py")) { 
+    if(boost::algorithm::ends_with(script, ".py")) {
         if(!private_load(script.c_str())) {
             std::string s(name());
             s += std::string(" could not load ") + std::string(script);

@@ -144,7 +144,7 @@ class USIDelegate {
     /// Decrements the ref count of the interface implementation list.
     /// This is scripting language dependend.
     ~USIDelegate() {
-      /// @todo Decrement ifs count  
+      /// @todo Decrement ifs count
       Py_XDECREF(this->ifs);
     }
 
@@ -157,7 +157,7 @@ class USIDelegate {
   private:
     /// The list of collected interface implementatiion classes
     USIObject ifs;
-    
+
     /// The corresponding sc_object.
     sc_core::sc_object *m_object;
 };

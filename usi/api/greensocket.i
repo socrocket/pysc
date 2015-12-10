@@ -2,11 +2,11 @@
 /// @addtogroup pysc
 /// @{
 /// @file greensocket.i
-/// 
+///
 /// @date 2013-2014
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
-///            program, without the express, prior written consent of the 
+///            program, without the express, prior written consent of the
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
 %module greensocket
@@ -94,7 +94,7 @@ class USIInitiatorSocket {
 
     template<typename T> T *socket() {
       return dynamic_cast<T *>(m_obj);
-    }  
+    }
 #endif
 };
 
@@ -138,7 +138,7 @@ class USITargetSocket {
 
     template<typename T> T *socket() {
       return dynamic_cast<T *>(m_obj);
-    }  
+    }
 #endif
 };
 %}

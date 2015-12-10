@@ -2,13 +2,13 @@
 /// @addtogroup pysc
 /// @{
 /// @file module.h
-/// 
+///
 /// @date 2013-2015
 /// @copyright All rights reserved.
 ///            Any reproduction, use, distribution or disclosure of this
-///            program, without the express, prior written consent of the 
+///            program, without the express, prior written consent of the
 ///            authors is strictly prohibited.
-/// @author Rolf Meyer 
+/// @author Rolf Meyer
 #ifndef PYSC_USI_CORE_MODULE_H_
 #define PYSC_USI_CORE_MODULE_H_
 
@@ -26,7 +26,7 @@ class PythonModule: public sc_core::sc_module {
     PythonModule(
       sc_core::sc_module_name name,
       const char* script_filename = 0,
-      int argc = 0, 
+      int argc = 0,
       char **argv = NULL);
 
     virtual ~PythonModule();

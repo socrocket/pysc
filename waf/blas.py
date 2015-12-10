@@ -6,10 +6,10 @@ from waflib.Errors import ConfigurationError
 
 def options(self):
     self.add_option(
-        '--with-blas', 
-        type='string', 
-        help='BLAS installation directory', 
-        dest='blasdir', 
+        '--with-blas',
+        type='string',
+        help='BLAS installation directory',
+        dest='blasdir',
         default=os.environ.get("BLAS_HOME")
     )
 
@@ -29,7 +29,7 @@ def find(self, path = None):
       libpath      = libpath,
       errmsg       = "BLAS Library not found. Use --with-blas option or set $BLAS_HOME.",
       okmsg        = "ok"
-    ) 
+    )
     self.check_cxx(
       header_name  = 'cblas.h',
       uselib_store = 'BLAS',
@@ -37,8 +37,8 @@ def find(self, path = None):
       includes     = incpath,
       uselib       = 'BLAS',
       okmsg        = "ok"
-    ) 
-    
+    )
+
     if path:
         self.env["HOME_BLAS"] = path
 

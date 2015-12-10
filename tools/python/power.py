@@ -32,7 +32,7 @@ def view(*k, **kw):
           out[name][var] = value
         else:
           print("Mal formated power parameter:", base)
-        
+
     for comp, var in out.items():
         print("*****************************************************")
         print("* Component:", comp)

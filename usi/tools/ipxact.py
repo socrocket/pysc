@@ -24,7 +24,7 @@ class IP_XACT(object):
             instance_data = {
                 'name'      : instance.find('ipxact:instanceName', self.namespaces).text,
                 'reference' : instance.find('ipxact:componentRef', self.namespaces).attrib,
-                'parameter' : parameter, 
+                'parameter' : parameter,
             }
             result.append(instance_data)
 

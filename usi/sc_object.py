@@ -20,7 +20,7 @@ def usi_extend_delegate(obj):
        Why this might be a bad idea for bound functions!
        (Garbage collector)
        Object cache?
-      
+
     """
     from sr_registry import sr_registry as registry
     if obj and obj.this:
