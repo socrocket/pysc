@@ -1,5 +1,6 @@
 import usi
 import sys
+from sr_register import scireg
 
 @usi.on('start_of_simulation')
 def simulation_begin(*k, **kw):
