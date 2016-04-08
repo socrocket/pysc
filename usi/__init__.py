@@ -246,10 +246,15 @@ def set_default_pause_handler(function):
 def execute_default_pause_handler(*k, **kw):
     global default_pause_handler
     if default_pause_handler is not None:
-        print('Going to execute default pause handler')
-        default_pause_handler(*k, **kw)
+        default_pause_handler()
     else:
         print('No default pause handler defined')
 
 print('register default pause handler')
 on('pause_of_simulation')(execute_default_pause_handler)
+
+def onpause(*k, **kw):
+    print('current simulation time: {} ns'.format(systemc.simulation_time(NS)))
+    shell.start()
+
+set_default_pause_handler(onpause)
