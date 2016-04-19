@@ -31,6 +31,7 @@ intrinsic_groups = {
       'open': 'openIntrinsic32',
       'random': 'randomIntrinsic32',
       'read': 'readIntrinsic32',
+      'rename' : 'renameIntrinsic32',
 #      'sbrk': 'sbrkIntrinsic32',
       'stat': 'statIntrinsic32',
       'time': 'timeIntrinsic32',
