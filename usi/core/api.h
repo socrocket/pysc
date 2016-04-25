@@ -12,7 +12,20 @@
 #ifndef PYSC_USI_CORE_API_H_
 #define PYSC_USI_CORE_API_H_
 
-#include <Python.h>
+extern "C" {
+#if not defined(_object)
+struct _object;
+typedef struct _object PyObject;
+#endif
+#if not defined(_ts)
+struct _ts;
+typedef struct _ts PyThreadState;
+#endif
+#if not defined(_is)
+struct _is;
+typedef struct _is PyInterpreterState;
+#endif
+};
 
 typedef PyObject * PyScObject;
 

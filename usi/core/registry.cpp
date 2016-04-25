@@ -11,7 +11,11 @@
 /// @author Rolf Meyer
 #include "usi/core/registry.h"
 #include "core/common/sc_find.h"
+#ifndef NC_SYSTEMC
 #include "core/common/sr_param.h"
+#endif
+
+#include <Python.h>
 
 PyScModule *PyScModule::reg = NULL;
 
@@ -19,6 +23,10 @@ PyScModule::PyScModule(const char *name, PyScModule::init_f funct) : funct(funct
   next = reg;
   reg = this;
 };
+
+PyScModule::operator PyInterpreterState*() {
+  return module_thread->interp;
+}
 
 void PyScModule::registerEmbedded() {
 #if PY_VERSION_HEX >= 0x03000000
@@ -83,6 +91,7 @@ PyObject *PyScObjectGenerator::find_object_by_ptr(sc_core::sc_object *obj) {
 }
 
 sc_core::sc_object *PyScObjectGenerator::find_object_by_name(std::string name) {
+#ifndef NC_SYSTEMC
   gs::cnf::cnf_api *configAPI = gs::cnf::GCnf_Api::getApiInstance(NULL);
   if(configAPI) {
     gs::cnf::gs_param_base *param = configAPI->getPar(name);
@@ -90,6 +99,7 @@ sc_core::sc_object *PyScObjectGenerator::find_object_by_name(std::string name) {
       return param;
     }
   }
+#endif
   return sc_find_by_name(name.c_str());
 }
 

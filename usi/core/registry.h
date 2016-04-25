@@ -12,9 +12,23 @@
 #ifndef PYSC_USI_CORE_REGISTRY_H_
 #define PYSC_USI_CORE_REGISTRY_H_
 
-#include <Python.h>
 #include <systemc.h>
 #include "core/common/sc_find.h"
+
+extern "C" {
+#if not defined(_object)
+struct _object;
+typedef struct _object PyObject;
+#endif
+#if not defined(_ts)
+struct _ts;
+typedef struct _ts PyThreadState;
+#endif
+#if not defined(_is)
+struct _is;
+typedef struct _is PyInterpreterState;
+#endif
+};
 
 class PyScModule {
   public:
@@ -25,7 +39,7 @@ class PyScModule {
 #endif
     PyScModule(const char *, init_f funct = NULL);
     operator PyThreadState*() { return module_thread; };
-    operator PyInterpreterState*() { return module_thread->interp; };
+    operator PyInterpreterState*();
     static void registerEmbedded();
     static void prepareEmbedded();
     bool embedded;

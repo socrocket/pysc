@@ -31,6 +31,8 @@ USI_REGISTER_MODULE(delegate)
         result = set(self.__dict__['if_data'].keys())
         for iface in self.get_if_tuple():
             result.update(dir(iface))
+            if hasattr(iface, 'children') and callable(getattr(iface, 'children')):
+                result.update([child.basename() for child in getattr(iface, 'children')() if hasattr(child, 'basename') and callable(getattr(child, 'basename'))])
         result.discard('this')
         return sorted(result)
 
@@ -42,6 +44,11 @@ USI_REGISTER_MODULE(delegate)
             result = getattr(iface, name, None)
             if result:
                 return result
+            if hasattr(iface, 'children') and callable(getattr(iface, 'children')):
+                for child in getattr(iface, 'children')():
+                    if hasattr(child, 'name') and callable(getattr(child, 'basename')) and child.basename() == name:
+                        return child
+                
         if hasattr(super(USIDelegate, self), name):
             super(USIDelegate, self).__getattr__(name)
 

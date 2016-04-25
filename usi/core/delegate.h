@@ -3,8 +3,11 @@
 
 #include <systemc.h>
 #include <vector>
+#include <cstring>
 #include "usi.h"
+#ifndef NC_SYSTEMC
 #include "core/common/sr_param.h"
+#endif
 
 /// Forward declaration of USIDelegate
 /// It will be the collector object delegating the function calls to all the interfaces
@@ -17,10 +20,13 @@ class USIBaseDelegate {
 
     /// Returns the full name of the corresponding sc_object or gs_param
     const char *name() {
+#ifndef NC_SYSTEMC
       gs::cnf::gs_param_base *param = dynamic_cast<gs::cnf::gs_param_base *>(m_object);
       if(param) {
         return param->getName().c_str();
-      } else if(m_object) {
+      } else
+#endif
+        if(m_object) {
         return m_object->name();
       } else {
         return "";
@@ -30,21 +36,15 @@ class USIBaseDelegate {
 
     /// Returns the name of the corresponding sc_object or gs_param
     const char *basename() {
+#ifndef NC_SYSTEMC
       gs::cnf::gs_param_base *param = dynamic_cast<gs::cnf::gs_param_base *>(m_object);
       if(param) {
-        size_t offset = 0;
-        sc_core::sc_object *parent = m_object->get_parent_object();
-        gs::cnf::gs_param_base *parent_param = dynamic_cast<gs::cnf::gs_param_base *>(parent);
-        if(parent_param) {
-          offset = parent_param->getName().length();
-        } else if(parent) {
-          offset = sizeof(parent->name());
-        }
-        if(offset) {
-          offset++;
-        }
-        return param->getName().substr(offset).c_str();
-      } else if(m_object) {
+        std::string name = param->getName();
+        size_t offset = name.rfind('.') + 1;
+        return name.substr(offset).c_str();
+      } else
+#endif
+        if(m_object) {
         return m_object->basename();
       } else {
         return "";
@@ -53,10 +53,13 @@ class USIBaseDelegate {
 
     /// Returns the kind of an sc_object
     const char *kind() {
+#ifndef NC_SYSTEMC
       gs::cnf::gs_param_base *param = dynamic_cast<gs::cnf::gs_param_base *>(m_object);
       if(param) {
         return param->getTypeString().c_str();
-      } else if(m_object) {
+      } else
+#endif
+        if(m_object) {
         return m_object->kind();
       } else {
         return "";
@@ -78,6 +81,16 @@ class USIBaseDelegate {
 
     /// Returns a list of children of the sc_object
     std::vector<sc_core::sc_object *> children() {
+#ifndef NC_SYSTEMC
+      gs::cnf::gs_param_array *param = dynamic_cast<gs::cnf::gs_param_array *>(m_object);
+      if(param) {
+        std::vector<sc_core::sc_object *> result;
+        for(gs::cnf::gs_param_array::iterator iter = param->begin(); iter != param->end(); ++iter) {
+          result.push_back(*iter);
+        }
+        return result;
+      } else
+#endif
       if(m_object) {
         return m_object->get_child_objects();
       } else {

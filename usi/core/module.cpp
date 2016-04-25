@@ -25,10 +25,10 @@
 #include <map>
 #include <set>
 
-#ifndef MTI_SYSTEMC
+#if not (defined(MTI_SYSTEMC) and defined(NC_SYSTEMC))
 #include "core/common/waf.h"
-#include "core/common/sr_report.h"
 #endif
+#include "core/common/sr_report.h"
 #include "usi/core/module.h"
 #include "usi/core/registry.h"
 
@@ -108,16 +108,16 @@ PythonModule::PythonModule(
 
     // Now add the virtual env to the sys.path to load pysc and other socrocket modules
     unblock_threads();
-#ifndef MTI_SYSTEMC
+#if defined(MTI_SYSTEMC) || defined(NC_SYSTEMC)
+    boost::filesystem::path builddir = findPath("build", __FILE__);
+#else
     std::map<std::string, std::string> *wafConfig = getWafConfig(argv[0]);
     std::string outdir = (*wafConfig)["out_dir"];
     outdir.erase(std::remove(outdir.begin(), outdir.end(), '\''), outdir.end());
     boost::filesystem::path builddir(outdir);
+#endif
     boost::filesystem::path venvactivate(".conf_check_venv/bin/activate_this.py");
     std::string activate = (builddir/venvactivate).string();
-#else
-    std::string activate = ("build/.conf_check_venv/bin/activate_this.py");
-#endif
     exec(
         "with open('"+activate+"') as script:\n" +
         "    code = compile(script.read(), '"+activate+"', 'exec')\n" +
