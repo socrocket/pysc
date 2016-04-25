@@ -1,7 +1,9 @@
 from __future__ import print_function
 import argparse
+import sys
 import usi
 from usi import usage
+from . import execute
 
 ARGS = None
 parser = argparse.ArgumentParser(
@@ -9,9 +11,18 @@ parser = argparse.ArgumentParser(
   description=usage.HELP,
 )
 
+execute.argparse_init(parser)
+
+def include_scripts():
+    param = ['-s', '--script']
+    args = [arg for idx, arg in enumerate(sys.argv) if arg in param or ( idx > 0 and sys.argv[idx-1] in param)]
+    return args
+
 def get_args():
   global ARGS
   if not ARGS:
+      args = parser.parse_args(include_scripts())
+      execute.argparse_before_parse(args)
       ARGS = parser.parse_args()
   return ARGS
 
