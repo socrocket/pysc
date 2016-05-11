@@ -3,12 +3,13 @@
 #include "usi/core/delegate.h"
 %}
 
-%typemap(typecheck) sc_object {
+%typemap(typecheck) sc_object * {
   $1 = USIObjectIsUSIDelegate($input)? 1 : 0;
 }
 
-%typemap(in) sc_object * {
-  $1 = USIObjectToUSIDelegate($input)->toObject();
+%typemap(in) sc_object * (USIDelegate *tmp) {
+  tmp = USIObjectToUSIDelegate($input);
+  $1 = tmp? tmp->toObject() : NULL;
 }
 
 %typemap(out) sc_object * {
@@ -22,12 +23,13 @@
   }
 }
 
-%typemap(typecheck) sc_core::sc_object {
+%typemap(typecheck) sc_core::sc_object * {
   $1 = USIObjectIsUSIDelegate($input)? 1 : 0;
 }
 
-%typemap(in) sc_core::sc_object * {
-  $1 = USIObjectToUSIDelegate($input)->toObject();
+%typemap(in) sc_core::sc_object * (USIDelegate *tmp) {
+  tmp = USIObjectToUSIDelegate($input);
+  $1 = tmp? tmp->toObject() : NULL;
 }
 
 %typemap(out) sc_core::sc_object * {
