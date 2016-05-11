@@ -25,7 +25,11 @@ USI_REGISTER_MODULE(delegate)
 %extend USIDelegate {
   %pythoncode {
     def __repr__(self):
-        return "USIDelegate('%s')" % (self.name())
+        if hasattr(self, 'name'):
+            return "USIDelegate('%s')" % (self.name())
+        else:
+            return "USIDelegate('unknown')"
+            
 
     def __dir__(self):
         result = set(self.__dict__['if_data'].keys())
@@ -82,9 +86,12 @@ USIDelegate *USIObjectToUSIDelegate(USIObject obj) {
   void *argp1 = NULL;
   USIDelegate *result = NULL;
   /// @TODO: reference counting?
-  SWIG_ConvertPtr(obj, &argp1, SWIGTYPE_p_USIDelegate, 0 |  0 );
-  result = reinterpret_cast<USIDelegate *>(argp1);
-  return result;
+  if(SWIG_IsOK(SWIG_ConvertPtr(obj, &argp1, SWIGTYPE_p_USIDelegate, 0 |  0 ))) {
+    result = reinterpret_cast<USIDelegate *>(argp1);
+    return result;
+  } else {
+    return NULL;
+  }
 }
 
 bool USIObjectIsUSIDelegate(USIObject obj) {
