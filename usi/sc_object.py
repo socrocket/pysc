@@ -5,9 +5,9 @@ OBJECTSTORE = {}
 def attach(klass, name, member):
     FACTORYSTORE.setdefault(klass, {})[name] = member
 
-def usi_extend_creation(obj, klass):
+def usi_extend_creation(group, klass, obj):
     result = {}
-    for name, item in FACTORYSTORE.get(klass, {}).items():
+    for name, item in FACTORYSTORE.get("{}.{}".format(group, klass), {}).items():
         i = item
         if hasattr(item, '__call__'):
             i = item.__get__(obj)
@@ -25,9 +25,10 @@ def usi_extend_delegate(obj):
     from sr_registry import registry
     if obj and obj.this and hasattr(obj, 'name') and callable(obj.name):
         name = obj.name()
-        for group in list(registry.get_group_names()):
-            for klass in list(registry.get_module_names(group)):
-                if registry.is_type(group, klass, obj) and not name in OBJECTSTORE:
-                    OBJECTSTORE[name] = {}
-                    OBJECTSTORE[name].update(usi_extend_creation(obj, klass))
-                setattr(obj, 'if_data', OBJECTSTORE.setdefault(name, {}))
+        if not name in OBJECTSTORE:
+            for group in list(registry.get_group_names()):
+                for klass in list(registry.get_module_names(group)):
+                    if registry.is_type(group, klass, obj):
+                        OBJECTSTORE[name] = {}
+                        OBJECTSTORE[name].update(usi_extend_creation(group, klass, obj))
+        setattr(obj, 'if_data', OBJECTSTORE.setdefault(name, {}))

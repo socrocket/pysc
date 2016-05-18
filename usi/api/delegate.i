@@ -56,6 +56,9 @@ USI_REGISTER_MODULE(delegate)
         if hasattr(super(USIDelegate, self), name):
             super(USIDelegate, self).__getattr__(name)
 
+    def __getitem__(self, index):
+        return self.__getattr__(str(index))
+
     def __setattr__(self, name, value):
         if name in ["this", "if_data"]:
             self.__dict__[name] = value
