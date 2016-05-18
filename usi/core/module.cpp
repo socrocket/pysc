@@ -374,68 +374,40 @@ const char *str_value(const char *str) {
 #ifndef MTI_SYSTEMC
 void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::sc_actions &actions) {
   block_threads();
-  if(rep.get_severity()==sc_core::SC_MAX_SEVERITY && rep.get_verbosity() == 0x0FFFFFFF && std::strncmp(rep.get_msg(), "command", 8) == 0) {
-    const sr_report *srr = dynamic_cast<const sr_report *>(&rep);
-    PyObject *pairs = PyDict_New();
-    //Py_INCREF(pairs);
-    if(srr) {
-      for(std::vector<v::pair>::const_iterator iter = srr->pairs.begin(); iter!=srr->pairs.end(); iter++) {
-        PyObject *i = NULL;
-        switch(iter->type) {
-          case v::pair::INT32:  i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data)); break;
-          case v::pair::UINT32: i = PyLong_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
-          case v::pair::INT64:  i = PyLong_FromLongLong(boost::any_cast<int64_t>(iter->data)); break;
-          case v::pair::UINT64: i = PyLong_FromUnsignedLongLong(boost::any_cast<uint64_t>(iter->data)); break;
-          case v::pair::STRING: i = PyString_FromString(boost::any_cast<std::string>(iter->data).c_str()); break;
-          case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? (Py_INCREF(Py_True), Py_True) : (Py_INCREF(Py_False), Py_False); break;
-          case v::pair::DOUBLE: i = PyFloat_FromDouble(boost::any_cast<double>(iter->data)); break;
-          case v::pair::TIME:   i = PyFloat_FromDouble(boost::any_cast<sc_core::sc_time>(iter->data).to_default_time_units()); break;
-          default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
-        }
-        if(i) {
-          PyObject *key = PyUnicode_FromString(iter->name.c_str());
-          PyDict_SetItem(pairs, key, i);
-          Py_XDECREF(key);
-          Py_XDECREF(i);
-        } else {
-          std::cout << "could not convert to python: " << iter->name << std::endl;
-        }
+  const sr_report *srr = dynamic_cast<const sr_report *>(&rep);
+  PyObject *pairs = PyDict_New();
+  if(srr) {
+    for(std::vector<v::pair>::const_iterator iter = srr->pairs.begin(); iter!=srr->pairs.end(); iter++) {
+      PyObject *i = NULL;
+      switch(iter->type) {
+        case v::pair::INT32:  i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data)); break;
+        case v::pair::UINT32: i = PyLong_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
+        case v::pair::INT64:  i = PyLong_FromLongLong(boost::any_cast<int64_t>(iter->data)); break;
+        case v::pair::UINT64: i = PyLong_FromUnsignedLongLong(boost::any_cast<uint64_t>(iter->data)); break;
+        case v::pair::STRING: i = PyString_FromString(boost::any_cast<std::string>(iter->data).c_str()); break;
+        case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? (Py_INCREF(Py_True), Py_True) : (Py_INCREF(Py_False), Py_False); break;
+        case v::pair::DOUBLE: i = PyFloat_FromDouble(boost::any_cast<double>(iter->data)); break;
+        case v::pair::TIME:   i = PyFloat_FromDouble(boost::any_cast<sc_core::sc_time>(iter->data).to_default_time_units()); break;
+        default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
+      }
+      if(i) {
+        PyObject *key = PyUnicode_FromString(iter->name.c_str());
+        PyDict_SetItem(pairs, key, i);
+        Py_XDECREF(key);
+        Py_XDECREF(i);
+      } else {
+        std::cout << "could not convert to python: " << iter->name << std::endl;
       }
     }
+  }
+
+  if(rep.get_severity()==sc_core::SC_MAX_SEVERITY && rep.get_verbosity() == 0x0FFFFFFF && std::strncmp(rep.get_msg(), "command", 8) == 0) {
     PyObject *obj = PyTuple_New(1);
     PyTuple_SetItem(obj, 0, PyString_FromString(str_value(rep.get_msg_type())));
     PythonModule::globalInstance->run_py_callback("command", obj, pairs);
-    Py_XDECREF(pairs);
     Py_XDECREF(obj);
 
-  } else if(actions & (sc_core::SC_DISPLAY | sc_core::SC_LOG)) {
-    const sr_report *srr = dynamic_cast<const sr_report *>(&rep);
-    PyObject *pairs = PyDict_New();
-    //Py_INCREF(pairs);
-    if(srr) {
-      for(std::vector<v::pair>::const_iterator iter = srr->pairs.begin(); iter!=srr->pairs.end(); iter++) {
-        PyObject *i = NULL;
-        switch(iter->type) {
-          case v::pair::INT32:  i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data)); break;
-          case v::pair::UINT32: i = PyLong_FromLong(boost::any_cast<uint32_t>(iter->data)); break;
-          case v::pair::INT64:  i = PyLong_FromLongLong(boost::any_cast<int64_t>(iter->data)); break;
-          case v::pair::UINT64: i = PyLong_FromUnsignedLongLong(boost::any_cast<uint64_t>(iter->data)); break;
-          case v::pair::STRING: i = PyString_FromString(boost::any_cast<std::string>(iter->data).c_str()); break;
-          case v::pair::BOOL:   i =                   (boost::any_cast<bool>(iter->data))? (Py_INCREF(Py_True), Py_True) : (Py_INCREF(Py_False), Py_False); break;
-          case v::pair::DOUBLE: i = PyFloat_FromDouble(boost::any_cast<double>(iter->data)); break;
-          case v::pair::TIME:   i = PyFloat_FromDouble(boost::any_cast<sc_core::sc_time>(iter->data).to_default_time_units()); break;
-          default:              i = PyLong_FromLong(boost::any_cast<int32_t>(iter->data));
-        }
-        if(i) {
-          PyObject *key = PyUnicode_FromString(iter->name.c_str());
-          PyDict_SetItem(pairs, key, i);
-          Py_XDECREF(key);
-          Py_XDECREF(i);
-        } else {
-          std::cout << "could not convert to python: " << iter->name << std::endl;
-        }
-      }
-    }
+  } else {
     PyObject *obj = PyTuple_New(11);
     PyTuple_SetItem(obj, 0, PyString_FromString(str_value(rep.get_msg_type())));
     PyTuple_SetItem(obj, 1, PyString_FromString(str_value(rep.get_msg())));
@@ -449,14 +421,13 @@ void PythonModule::report_handler(const sc_core::sc_report &rep, const sc_core::
     PyTuple_SetItem(obj, 9, PyString_FromString(str_value(rep.what())));
     PyTuple_SetItem(obj, 10, PyLong_FromLong(actions));
     PythonModule::globalInstance->run_py_callback("report", obj, pairs);
-    Py_XDECREF(pairs);
     Py_XDECREF(obj);
 
     //if(actions & (sc_core::SC_STOP | sc_core::SC_ABORT | sc_core::SC_INTERRUPT | sc_core::SC_THROW)) {
     //  sc_core::sc_report_handler::default_handler(rep, actions & ~(sc_core::SC_DISPLAY | sc_core::SC_LOG));
     //}
   }
-
+  Py_XDECREF(pairs);
   unblock_threads();
 }
 #endif
