@@ -37,11 +37,11 @@ PythonModule *PythonModule::globalInstance = NULL;
 
 // constructor
 PythonModule::PythonModule(
-    sc_core::sc_module_name name_p,
+    sc_core::sc_module_name mn,
     const char* script_filename,
     int argc,
     char **argv) :
-        sc_core::sc_module(name_p),
+        sc_core::sc_module(mn),
         initialised(false),
         my_namespace(NULL),
         pysc_module(NULL),
