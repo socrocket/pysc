@@ -64,7 +64,10 @@ def stop(*k, **kw):
     sys.modules['__main__'].CONSOLE.stop()
 
 def is_running(*k, **kw):
-    return sys.modules['__main__'].CONSOLE.run
+    try:
+        return sys.modules['__main__'].CONSOLE.run
+    except:
+        return False
 
 def args(*k, **kw):
     from usi.tools.args import get_args
@@ -80,7 +83,9 @@ def install():
 
     usi.on("start_of_initialization")(args)
     #usi.on("start_of_simulation")(start)
-    usi.on("pause_of_simulation")(start)
+    #usi.set_default_pause_handler(start)
+    print('alternative')
+    usi.on("pause_of_simulation")(usi.execute_default_pause_handler)
     #start()
 
 try:

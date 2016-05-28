@@ -22,7 +22,7 @@ TIME_UNITS = {
 def start(*k, **kw):
   if api.is_running():
       if hasattr(api, "start"):
-          api.start()
+          api.start(*k)
       else:
           print("sc_start is not implemented")
   from usi import shell

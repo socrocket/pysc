@@ -58,6 +58,8 @@ void pysc_end_of_initialization();
 /// Therefore if the user presses Ctrl-c during simulation or sc_pause() is executed during simulation
 /// all scripts registered to the phase pause_of_simulation are executed until the simulation will be started again.
 void pysc_start();
+void pysc_start(const sc_time& duration, sc_starvation_policy p = SC_RUN_TO_TIME);
+void pysc_start(double duration, sc_time_unit unit, sc_starvation_policy p = SC_RUN_TO_TIME);
 
 /// The signal handler for the python environment.
 /// It should be registered in order to use system signals with the simulation.

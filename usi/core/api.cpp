@@ -72,6 +72,43 @@ void pysc_start() {
   python->end_of_evaluation();
 }
 
+void pysc_start(const sc_time& duration, sc_starvation_policy p = SC_RUN_TO_TIME) {
+  python->end_of_initialization();
+  cpp_sigint = python->signal(SIGINT, &pysc_signal_handler);
+  cpp_sigterm = python->signal(SIGTERM, &pysc_signal_handler);
+  sc_core::sc_status status = sc_core::SC_RUNNING;
+  while(1) {
+    if (status == sc_core::SC_RUNNING) {
+      sc_core::sc_start(duration, p);
+    } else if (status == sc_core::SC_PAUSED) {
+      python->pause_of_simulation();
+    } else {
+      break;
+    }
+    status = sc_core::sc_get_status();
+  }
+  python->start_of_evaluation();
+  python->end_of_evaluation();
+}
+
+void pysc_start(double duration, sc_time_unit unit, sc_starvation_policy p = SC_RUN_TO_TIME) {
+  python->end_of_initialization();
+  cpp_sigint = python->signal(SIGINT, &pysc_signal_handler);
+  cpp_sigterm = python->signal(SIGTERM, &pysc_signal_handler);
+  sc_core::sc_status status = sc_core::SC_RUNNING;
+  while(1) {
+    if (status == sc_core::SC_RUNNING) {
+      sc_core::sc_start(duration, unit, p);
+    } else if (status == sc_core::SC_PAUSED) {
+      python->pause_of_simulation();
+    } else {
+      break;
+    }
+    status = sc_core::sc_get_status();
+  }
+  python->start_of_evaluation();
+  python->end_of_evaluation();
+}
 /// @}
 
 

@@ -158,6 +158,7 @@ class SCCallback(object):
         if debug:
             runnable = sc_callback_debug_wrapper(runnable, PromptStr(interpreter_name(), self.name, time_unit))
         innm = interpreter_name()
+        print('Interpreter', innm)
         if innm not in self.all_runnables:
             self.all_runnables[innm] = []
 
@@ -210,6 +211,7 @@ PHASE = {
 
 def on(phase, obj=None, debug=False, time_unit = NS, keyargs = {}):
     """Register phase sccallback handler"""
+
     def do(funct):
         if phase in PHASE:
             PHASE[phase].register(funct, obj, debug=debug, time_unit=time_unit, keyargs=keyargs)
@@ -233,3 +235,26 @@ for filename in registry.api.get_module_files("module"):
     #print fullname, pypath, pymodule
     if os.path.exists(pypath):
         imp.load_source(pymodule, pypath)
+
+default_pause_handler = start
+
+def set_default_pause_handler(function):
+    global default_pause_handler
+    default_pause_handler = function
+
+#@on('pause_of_simulation')
+def execute_default_pause_handler(*k, **kw):
+    global default_pause_handler
+    if default_pause_handler is not None:
+        default_pause_handler()
+    else:
+        print('No default pause handler defined')
+
+print('register default pause handler')
+on('pause_of_simulation')(execute_default_pause_handler)
+
+def onpause(*k, **kw):
+    print('current simulation time: {} ns'.format(systemc.simulation_time(NS)))
+    shell.start()
+
+set_default_pause_handler(onpause)
