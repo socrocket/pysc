@@ -12,7 +12,7 @@ __interpreter_name__ = ""
 from builtins import object
 from usi.systemc import *
 from usi.api.delegate import USIDelegate
-from sr_registry.sr_registry import get_module_files
+import sr_registry as registry
 from sr_report import sr_report as report
 
 def find(name):
@@ -226,7 +226,7 @@ import os
 import imp
 waf_out_dir = waf.get_lockfile_attr("out_dir")
 
-for filename in get_module_files("module"):
+for filename in registry.api.get_module_files("module"):
     fullname = os.path.normpath(os.path.join(waf_out_dir, filename))
     pypath = os.path.splitext(fullname)[0] + ".py"
     pymodule = os.path.basename(os.path.splitext(fullname)[0])

@@ -6,7 +6,7 @@ from usi.tools.args import parser, get_args
 from elftools.elf.elffile import ELFFile
 from elftools.elf import constants
 from usi.api import intrinsics
-from sr_registry import registry
+import sr_registry as registry
 
 memoryre = re.compile(r"^(?P<object>[a-zA-Z0-9_.]+)=(?P<filename>[a-zA-Z0-9_\-./]+)(\((?P<baseaddr>\d+|0x\d+)\))?$", re.U)
 intrinsicre = re.compile(r"^(?P<object>[a-zA-Z0-9_.]+)=(?P<filename>[a-zA-Z0-9_\-./]+)(\((?P<intrinsics>[a-zA-Z0-9_.,=]+)\))?$", re.U)
@@ -82,7 +82,7 @@ def load_elf_intrinsics_to_processor(filename, cpus, intrinsics):
                         if not intrinsic_manager:
                             print("intrinsic manager for cpu %s not found" % cpu.name())
                         print("Intrinsic on symbol %s at address %x is inserted with class %s " % (name, entry['st_value'], klass))
-                        intrinsic_instance = registry.create_object_by_name('PlatformIntrinsic', klass, str(name))
+                        intrinsic_instance = registry.api.create_object_by_name('PlatformIntrinsic', klass, str(name))
                         intrinsic_manager.register_intrinsic(entry['st_value'], intrinsic_instance)
 
 @usi.on('start_of_simulation')

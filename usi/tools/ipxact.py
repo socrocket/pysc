@@ -3,7 +3,7 @@ from builtins import object
 import pprint
 import re
 import usi
-from sr_registry import sr_registry as registry
+import sr_registry as registry
 from usi import cci
 import xml.etree.ElementTree as ET
 

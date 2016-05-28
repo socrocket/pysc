@@ -22,13 +22,13 @@ def usi_extend_delegate(obj):
        Object cache?
 
     """
-    from sr_registry import registry
+    from sr_registry import api
     if obj and obj.this and hasattr(obj, 'name') and callable(obj.name):
         name = obj.name()
         if not name in OBJECTSTORE:
-            for group in list(registry.get_group_names()):
-                for klass in list(registry.get_module_names(group)):
-                    if registry.is_type(group, klass, obj):
+            for group in list(api.get_group_names()):
+                for klass in list(api.get_module_names(group)):
+                    if api.is_type(group, klass, obj):
                         OBJECTSTORE[name] = {}
                         OBJECTSTORE[name].update(usi_extend_creation(group, klass, obj))
         setattr(obj, 'if_data', OBJECTSTORE.setdefault(name, {}))
