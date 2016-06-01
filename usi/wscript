@@ -12,6 +12,7 @@ def build(self):
                           'core/api.cpp',
                           'api/systemc.cpp',
                           'api/systemc.i',
+                          'api/sc_module.i',
                           'api/delegate.i',
                           'api/intrinsics.i',
                           'api/cci.cpp',

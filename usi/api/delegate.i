@@ -63,7 +63,7 @@ USI_REGISTER_MODULE(delegate)
         if name in ["this", "if_data"]:
             self.__dict__[name] = value
         else:
-            self.if_data[name] = value
+            self.__dict__.setdefault('if_data', {})[name] = value
   }
 }
 
