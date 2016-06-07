@@ -82,7 +82,7 @@ def load_elf_intrinsics_to_processor(filename, cpus, intrinsics):
 
                         if not intrinsic_manager:
                             print("intrinsic manager for cpu %s not found" % cpu.name())
-                        print("Intrinsic on symbol %s at address %x is inserted with class %s " % (name, entry['st_value'], klass))
+                        print("Intrinsic on symbol %s at address %x is inserted with class %s on CPU %s" % (name, entry['st_value'], klass, cpu.name()))
                         intrinsic_instance = registry.api.create_object_by_name('PlatformIntrinsic', klass, str(name))
                         intrinsic_manager.register_intrinsic(entry['st_value'], intrinsic_instance)
 
