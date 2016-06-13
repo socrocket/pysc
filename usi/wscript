@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # vim : set fileencoding=utf-8 expandtab noai ts=4 sw=4 filetype=python :
 top = '../..'
+import sys
 
 def build(self):
   self(
@@ -26,6 +27,7 @@ def build(self):
                         ],
     pysource          = self.path.ant_glob(['**/*.py']),
     export_includes   = self.repository_root.abspath(),
+    export_defines    = "USI_PYVERSION_HEX={}".format(sys.hexversion),
     includes          = self.repository_root.abspath(),
     swig_flags        = '-c++ -python -Wall',
     use               = 'base PYTHON',
