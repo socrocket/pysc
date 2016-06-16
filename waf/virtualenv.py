@@ -58,7 +58,7 @@ class venv_link_task(Task.Task):
           initnode.write("")
       snode = sdirnode.abspath()
       dnode = os.path.join(self.env["VENV_PATH"], "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode))
-      if not os.path.exists(dnode):
+      if not os.path.exists(dnode) and not os.path.islink(dnode):
           os.symlink(os.path.relpath(snode, os.path.join(dnode, "..")), dnode)
       return 0
 
