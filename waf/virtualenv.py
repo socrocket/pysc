@@ -32,16 +32,13 @@ def python_get(self, name):
     self.end_msg("ok")
 conf(python_get)
 
-@Task.always_run
 class venv_link_task(Task.Task):
   """Link a Python source directory into the site-packages dir of the venv"""
   name = 'venv_link'
   color = 'BLUE'
-  before = []
-  quiet = True
 
   def __str__(self):
-      return "venv: %s -> virtualenv\n" % (os.path.basename(self.generator.path.get_bld().abspath()))
+      return "venv: %s -> virtualenv" % (os.path.basename(self.generator.path.get_bld().abspath()))
 
   def run(self):
       sdirnode = self.generator.path.get_bld()
@@ -74,12 +71,12 @@ def venv_package(self):
             snode = self.path.find_node(src)
         else:
             snode = src
-        if not initnode in srclist:
+        if not snode in srclist:
             srclist.append(snode)
     self.env["VENV_PATH"] = os.path.join(self.bld.bldnode.abspath(), ".conf_check_venv")
     snode = self.path.abspath()
-    dnode = self.bld.bldnode.find_dir(os.path.join("lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode)))
-    links = self.create_task('venv_link', src=list(srclist), tgt=dnode)
+    dnode = self.bld.bldnode.find_or_declare(os.path.join(".conf_check_venv", "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode), "__init__.py"))
+    links = self.create_task('venv_link', src=srclist, tgt=[dnode])
 
 def configure(self):
     try:
