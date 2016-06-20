@@ -10,6 +10,7 @@ from waflib import Task
 from waflib import TaskGen
 from waflib import Utils
 from common import conf
+from datetime import datetime
 
 def options(self):
   pass
@@ -57,6 +58,7 @@ class venv_link_task(Task.Task):
       dnode = os.path.join(self.env["VENV_PATH"], "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode))
       if not os.path.exists(dnode) and not os.path.islink(dnode):
           os.symlink(os.path.relpath(snode, os.path.join(dnode, "..")), dnode)
+      self.outputs[0].write(str(datetime.now()))
       return 0
 
 @TaskGen.before('process_source', 'process_rule')
@@ -75,7 +77,7 @@ def venv_package(self):
             srclist.append(snode)
     self.env["VENV_PATH"] = os.path.join(self.bld.bldnode.abspath(), ".conf_check_venv")
     snode = self.path.abspath()
-    dnode = self.bld.bldnode.find_or_declare(os.path.join(".conf_check_venv", "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode), "__init__.py"))
+    dnode = self.bld.bldnode.find_or_declare(os.path.join(".conf_check_venv", "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode)+".waf-info"))
     links = self.create_task('venv_link', src=srclist, tgt=[dnode])
 
 def configure(self):
