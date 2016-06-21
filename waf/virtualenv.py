@@ -45,7 +45,7 @@ class venv_link_task(Task.Task):
       sdirnode = self.generator.path.get_bld()
       sdirnode.mkdir()
       for snode in self.inputs:
-          if not os.path.exists(snode.abspath()):
+          if os.path.exists(snode.abspath()):
               dnode = snode.get_bld()
               if not os.path.isdir(dnode.parent.abspath()):
                   dnode.parent.mkdir()
@@ -64,17 +64,13 @@ class venv_link_task(Task.Task):
 @TaskGen.before('process_source', 'process_rule')
 @TaskGen.feature('venv_package')
 def venv_package(self):
-    initnode = self.path.find_or_declare('__init__.py')
-    if not os.path.exists(initnode.abspath()):
-        initnode.write("")
-    srclist = [initnode]
+    srclist = []
     for src in Utils.to_list(getattr(self, "pysource", [])):
         if isinstance(src, str):
             snode = self.path.find_node(src)
         else:
             snode = src
-        if not snode in srclist:
-            srclist.append(snode)
+        srclist.append(snode)
     self.env["VENV_PATH"] = os.path.join(self.bld.bldnode.abspath(), ".conf_check_venv")
     snode = self.path.abspath()
     dnode = self.bld.bldnode.find_or_declare(os.path.join(".conf_check_venv", "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode)+".waf-info"))
