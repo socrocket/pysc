@@ -38,7 +38,7 @@ def find(name):
        result.append(obj)
     else:
        obj = USIDelegate(name)
-       if not any(obj.get_if_tuple()):
+       if not any(obj.__usi_interfaces__()):
          return []
        return [obj]
 

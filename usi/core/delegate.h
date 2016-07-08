@@ -127,7 +127,7 @@ class USIDelegate {
     /// @param name Hierachail name of the corresponding sc_object.
     USIDelegate(std::string name) {
       this->m_object = PyScObjectGenerator::find_object_by_name(name);
-      this->ifs = PyScObjectGenerator::find_object_by_ptr(m_object);
+      this->m_interfaces = PyScObjectGenerator::find_object_by_ptr(m_object);
       // Returns a new reference
     }
 
@@ -136,7 +136,7 @@ class USIDelegate {
     /// Only available for convinience and only usable from C++
     /// @param obj sc_object to bind to.
     USIDelegate(sc_core::sc_object *obj) : m_object(obj) {
-      this->ifs = PyScObjectGenerator::find_object_by_ptr(m_object);
+      this->m_interfaces = PyScObjectGenerator::find_object_by_ptr(m_object);
       // Returns a new reference
     }
 
@@ -157,19 +157,19 @@ class USIDelegate {
     /// Decrements the ref count of the interface implementation list.
     /// This is scripting language dependend.
     ~USIDelegate() {
-      /// @todo Decrement ifs count
-      Py_XDECREF(this->ifs);
+      /// @todo Decrement m_interfaces count
+      Py_XDECREF(this->m_interfaces);
     }
 
     /// Return the list of interface implementations.
-    USIObject get_if_tuple() {
-      Py_XINCREF(this->ifs);
-      return ifs;
+    USIObject __usi_interfaces__() {
+      Py_XINCREF(this->m_interfaces);
+      return m_interfaces;
     }
 
   private:
     /// The list of collected interface implementatiion classes
-    USIObject ifs;
+    USIObject m_interfaces;
 
     /// The corresponding sc_object.
     sc_core::sc_object *m_object;

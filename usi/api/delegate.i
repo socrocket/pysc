@@ -33,7 +33,7 @@ USI_REGISTER_MODULE(delegate)
 
     def __dir__(self):
         result = set(self.__dict__['if_data'].keys())
-        for iface in self.get_if_tuple():
+        for iface in self.__usi_interfaces__():
             result.update(dir(iface))
             if hasattr(iface, 'children') and callable(getattr(iface, 'children')):
                 result.update([child.basename() for child in getattr(iface, 'children')() if hasattr(child, 'basename') and callable(getattr(child, 'basename'))])
@@ -44,7 +44,7 @@ USI_REGISTER_MODULE(delegate)
         result = self.__dict__.setdefault('if_data', {}).get(name)
         if result:
             return result
-        for iface in self.get_if_tuple():
+        for iface in self.__usi_interfaces__():
             result = getattr(iface, name, None)
             if result:
                 return result
