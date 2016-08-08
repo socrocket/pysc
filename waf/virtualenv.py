@@ -33,7 +33,7 @@ def python_get(self, name):
     self.end_msg("ok")
 conf(python_get)
 
-class venv_link_task(Task.Task):
+class venv_link(Task.Task):
   """Link a Python source directory into the site-packages dir of the venv"""
   name = 'venv_link'
   color = 'BLUE'
