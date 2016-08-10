@@ -17,7 +17,7 @@ packages = [
 #    "nwdiag==1.0.0",
 #    "seqdiag==0.9.0",
 #    "blockdiag==1.3.0",
-    "Pygments==1.6",
+    "Pygments==2.1.3",
     "six==1.4.1",
     "cython==0.20.2",
 #    "Sphinx==1.1.3",

@@ -12,6 +12,18 @@ from waflib import Utils
 from common import conf
 from datetime import datetime
 
+
+def symlink(src, dst):
+    if sys.platform == "win32":
+        # Scheisse
+        flags = 1 if os.path.isdir(src) else 0
+        import ctypes
+        kdll = ctypes.windll.kernel32
+        kdll.CreateSymbolicLinkW(unicode(src), unicode(dst), flags)
+    else:
+        os.symlink(src, dst)
+
+
 def options(self):
   pass
 
@@ -50,14 +62,14 @@ class venv_link(Task.Task):
               if not os.path.isdir(dnode.parent.abspath()):
                   dnode.parent.mkdir()
               if not os.path.exists(dnode.abspath()):
-                  os.symlink(os.path.relpath(snode.abspath(), os.path.join(dnode.abspath(), "..")), dnode.abspath())
+                  symlink(os.path.relpath(snode.abspath(), os.path.join(dnode.abspath(), "..")), dnode.abspath())
       initnode = sdirnode.find_or_declare('__init__.py')
       if not os.path.exists(initnode.abspath()):
           initnode.write("")
       snode = sdirnode.abspath()
       dnode = os.path.join(self.env["VENV_PATH"], "lib", ("python%s" % self.env.PYTHON_VERSION), "site-packages", os.path.basename(snode))
       if not os.path.exists(dnode) and not os.path.islink(dnode):
-          os.symlink(os.path.relpath(snode, os.path.join(dnode, "..")), dnode)
+          symlink(os.path.relpath(snode, os.path.join(dnode, "..")), dnode)
       self.outputs[0].write(str(datetime.now()))
       return 0
 
@@ -79,9 +91,9 @@ def venv_package(self):
 def configure(self):
     try:
         if sys.version_info >= (3, 0):
-            self.find_program('virtualenv', var="VIRTUALENV", mandatory=True, okmsg="ok")
+            self.find_program(['virtualenv', 'virtualenv.py', 'virtualenv.exe'], var="VIRTUALENV", mandatory=True, okmsg="ok")
         else:
-            self.find_program('virtualenv2', var="VIRTUALENV", mandatory=True, okmsg="ok")
+            self.find_program(['virtualenv2', 'virtualenv2.py', 'virtualenv2.exe', 'virtualenv', 'virtualenv.py', 'virtualenv.exe'], var="VIRTUALENV", mandatory=True, okmsg="ok")
     except ConfigurationError as e:
         name    = "virtualenv"
         version = "trunk"
@@ -90,7 +102,7 @@ def configure(self):
           version = version,
           git_url = "https://github.com/pypa/virtualenv.git",
         )
-        self.find_program('virtualenv.py', var="VIRTUALENV", mandatory=True, okmsg="ok", path_list=[self.dep_path(name, version)])
+        self.find_program(['virtualenv', 'virtualenv.py', 'virtualenv.exe'], var="VIRTUALENV", mandatory=True, okmsg="ok", path_list=[self.dep_path(name, version)])
     self.start_msg("Create python virtualenv")
     self.env["VENV_PATH"] = os.path.join(self.bldnode.abspath(), ".conf_check_venv")
     self.cmd_and_log(

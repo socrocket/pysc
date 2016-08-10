@@ -64,14 +64,14 @@ int set_verbosity(int verbosity) {
   return sc_core::sc_report_handler::set_verbosity_level(verbosity);
 }
 
-long get_curr_process_handle() {
+size_t get_curr_process_handle() {
 #if SYSTEMC_API == 210
-  return (long) sc_core::sc_get_curr_process_handle();
+  return (size_t) sc_core::sc_get_curr_process_handle();
 #elif SYSTEMC_API == 220 || SYSTEMC_API == 230 || SYSTEMC_API == 231
-  return (long) sc_core::sc_get_curr_simcontext()->get_curr_proc_info()->process_handle;
+  return (size_t) sc_core::sc_get_curr_simcontext()->get_curr_proc_info()->process_handle;
 #else
 #error Unknown SystemC API to call for sc_get_current_process_handle
-  return 0l;
+  return 0;
 #endif
 }
 
