@@ -19,7 +19,7 @@ using std::ptrdiff_t;
 
 %{
 #include "usi.h"
-#include "core/common/sc_find.h"
+#include "core/base/sc_find.h"
 %}
 
 %typedef PyObject * USIObject;

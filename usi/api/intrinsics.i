@@ -19,8 +19,8 @@
 USI_REGISTER_MODULE(intrinsics)
 
 %{
-#include "core/common/sr_iss/intrinsics/intrinsicmanager.h"
-#include "core/common/sr_iss/intrinsics/platformintrinsic.h"
+#include "core/sr_iss/intrinsics/intrinsicmanager.h"
+#include "core/sr_iss/intrinsics/platformintrinsic.h"
 %}
 
 %inline %{
@@ -50,7 +50,7 @@ class IntrinsicInterface {
     IntrinsicManager<issueWidth> *m_manager;
 };
 %}
-%include "core/common/sr_iss/intrinsics/platformintrinsic.h"
+%include "core/sr_iss/intrinsics/platformintrinsic.h"
 %template (IntrinsicInterface32) IntrinsicInterface<unsigned int>;
 %template (PlatformIntrinsic32) PlatformIntrinsic<unsigned int>;
 %{

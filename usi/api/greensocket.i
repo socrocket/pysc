@@ -18,7 +18,7 @@
 USI_REGISTER_MODULE(greensocket)
 
 %begin %{
-#include "core/common/amba.h"
+#include "amba/amba.h"
 typedef gs::socket::initiator_socket_callback_base<32, tlm::tlm_base_protocol_types, 0> iscb_320;
 typedef gs::socket::initiator_socket_callback_base<32, tlm::tlm_base_protocol_types, 1> iscb_321;
 typedef gs::socket::target_socket_callback_base<32, tlm::tlm_base_protocol_types, 0> tscb_320;

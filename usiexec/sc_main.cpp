@@ -15,21 +15,21 @@
 #endif
 
 #include "core/common/sr_param.h"
-#include "core/common/systemc.h"
+#include "core/base/systemc.h"
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
 #include <string.h>
 #include <mcheck.h>
-#include "core/common/amba.h"
-#include "core/common/trapgen/debugger/GDBStub.hpp"
+#include "amba/amba.h"
+#include "core/trapgen/debugger/GDBStub.hpp"
 #include <iostream>
 #include <vector>
 #include <cstring>
 #include <cstdlib>
 #include <stdexcept>
 
-#include "core/common/verbose.h"
+#include "core/base/verbose.h"
 #include <boost/filesystem.hpp>
 
 using namespace std;

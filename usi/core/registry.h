@@ -13,7 +13,7 @@
 #define PYSC_USI_CORE_REGISTRY_H_
 
 #include <systemc.h>
-#include "core/common/sc_find.h"
+#include "core/base/sc_find.h"
 
 extern "C" {
 #if ! defined(_object)

@@ -10,7 +10,7 @@
 ///            authors is strictly prohibited.
 /// @author Rolf Meyer
 #include "usi/core/registry.h"
-#include "core/common/sc_find.h"
+#include "core/base/sc_find.h"
 #ifndef NC_SYSTEMC
 #include "core/common/sr_param.h"
 #endif

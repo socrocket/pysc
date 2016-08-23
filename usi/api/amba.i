@@ -18,15 +18,15 @@
 USI_REGISTER_MODULE(amba)
 
 %{
-#include "core/common/amba.h"
-#include "core/common/ahbdevicebase.h"
-#include "core/common/apbdevicebase.h"
+#include "amba/amba.h"
+#include "amba/ahbdevicebase.h"
+#include "amba/apbdevicebase.h"
 #include "core/common/clkdevice.h"
 %}
 
-%include "core/common/amba.h"
-%include "core/common/ahbdevicebase.h"
-%include "core/common/apbdevicebase.h"
+%include "amba/amba.h"
+%include "amba/ahbdevicebase.h"
+%include "amba/apbdevicebase.h"
 %include "core/common/clkdevice.h"
 
 %{

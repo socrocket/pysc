@@ -26,7 +26,7 @@
 #include <set>
 
 #if not (defined(MTI_SYSTEMC) and defined(NC_SYSTEMC))
-#include "core/common/waf.h"
+#include "core/base/waf.h"
 #endif
 #include "core/common/sr_report.h"
 #include "usi/core/module.h"
