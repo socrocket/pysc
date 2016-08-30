@@ -124,6 +124,9 @@ PythonModule::PythonModule(
         "    exec(code, dict(__file__='"+activate+"'))");
     block_threads();
 
+#ifndef MTI_SYSTEMC
+    sr_report_handler::handler = report_handler;
+#endif
     // make sure there's a reference to the pysc module available
     pysc_module = PyImport_ImportModuleEx(const_cast<char *>("usi"), my_namespace, my_namespace, NULL);
     if(!pysc_module) {
@@ -153,9 +156,6 @@ PythonModule::PythonModule(
       load(script_filename);
     }
 
-#ifndef MTI_SYSTEMC
-    sr_report_handler::handler = report_handler;
-#endif
 }
 
 // desctructor

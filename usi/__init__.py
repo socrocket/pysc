@@ -166,6 +166,7 @@ class SCCallback(object):
 
     def call(self, *k, **kw):
         all_runners = self.all_runnables.get(interpreter_name(), [])
+        print("call", self.name, *k, **kw)
         for run, keyargs in all_runners:
             kw.update(**keyargs)
             try:

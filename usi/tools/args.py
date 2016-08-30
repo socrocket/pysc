@@ -23,6 +23,7 @@ def get_args():
   if not ARGS:
       args = parser.parse_args(include_scripts())
       execute.argparse_before_parse(args)
+      usi.registry.initialization()
       ARGS = parser.parse_args()
   return ARGS
 
