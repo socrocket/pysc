@@ -21,13 +21,13 @@ USI_REGISTER_MODULE(amba)
 #include "amba/amba.h"
 #include "amba/ahbdevicebase.h"
 #include "amba/apbdevicebase.h"
-#include "core/common/clkdevice.h"
+#include "core/base/clkdevice.h"
 %}
 
 %include "amba/amba.h"
 %include "amba/ahbdevicebase.h"
 %include "amba/apbdevicebase.h"
-%include "core/common/clkdevice.h"
+%include "core/base/clkdevice.h"
 
 %{
 USI_REGISTER_OBJECT(AHBDeviceBase);

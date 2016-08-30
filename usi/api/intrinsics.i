@@ -32,7 +32,8 @@ class IntrinsicInterface {
     IntrinsicInterface(IntrinsicManager<issueWidth> *manager): m_manager(manager) {}
 #endif
     unsigned int get_exit_value() {
-      return m_manager->processorInstance.getExitValue();
+      return m_manager->processorInstance.get_exit_value();
+      return 0;
     }
     bool register_intrinsic(issueWidth addr, sc_core::sc_object *obj) {
       PlatformIntrinsic<issueWidth> *instance = dynamic_cast<PlatformIntrinsic<issueWidth> *>(obj);

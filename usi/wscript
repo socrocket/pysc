@@ -30,7 +30,7 @@ def build(self):
     export_defines    = "USI_PYVERSION_HEX={}".format(sys.hexversion),
     includes          = self.repository_root.abspath(),
     swig_flags        = '-c++ -python -Wall',
-    use               = 'base PYTHON',
+    use               = 'base trap PYTHON',
     install_path      = '${PREFIX}/lib',
   )
 

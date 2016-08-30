@@ -10,27 +10,12 @@
 ///            authors is strictly prohibited.
 /// @author Thomas Schuster
 ///
-#ifdef HAVE_USI
-#include "pysc/usi.h"
-#endif
-
-#include "core/common/sr_param.h"
-#include "core/base/systemc.h"
-#include <string.h>
-#include <sys/time.h>
-#include <time.h>
-#include <string.h>
-#include <mcheck.h>
-#include "amba/amba.h"
-#include "core/trapgen/debugger/GDBStub.hpp"
-#include <iostream>
-#include <vector>
-#include <cstring>
-#include <cstdlib>
-#include <stdexcept>
-
+//
 #include "core/base/verbose.h"
-#include <boost/filesystem.hpp>
+#include "core/base/systemc.h"
+#include "core/common/sr_param.h"
+#include "amba/amba.h"
+#include "pysc/usi.h"
 
 using namespace std;
 using namespace sc_core;

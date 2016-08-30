@@ -6,12 +6,8 @@ def build(self):
         features     = 'cxx cprogram pyembed',
         source       = 'sc_main.cpp so_main.cpp',
         includes     = '.',
-        use          = ['BOOST', 'usi', 
-                        'ahbctrl', 'ahbmem', 'irqmp', 'gptimer', 'apbctrl', 'apbuart', 'reset_irqmp',
-                        'socwire', 'socw_socket', 'mctrl', 'ahbin', 'ahbprof', 'greth', 'ahbgpgpu', 
-                        'usi', 'emc2commitregister', 'emc2voter',
-                        'ahbdisplay', 'ahbcamera', 'ahbshuffler', 'leon3', 'microblaze', 'trap',
-                        'sr_registry', 'sr_register', 'sr_report', 'sr_signal', 'common',
+        use          = ['BOOST', 'usi', 'trap', 'common',
+                        'sr_registry', 'sr_register', 'sr_report', 'sr_signal', 'base',
                         'AMBA', 'GREENSOCS', 'TLM', 'SYSTEMC', 'BOOST'
                        ],
     )
