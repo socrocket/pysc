@@ -158,7 +158,6 @@ class SCCallback(object):
         if debug:
             runnable = sc_callback_debug_wrapper(runnable, PromptStr(interpreter_name(), self.name, time_unit))
         innm = interpreter_name()
-        print('Interpreter', innm)
         if innm not in self.all_runnables:
             self.all_runnables[innm] = []
 
@@ -166,7 +165,6 @@ class SCCallback(object):
 
     def call(self, *k, **kw):
         all_runners = self.all_runnables.get(interpreter_name(), [])
-        print("call", self.name, *k, **kw)
         for run, keyargs in all_runners:
             kw.update(**keyargs)
             try:
