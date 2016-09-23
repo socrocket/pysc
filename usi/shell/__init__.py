@@ -82,11 +82,10 @@ def install():
     parser.add_argument('-c', '--console', dest='console', action='store_true', default=False, help='Execute an interactive python console right after start of the sc_main')
 
     usi.on("start_of_initialization")(args)
-    #usi.on("start_of_simulation")(start)
     #usi.set_default_pause_handler(start)
-    print('alternative')
+    # Loading default handler from usi/__init__
+    # It did not work to instatiate it here for some reason
     usi.on("pause_of_simulation")(usi.execute_default_pause_handler)
-    #start()
 
 try:
     install()

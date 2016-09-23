@@ -249,7 +249,7 @@ def execute_default_pause_handler(*k, **kw):
     else:
         print('No default pause handler defined')
 
-print('register default pause handler')
+#print('register default pause handler')
 on('pause_of_simulation')(execute_default_pause_handler)
 
 def onpause(*k, **kw):
