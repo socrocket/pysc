@@ -40,6 +40,31 @@ intrinsic_groups = {
       'usleep': 'usleepIntrinsic32',
       'utimes': 'utimesIntrinsic32',
       'write': 'writeIntrinsic32'
+    },
+    'underscore': {
+      '_exit': '_exitIntrinsic32',
+      '_chmod': 'chmodIntrinsic32',
+      '_chown': 'chownIntrinsic32',
+      '_close': 'closeIntrinsic32',
+      '_dup': 'dup2Intrinsic32',
+      '_dup2': 'dup2Intrinsic32',
+      '_dub': 'dupIntrinsic32',
+      '_error': 'errorIntrinsic32',
+      '_fstat': 'fstatIntrinsic32',
+      '_getpid': 'getpidIntrinsic32',
+      '_isatty': 'isattyIntrinsic32',
+      '_kill': 'killIntrinsic32',
+      '_lseek': 'lseekIntrinsic32',
+      '_lstat': 'lstatIntrinsic32',
+      '_open': 'openIntrinsic32',
+      '_read': 'readIntrinsic32',
+      '_rename' : 'renameIntrinsic32',
+      '_sbrk': 'sbrkIntrinsic32',
+      '_stat': 'statIntrinsic32',
+      '_sysconf': 'sysconfIntrinsic32',
+      '_usleep': 'usleepIntrinsic32',
+      '_utimes': 'utimesIntrinsic32',
+      '_write': 'writeIntrinsic32'
     }
 }
 parser.add_argument('-e', '--loadelf', dest='loadelf', action='append', default=[], type=str, help='Load Data from ELF file into memory')
@@ -58,7 +83,7 @@ def load_elf_into_scireg(filename, stores, base):
                 for store in stores:
                     if isinstance(store, str):
                         store = store.encode('utf-8')
-                    print("Loading %s into %s at address %s" % (filename, store.name(), base))
+                    print("Loading %s section %s into %s at address %s and offset %s" % (filename, section.name, store.name(), base, addr))
                     if sys.version_info >= (3,0):
                         store.scireg_write(data, int(addr))
                     else:
