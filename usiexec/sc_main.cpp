@@ -23,9 +23,9 @@ using namespace sc_core;
 int sc_main(int argc, char** argv) {
     sr_report_handler::handler = sr_report_handler::default_handler;
 
-    gs::ctr::GC_Core core;
-    gs::cnf::ConfigDatabase cnfdatabase("ConfigDatabase");
-    gs::cnf::ConfigPlugin configPlugin(&cnfdatabase);
+    //gs::ctr::GC_Core core;
+    //gs::cnf::ConfigDatabase cnfdatabase("ConfigDatabase");
+    //gs::cnf::ConfigPlugin configPlugin(&cnfdatabase);
 
     // Initialize Python
     USI_HAS_MODULE(systemc);

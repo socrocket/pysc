@@ -23,6 +23,7 @@ def build(self):
                           'api/mtrace.i',
 #                          'api/report.i',
 #                          'api/registry.i',
+                          'api/tlmsockets.i',
                           'api/greensocket.i',
                         ],
     pysource          = self.path.ant_glob(['**/*.py']),
